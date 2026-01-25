@@ -9,15 +9,10 @@ import java.util.Optional;
 @Repository
 public interface BadgeRepository extends MongoRepository<Badge, String> {
 
-    /**
-     * 根据业务ID查找徽章
-     * 用途：自动解锁逻辑中，根据 badgeId 获取规则
-     */
-    Optional<Badge> findByBadgeId(String badgeId);
-
-    /**
-     * 查找所有激活状态的徽章
-     * 用途：自动检测时，只检查当前有效的徽章
-     */
+ Optional<Badge> findByBadgeId(String badgeId);
+    
     List<Badge> findByIsActive(boolean isActive);
+
+    // ✅ 必须有这个方法，Service 才能查出同类的其他徽章
+    List<Badge> findByCategory(String category);
 }
