@@ -1,22 +1,37 @@
 package com.example.EcoGo.model;
 
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "users")
-
 public class User {
+
     @Id
     private String id;
     private String username;
-    private String password; // 数据库存储的敏感字段
+    private String password;
     private String email;
+    private String nickname;
+    private String avatar;
 
-    public User(String username, String password, String email) {
+    // 构造方法
+    public User() {}
+
+    public User(String username, String password, String email, String nickname, String avatar) {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.nickname = nickname;
+        this.avatar = avatar;
+    }
+
+    // Getters and setters
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -42,5 +57,20 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-    // getter/setter
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 }

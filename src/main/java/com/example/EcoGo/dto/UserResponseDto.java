@@ -1,14 +1,16 @@
 package com.example.EcoGo.dto;
 
+public class UserResponseDto {
 
-public class UserResponseDto {//根据自己的需要造比如UserUpdateDto
     private String username;
     private String email;
 
+    // 构造方法
     public UserResponseDto(String username) {
+        this.username = username;
     }
 
-
+    // Getter 和 Setter 方法
     public String getUsername() {
         return username;
     }
@@ -24,9 +26,4 @@ public class UserResponseDto {//根据自己的需要造比如UserUpdateDto
     public void setEmail(String email) {
         this.email = email;
     }
-    // 只暴露需要给前端的字段，不含 password
-    // getter/setter
 }
-
-
-

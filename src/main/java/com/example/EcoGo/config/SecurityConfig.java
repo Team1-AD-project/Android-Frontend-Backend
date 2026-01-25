@@ -7,14 +7,16 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        // 配置请求权限控制
         http
-                .csrf(csrf -> csrf.disable()) // 关闭CSRF（前后端分离场景）
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/user/**").permitAll() // 放行用户查询接口
-                        .anyRequest().authenticated() // 其他接口需登录
-                );
+            .authorizeHttpRequests()  // 使用新的方法
+            .requestMatchers("/**").permitAll()  // 允许所有请求
+            .and()
+            .csrf().disable();  // 禁用 CSRF 防护
+
         return http.build();
     }
 }
