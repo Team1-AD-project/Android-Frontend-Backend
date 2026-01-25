@@ -1,7 +1,7 @@
 package com.example.EcoGo.exception;
 
-import com.example.EcoGo.exception.errorcode.ErrorCode;
 import com.example.EcoGo.dto.ResponseMessage;
+import com.example.EcoGo.exception.errorcode.ErrorCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,40 +14,40 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     @ResponseBody
-    public ResponseMessage<Void> handlerBusinessException(BusinessException e) {
+    public ResponseMessage<?> handlerBusinessException(BusinessException e) {
         return new ResponseMessage<>(e.getCode(), e.getMessage(), null);
     }
 
-    // 处理参数校验异常 (ConstraintViolationException)
+    // Handle parameter validation exceptions (ConstraintViolationException)
     @ExceptionHandler(jakarta.validation.ConstraintViolationException.class)
     @ResponseBody
-    public ResponseMessage<Void> handlerConstraintViolationException(
+    public ResponseMessage<?> handlerConstraintViolationException(
             jakarta.validation.ConstraintViolationException e) {
-        // 提取第一条错误信息
+        // Extract the first error message
         String message = e.getConstraintViolations().stream()
                 .map(jakarta.validation.ConstraintViolation::getMessage)
                 .findFirst()
-                .orElse("参数校验错误");
+                .orElse("Parameter validation error");
         return new ResponseMessage<>(ErrorCode.PARAM_ERROR.getCode(), message, null);
     }
 
-    // 处理对象参数校验异常 (MethodArgumentNotValidException)
+    // Handle object parameter validation exceptions (MethodArgumentNotValidException)
     @ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
     @ResponseBody
-    public ResponseMessage<Void> handlerMethodArgumentNotValidException(
+    public ResponseMessage<?> handlerMethodArgumentNotValidException(
             org.springframework.web.bind.MethodArgumentNotValidException e) {
         String message = e.getBindingResult().getAllErrors().stream()
                 .map(org.springframework.validation.ObjectError::getDefaultMessage)
                 .findFirst()
-                .orElse("参数校验错误");
+                .orElse("Parameter validation error");
         return new ResponseMessage<>(ErrorCode.PARAM_ERROR.getCode(), message, null);
     }
 
-    // 处理系统异常（如空指针、数据库连接失败）
+    // Handle system exceptions (e.g., NullPointerException, DB connection failure)
     @ExceptionHandler(Exception.class)
     @ResponseBody
-    public ResponseMessage<Void> handlerSystemException(Exception e) {
-        log.error("系统异常", e); // 记录详细日志
+    public ResponseMessage<?> handlerSystemException(Exception e) {
+        log.error("System exception", e); // Log detailed error
         return new ResponseMessage<>(ErrorCode.SYSTEM_ERROR.getCode(), ErrorCode.SYSTEM_ERROR.getMessage(), null);
     }
 }

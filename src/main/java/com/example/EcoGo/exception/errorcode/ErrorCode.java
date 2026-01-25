@@ -29,6 +29,14 @@ public enum ErrorCode {
     PARAM_CANNOT_BE_NULL (4303, "Request parameter cannot be empty:%s"),
     PRODUCT_NAME_DUPLICATE(4304, "Product name already exists:%s"),
 
+    // Activity module error (44xx)
+    ACTIVITY_NOT_FOUND(4401, "活动不存在"),
+    ACTIVITY_FULL(4402, "活动人数已满"),
+    ALREADY_JOINED(4403, "您已参加该活动"),
+
+    // Advertisement module error (45xx)
+    ADVERTISEMENT_NOT_FOUND(4501, "广告不存在"),
+
     // 服务端错误（5xxx）
     DB_ERROR(5001, "数据库操作失败"),
     SYSTEM_ERROR(5002, "系统内部错误，请稍后重试"),
