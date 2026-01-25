@@ -1,13 +1,17 @@
 spring:
-  application:
-    name: EcoGo
   data:
     mongodb:
-      uri: mongodb://127.0.0.1:27017/EcoGo  # Docker 本地部署时，用 127.0.0.1 正确
-      database: EcoGo  # 可选（uri 中已包含数据库名，这里可省略，也可保留）
-# 注意：bindIp 和 port 是 MongoDB 服务的配置，不是 Spring Boot 的配置！
-# 你之前把它写在 spring.data.mongodb 下是错误的，Spring 不识别，这部分配置要在 Docker 启动时指定
-
+      # === 方案B：拆分写法 (最稳妥，无需转义) ===
+      host: localhost
+      port: 27017
+      database: EcoGo
+      username: root
+      # 注意：因为密码里有逗号和斜杠，必须用双引号包起来！
+      password: "p8iGS2rN/Q,z" 
+      authentication-database: admin
+      
+      # === 原来的 URI 写法 (请删除或注释掉) ===
+      # uri: ...
 logging:
   level:
     com.example.EcoGo: debug

@@ -2,16 +2,18 @@ package com.example.EcoGo.controller;
 
 import com.example.EcoGo.model.Badge;
 
-import com.example.EcoGo.service.BadgeService;
+import com.example.EcoGo.service.BadgeServiceImpl;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class BadgeController {
 
-    @Autowired private BadgeService badgeService;
+    @Autowired private BadgeServiceImpl badgeService;
 
     // 购买
     @PostMapping("/mobile/badges/{badge_id}/purchase")

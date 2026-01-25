@@ -1,5 +1,6 @@
 package com.example.EcoGo.service;
 
+import com.example.EcoGo.interfacemethods.BadgeService;
 import com.example.EcoGo.model.Badge;
 import com.example.EcoGo.model.User;
 import com.example.EcoGo.model.UserBadge;
@@ -14,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class BadgeService {
+public class BadgeServiceImpl implements BadgeService {
 
     @Autowired private BadgeRepository badgeRepository;
     @Autowired private UserBadgeRepository userBadgeRepository;
@@ -35,10 +36,8 @@ public class BadgeService {
         int cost = badge.getPurchaseCost();
         if (cost <= 0) throw new RuntimeException("该徽章不可购买");
 
-        User user = userRepository.findByUserId(userId);
-        if (user == null) {
-            throw new RuntimeException("用户不存在");
-        }
+        User user = userRepository.findByUserid(userId)
+        .orElseThrow(() -> new RuntimeException("用户不存在"));
 
         if (user.getTotalPoints() < cost) {
             throw new RuntimeException("积分不足");
