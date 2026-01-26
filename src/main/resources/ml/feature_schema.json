@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "feature_dim": 7,
+  "features": [
+    "stats.totalTrips",
+    "stats.activeDays",
+    "stats.completedTasks",
+    "totalCarbon",
+    "totalPoints",
+    "currentPoints",
+    "vip.isActive|vip.level"
+  ]
+}

@@ -31,3 +31,15 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# logs
+logs/
+*.log
+*.gz
+
+# maven temp
+cp.txt
+
+# local tools / temp
+tools/
+
