@@ -6,27 +6,32 @@ import jakarta.validation.constraints.NotBlank;
 public class AuthDto {
 
     public static class MobileRegisterRequest {
-        @NotBlank(message = "用户ID不能为空")
-        public String userid;
-        @NotBlank(message = "手机号不能为空")
-        public String phone;
+        // @NotBlank(message = "用户ID不能为空")
+        // public String userid;
+        // @NotBlank(message = "手机号不能为空")
+        // public String phone;
+        @NotBlank(message = "邮箱不能为空")
+        public String email;
+        @NotBlank(message = "昵称不能为空")
+        public String nickname;
         @NotBlank(message = "密码不能为空")
         public String password;
-        public String nickname;
-        public User.Preferences preferences;
     }
 
     public static class MobileLoginRequest {
-        @NotBlank(message = "手机号不能为空")
-        public String phone;
+        // @NotBlank(message = "手机号不能为空")
+        // public String phone;
+        @NotBlank(message = "用户ID不能为空")
+        public String userid;
         @NotBlank(message = "密码不能为空")
         public String password;
-        public String device_id;
     }
 
     public static class WebLoginRequest {
-        @NotBlank(message = "用户名/手机号不能为空")
-        public String username;
+        // @NotBlank(message = "用户名/手机号不能为空")
+        // public String username;
+        @NotBlank(message = "用户ID不能为空")
+        public String userid;
         @NotBlank(message = "密码不能为空")
         public String password;
     }

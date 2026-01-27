@@ -38,7 +38,9 @@ public class UserServiceImpl implements UserInterface {
     public UserResponseDto getUserByUsername(String username) {
         // Keeping existing method for compatibility
         return userRepository.findByUserid(username)
-                .map(u -> new UserResponseDto(u.getEmail(),u.getUserid(),u.getNickname(), u.getPhone())) // Adapt to existing DTO
+                .map(u -> new UserResponseDto(u.getEmail(), u.getUserid(), u.getNickname(), u.getPhone())) // Adapt to
+                                                                                                           // existing
+                                                                                                           // DTO
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 
@@ -46,20 +48,42 @@ public class UserServiceImpl implements UserInterface {
 
     @Override
     public AuthDto.RegisterResponse register(AuthDto.MobileRegisterRequest request) {
-        if (userRepository.findByPhone(request.phone).isPresent()) {
-            throw new BusinessException(ErrorCode.USER_NAME_DUPLICATE, "手机号已存在");
+        if (request.email == null || !request.email.endsWith("@nus.edu.cn")) {
+            throw new BusinessException(ErrorCode.PARAM_ERROR, "仅支持NUS邮箱注册 (@nus.edu.cn)");
         }
-        if (userRepository.findByUserid(request.userid).isPresent()) {
-            throw new BusinessException(ErrorCode.USER_NAME_DUPLICATE, "用户ID已存在");
+
+        if (userRepository.findByEmail(request.email).isPresent()) {
+            throw new BusinessException(ErrorCode.USER_NAME_DUPLICATE, "邮箱已存在");
+        }
+
+        // Generate userid from email prefix (e.g., abc@test.com -> abc)
+        String userid = request.email.split("@")[0];
+        // Ensure userid is unique (simple logic: if exists, append random suffix)
+        if (userRepository.findByUserid(userid).isPresent()) {
+            userid = userid + "_" + UUID.randomUUID().toString().substring(0, 4);
         }
 
         User user = new User();
         user.setId(UUID.randomUUID().toString());
-        user.setUserid(request.userid);
-        user.setPhone(request.phone);
+        user.setUserid(userid);
+        user.setEmail(request.email);
+        // user.setPhone(request.phone); // Removed in this flow
         user.setPassword(passwordUtils.encode(request.password));
         user.setNickname(request.nickname);
-        user.setPreferences(request.preferences);
+
+        // Set Default Preferences (User doesn't provide them at registration)
+        User.Preferences preferences = new User.Preferences();
+        preferences.setPreferredTransport("bus");
+        preferences.setEnablePush(true);
+        preferences.setEnableEmail(true); // Default to true since they registered with email
+        preferences.setEnableBusReminder(true);
+        preferences.setLanguage("zh");
+        preferences.setTheme("light");
+        preferences.setShareLocation(true);
+        preferences.setShowOnLeaderboard(true);
+        preferences.setShareAchievements(true);
+        user.setPreferences(preferences);
+
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
 
@@ -73,6 +97,12 @@ public class UserServiceImpl implements UserInterface {
         user.setVip(vip);
 
         User.Stats stats = new User.Stats();
+        // Initialize stats with defaults (0)
+        stats.setTotalTrips(0);
+        stats.setTotalDistance(0.0);
+        stats.setGreenDays(0);
+        stats.setWeeklyRank(0);
+        stats.setMonthlyRank(0);
         user.setStats(stats);
 
         userRepository.save(user);
@@ -83,8 +113,9 @@ public class UserServiceImpl implements UserInterface {
 
     @Override
     public AuthDto.LoginResponse loginMobile(AuthDto.MobileLoginRequest request) {
-        User user = userRepository.findByPhone(request.phone)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        // Login by UserID
+        User user = userRepository.findByUserid(request.userid)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND, "用户ID不存在"));
 
         if (!passwordUtils.matches(request.password, user.getPassword())) {
             throw new BusinessException(ErrorCode.PASSWORD_ERROR);
@@ -149,7 +180,7 @@ public class UserServiceImpl implements UserInterface {
     @Override
     public AuthDto.LoginResponse loginWeb(AuthDto.WebLoginRequest request) {
         // Allow login by Username or Phone
-        User user = userRepository.findByPhone(request.username)
+        User user = userRepository.findByUserid(request.userid)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         if (!passwordUtils.matches(request.password, user.getPassword())) {
