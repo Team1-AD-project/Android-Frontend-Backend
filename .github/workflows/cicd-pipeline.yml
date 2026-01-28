@@ -230,7 +230,7 @@ jobs:
 
       - name: SonarQube Not Configured
         if: env.SONAR_TOKEN == ''
-        run: echo "⚠️ SonarQube token not configured. Skipping SonarQube analysis. See .github/SECRETS-TEMPLATE.md to configure."
+        run: echo "WARNING - SonarQube token not configured. Skipping SonarQube analysis. See .github/SECRETS-TEMPLATE.md to configure."
 
   # Stage 7: Deploy to Staging Environment
   deploy-staging:
@@ -240,7 +240,6 @@ jobs:
     if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/feature/cicdfeature'
     environment:
       name: staging
-      url: ${{ secrets.STAGING_URL }}
     steps:
       - uses: actions/checkout@v4
 
@@ -275,8 +274,8 @@ jobs:
       - name: AWS Not Configured Warning
         if: steps.check_aws.outputs.aws_configured != 'true'
         run: |
-          echo "⚠️ AWS credentials not configured. Skipping Terraform deployment."
-          echo "📋 To enable AWS deployment, configure secrets in Settings → Environments → staging"
+          echo "WARNING - AWS credentials not configured. Skipping Terraform deployment."
+          echo "NOTE - To enable AWS deployment, configure secrets in Settings → Environments → staging"
 
   # Stage 8: Deploy to Production Environment
   deploy-production:
@@ -286,12 +285,11 @@ jobs:
     if: github.ref == 'refs/heads/main'
     environment:
       name: production
-      url: ${{ secrets.PRODUCTION_URL }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Manual Approval Required
-        run: echo "⏳ Waiting for manual approval in GitHub Environments..."
+        run: echo "Waiting for manual approval in GitHub Environments..."
 
       - name: Download Build Artifacts
         uses: actions/download-artifact@v4
@@ -324,8 +322,8 @@ jobs:
       - name: AWS Not Configured Warning
         if: steps.check_aws.outputs.aws_configured != 'true'
         run: |
-          echo "⚠️ AWS credentials not configured. Skipping Terraform deployment."
-          echo "📋 To enable AWS deployment, configure secrets in Settings → Environments → production"
+          echo "WARNING - AWS credentials not configured. Skipping Terraform deployment."
+          echo "NOTE - To enable AWS deployment, configure secrets in Settings → Environments → production"
 
   # Stage 6: Run Integration Tests
   integration-tests:
