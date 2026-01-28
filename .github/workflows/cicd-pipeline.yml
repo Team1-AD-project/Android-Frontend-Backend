@@ -117,9 +117,10 @@ jobs:
     runs-on: ubuntu-latest
     name: SonarQube Analysis
     needs: build
-    if: |
-      (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) &&
-      secrets.SONAR_TOKEN != ''
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -133,14 +134,19 @@ jobs:
           cache: maven
 
       - name: SonarQube Scan
+        if: env.SONAR_TOKEN != ''
         run: |
           mvn clean verify sonar:sonar \
             -Dsonar.projectKey=ecogo \
             -Dsonar.sources=src/main \
             -Dsonar.tests=src/test \
-            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.host.url=${{ env.SONAR_HOST_URL }} \
+            -Dsonar.login=${{ env.SONAR_TOKEN }}
         continue-on-error: true
+
+      - name: SonarQube Not Configured
+        if: env.SONAR_TOKEN == ''
+        run: echo "⚠️ SonarQube token not configured. Skipping SonarQube analysis. See .github/SECRETS-TEMPLATE.md to configure."
 
   # Stage 5: Deploy to Staging Environment
   deploy:
