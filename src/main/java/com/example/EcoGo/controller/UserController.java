@@ -62,10 +62,16 @@ public class UserController {
         return ResponseMessage.success(null);
     }
 
-    @PutMapping("/api/v1/mobile/users/profile")
+    @GetMapping("/api/v1/mobile/users/profile/{userId}")
+    public ResponseMessage<UserProfileDto.UserDetailResponse> getUserProfileMobile(@PathVariable String userId) {
+        return ResponseMessage.success(userService.getUserDetail(userId));
+    }
+
+    @PutMapping("/api/v1/mobile/users/profile/{userId}")
     public ResponseMessage<UserProfileDto.UpdateProfileResponse> updateProfileMobile(
+            @PathVariable String userId,
             @RequestBody UserProfileDto.UpdateProfileRequest request) {
-        return ResponseMessage.success(userService.updateProfile(request));
+        return ResponseMessage.success(userService.updateProfile(userId, request));
     }
 
     @PutMapping("/api/v1/mobile/users/preferences/reset")
@@ -116,7 +122,7 @@ public class UserController {
     @PutMapping("/api/v1/web/users/profile/{userId}")
     public ResponseMessage<UserProfileDto.UpdateProfileResponse> updateUserProfile(@PathVariable String userId,
             @RequestBody UserProfileDto.UpdateProfileRequest request) {
-        request.user_id = userId; // Ensure ID matches path
+        // userId from path is used directly in service
         return ResponseMessage.success(userService.updateProfileAdmin(userId, request));
     }
 

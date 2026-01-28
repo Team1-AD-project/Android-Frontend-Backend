@@ -7,7 +7,7 @@ import java.util.List;
 public class UserProfileDto {
 
     public static class UpdateProfileRequest {
-        public String user_id;
+
         public String nickname;
         public String avatar;
         public String phone;

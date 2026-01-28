@@ -197,33 +197,31 @@ public class UserServiceImpl implements UserInterface {
     // --- Mobile Profile ---
 
     @Override
-    public UserProfileDto.UpdateProfileResponse updateProfile(UserProfileDto.UpdateProfileRequest request) {
-        User user = userRepository.findById(request.user_id)
+    public UserProfileDto.UpdateProfileResponse updateProfile(String userId,
+            UserProfileDto.UpdateProfileRequest request) {
+        User user = userRepository.findByUserid(userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        if (request.nickname != null)
-            user.setNickname(request.nickname);
-        if (request.avatar != null)
-            user.setAvatar(request.avatar);
-        if (request.preferences != null)
-            user.setPreferences(request.preferences);
-
-        user.setUpdatedAt(LocalDateTime.now());
-        userRepository.save(user);
-
-        return new UserProfileDto.UpdateProfileResponse(user.getId(), user.getUpdatedAt());
+        return performUpdate(user, request);
     }
 
     @Override
     public UserProfileDto.PreferencesResetResponse resetPreferences(String userId) {
-        User user = userRepository.findById(userId)
+        // Mobile uses UserID (Business ID)
+        User user = userRepository.findByUserid(userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         // Reset to default logic here
         User.Preferences defaultPref = new User.Preferences();
         defaultPref.setLanguage("zh");
         defaultPref.setTheme("light");
-        // ... set other defaults
+        defaultPref.setPreferredTransport("bus");
+        defaultPref.setEnablePush(true);
+        defaultPref.setEnableEmail(true);
+        defaultPref.setEnableBusReminder(true);
+        defaultPref.setShareLocation(true);
+        defaultPref.setShowOnLeaderboard(true);
+        defaultPref.setShareAchievements(true);
 
         user.setPreferences(defaultPref);
         user.setUpdatedAt(LocalDateTime.now());
@@ -308,14 +306,39 @@ public class UserServiceImpl implements UserInterface {
 
     @Override
     public UserProfileDto.UserDetailResponse getUserDetail(String userId) {
-        User user = userRepository.findById(userId)
+        // For Mobile, userId is Business ID. For Admin, it might be UUID.
+        // But since this method is shared or mostly used by Admin...
+        // Wait, the plan says "Add GET /api/v1/mobile/users/profile/{userid}".
+        // So we should try finding by UserID first, if not found then ID?
+        // Or create explicit method?
+        // Let's assume this method is reused.
+        // Try finding by internal ID first (Admin usage)
+        return userRepository.findById(userId)
+                .map(UserProfileDto.UserDetailResponse::new)
+                .or(() -> userRepository.findByUserid(userId).map(UserProfileDto.UserDetailResponse::new))
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-        return new UserProfileDto.UserDetailResponse(user);
     }
 
     @Override
     public UserProfileDto.UpdateProfileResponse updateProfileAdmin(String userId,
             UserProfileDto.UpdateProfileRequest request) {
-        return updateProfile(request); // Reuse logic
+        // Admin uses UUID
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        return performUpdate(user, request);
+    }
+
+    private UserProfileDto.UpdateProfileResponse performUpdate(User user, UserProfileDto.UpdateProfileRequest request) {
+        if (request.nickname != null)
+            user.setNickname(request.nickname);
+        if (request.avatar != null)
+            user.setAvatar(request.avatar);
+        if (request.preferences != null)
+            user.setPreferences(request.preferences);
+
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+
+        return new UserProfileDto.UpdateProfileResponse(user.getId(), user.getUpdatedAt());
     }
 }

@@ -17,7 +17,7 @@ public interface UserInterface {
     void logoutMobile(String token, String userId);
 
     // Mobile - Profile
-    UserProfileDto.UpdateProfileResponse updateProfile(UserProfileDto.UpdateProfileRequest request);
+    UserProfileDto.UpdateProfileResponse updateProfile(String userId, UserProfileDto.UpdateProfileRequest request);
 
     UserProfileDto.PreferencesResetResponse resetPreferences(String userId);
 
