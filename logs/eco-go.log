@@ -4619,3 +4619,334 @@ Caused by: java.lang.ClassNotFoundException: io.jsonwebtoken.JwtException
 	at java.base/java.lang.ClassLoader.loadClass(Unknown Source) ~[na:na]
 	... 76 common frames omitted
 
+2026-01-28T01:31:50.539+08:00  INFO 64284 --- [main] com.example.EcoGo.EcoGoApplication       : Starting EcoGoApplication using Java 21.0.9 with PID 64284 (C:\Users\25293\Desktop\CA_project\AD_Test\EcoGo\target\classes started by 25293 in C:\Users\25293\Desktop\CA_project\AD_Test\EcoGo)
+2026-01-28T01:31:50.541+08:00 DEBUG 64284 --- [main] com.example.EcoGo.EcoGoApplication       : Running with Spring Boot v3.5.9, Spring v6.2.15
+2026-01-28T01:31:50.542+08:00  INFO 64284 --- [main] com.example.EcoGo.EcoGoApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-01-28T01:31:53.931+08:00  INFO 57660 --- [main] com.example.EcoGo.EcoGoApplication       : Starting EcoGoApplication using Java 21.0.9 with PID 57660 (C:\Users\25293\Desktop\CA_project\AD_Test\EcoGo\target\classes started by 25293 in C:\Users\25293\Desktop\CA_project\AD_Test\EcoGo)
+2026-01-28T01:31:53.933+08:00 DEBUG 57660 --- [main] com.example.EcoGo.EcoGoApplication       : Running with Spring Boot v3.5.9, Spring v6.2.15
+2026-01-28T01:31:53.935+08:00  INFO 57660 --- [main] com.example.EcoGo.EcoGoApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-01-28T01:31:55.011+08:00  INFO 57660 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2026-01-28T01:31:55.119+08:00  INFO 57660 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 98 ms. Found 9 MongoDB repository interfaces.
+2026-01-28T01:31:55.868+08:00  INFO 57660 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8090 (http)
+2026-01-28T01:31:55.887+08:00  INFO 57660 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-28T01:31:55.887+08:00  INFO 57660 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.50]
+2026-01-28T01:31:55.961+08:00  INFO 57660 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-01-28T01:31:55.962+08:00  INFO 57660 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1966 ms
+2026-01-28T01:31:56.047+08:00 DEBUG 57660 --- [main] c.e.E.config.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-01-28T01:31:56.427+08:00  INFO 57660 --- [main] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "5.5.2"}, "os": {"type": "Windows", "name": "Windows 11", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Eclipse Adoptium/21.0.9+10-LTS"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, transportSettings=null, commandListeners=[], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, CollectionCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.client.model.mql.ExpressionCodecProvider@1283ca23, com.mongodb.Jep395RecordCodecProvider@740fefc6, com.mongodb.KotlinCodecProvider@aa61e4e]}, loggerSettings=LoggerSettings{maxDocumentLength=1000}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='15 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverMonitoringMode=AUTO, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, dnsClient=null, inetAddressResolver=null, contextProvider=null, timeoutMS=null}
+2026-01-28T01:31:56.472+08:00  INFO 57660 --- [cluster-ClusterId{value='6978f68ca726e511576bdcbf', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, cryptd=false, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=27, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=36419600, minRoundTripTimeNanos=0}
+2026-01-28T01:31:57.792+08:00  INFO 57660 --- [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2026-01-28T01:31:57.922+08:00 DEBUG 57660 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 67 mappings in 'requestMappingHandlerMapping'
+2026-01-28T01:31:57.927+08:00 DEBUG 57660 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/] in 'viewControllerHandlerMapping'
+2026-01-28T01:31:58.057+08:00 DEBUG 57660 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2026-01-28T01:31:58.084+08:00  WARN 57660 --- [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 32407011-da2d-439d-ae97-102f73a57758
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-01-28T01:31:58.101+08:00  INFO 57660 --- [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-01-28T01:31:58.321+08:00 DEBUG 57660 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-01-28T01:31:58.378+08:00 DEBUG 57660 --- [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-01-28T01:31:58.477+08:00  INFO 57660 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8090 (http) with context path '/'
+2026-01-28T01:31:58.485+08:00  INFO 57660 --- [main] com.example.EcoGo.EcoGoApplication       : Started EcoGoApplication in 5.195 seconds (process running for 5.59)
+2026-01-28T01:32:11.129+08:00  INFO 57660 --- [http-nio-8090-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-28T01:32:11.129+08:00  INFO 57660 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-01-28T01:32:11.130+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2026-01-28T01:32:11.131+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2026-01-28T01:32:11.131+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2026-01-28T01:32:11.132+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@3ab7602
+2026-01-28T01:32:11.132+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@1e89bc72
+2026-01-28T01:32:11.132+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2026-01-28T01:32:11.137+08:00  INFO 57660 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-01-28T01:32:11.223+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/", parameters={}
+2026-01-28T01:32:11.242+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ParameterizableViewController [view="forward:/index.html"]
+2026-01-28T01:32:11.291+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.w.s.v.ContentNegotiatingViewResolver : Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2026-01-28T01:32:11.295+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.w.servlet.view.InternalResourceView  : View name [forward:], model {}
+2026-01-28T01:32:11.305+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.w.servlet.view.InternalResourceView  : Forwarding to [/index.html]
+2026-01-28T01:32:11.332+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : "FORWARD" dispatch for GET "/index.html", parameters={}
+2026-01-28T01:32:11.337+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:11.388+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Exiting from "FORWARD" dispatch, status 200
+2026-01-28T01:32:11.399+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:11.458+08:00 DEBUG 57660 --- [http-nio-8090-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/assets/styles/main.css", parameters={}
+2026-01-28T01:32:11.470+08:00 DEBUG 57660 --- [http-nio-8090-exec-3] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:11.485+08:00 DEBUG 57660 --- [http-nio-8090-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:11.524+08:00 DEBUG 57660 --- [http-nio-8090-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/js/app.js", parameters={}
+2026-01-28T01:32:11.527+08:00 DEBUG 57660 --- [http-nio-8090-exec-7] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:11.543+08:00 DEBUG 57660 --- [http-nio-8090-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:11.548+08:00 DEBUG 57660 --- [http-nio-8090-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/js/views/LoginPage.js", parameters={}
+2026-01-28T01:32:11.548+08:00 DEBUG 57660 --- [http-nio-8090-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/js/views/DashboardPage.js", parameters={}
+2026-01-28T01:32:11.548+08:00 DEBUG 57660 --- [http-nio-8090-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/js/views/LeaderboardPage.js", parameters={}
+2026-01-28T01:32:11.548+08:00 DEBUG 57660 --- [http-nio-8090-exec-4] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:11.548+08:00 DEBUG 57660 --- [http-nio-8090-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/js/views/UserListPage.js", parameters={}
+2026-01-28T01:32:11.548+08:00 DEBUG 57660 --- [http-nio-8090-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/js/views/ActivityListPage.js", parameters={}
+2026-01-28T01:32:11.548+08:00 DEBUG 57660 --- [http-nio-8090-exec-5] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:11.567+08:00 DEBUG 57660 --- [http-nio-8090-exec-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:11.548+08:00 DEBUG 57660 --- [http-nio-8090-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/js/views/CarbonCreditsPage.js", parameters={}
+2026-01-28T01:32:11.548+08:00 DEBUG 57660 --- [http-nio-8090-exec-8] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:11.569+08:00 DEBUG 57660 --- [http-nio-8090-exec-6] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:11.572+08:00 DEBUG 57660 --- [http-nio-8090-exec-9] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:11.573+08:00 DEBUG 57660 --- [http-nio-8090-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:11.574+08:00 DEBUG 57660 --- [http-nio-8090-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:11.578+08:00 DEBUG 57660 --- [http-nio-8090-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:11.582+08:00 DEBUG 57660 --- [http-nio-8090-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:11.582+08:00 DEBUG 57660 --- [http-nio-8090-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/js/views/AdvertisementListPage.js", parameters={}
+2026-01-28T01:32:11.582+08:00 DEBUG 57660 --- [http-nio-8090-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:11.586+08:00 DEBUG 57660 --- [http-nio-8090-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:11.586+08:00 DEBUG 57660 --- [http-nio-8090-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/js/views/AdvertisementFormPage.js", parameters={}
+2026-01-28T01:32:11.590+08:00 DEBUG 57660 --- [http-nio-8090-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/js/components/Layout.js", parameters={}
+2026-01-28T01:32:11.594+08:00 DEBUG 57660 --- [http-nio-8090-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/js/views/SettingsPage.js", parameters={}
+2026-01-28T01:32:11.594+08:00 DEBUG 57660 --- [http-nio-8090-exec-4] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:11.615+08:00 DEBUG 57660 --- [http-nio-8090-exec-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:11.607+08:00 DEBUG 57660 --- [http-nio-8090-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/js/services/userService.js", parameters={}
+2026-01-28T01:32:11.608+08:00 DEBUG 57660 --- [http-nio-8090-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/js/services/advertisementService.js", parameters={}
+2026-01-28T01:32:11.611+08:00 DEBUG 57660 --- [http-nio-8090-exec-5] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:11.613+08:00 DEBUG 57660 --- [http-nio-8090-exec-8] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:11.615+08:00 DEBUG 57660 --- [http-nio-8090-exec-6] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:11.615+08:00 DEBUG 57660 --- [http-nio-8090-exec-9] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:11.615+08:00 DEBUG 57660 --- [http-nio-8090-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:11.624+08:00 DEBUG 57660 --- [http-nio-8090-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:11.634+08:00 DEBUG 57660 --- [http-nio-8090-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:11.634+08:00 DEBUG 57660 --- [http-nio-8090-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:11.635+08:00 DEBUG 57660 --- [http-nio-8090-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:11.635+08:00 DEBUG 57660 --- [http-nio-8090-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:11.636+08:00 DEBUG 57660 --- [http-nio-8090-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/js/services/activityService.js", parameters={}
+2026-01-28T01:32:11.636+08:00 DEBUG 57660 --- [http-nio-8090-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/js/services/leaderboardService.js", parameters={}
+2026-01-28T01:32:11.640+08:00 DEBUG 57660 --- [http-nio-8090-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/js/services/statisticsService.js", parameters={}
+2026-01-28T01:32:11.644+08:00 DEBUG 57660 --- [http-nio-8090-exec-10] o.s.web.servlet.DispatcherServlet        : GET "/js/services/httpService.js", parameters={}
+2026-01-28T01:32:11.644+08:00 DEBUG 57660 --- [http-nio-8090-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/js/config/api.js", parameters={}
+2026-01-28T01:32:11.644+08:00 DEBUG 57660 --- [http-nio-8090-exec-4] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:11.644+08:00 DEBUG 57660 --- [http-nio-8090-exec-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:11.649+08:00 DEBUG 57660 --- [http-nio-8090-exec-10] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:11.644+08:00 DEBUG 57660 --- [http-nio-8090-exec-5] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:11.649+08:00 DEBUG 57660 --- [http-nio-8090-exec-8] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:11.656+08:00 DEBUG 57660 --- [http-nio-8090-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:11.657+08:00 DEBUG 57660 --- [http-nio-8090-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:11.658+08:00 DEBUG 57660 --- [http-nio-8090-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:11.658+08:00 DEBUG 57660 --- [http-nio-8090-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:11.658+08:00 DEBUG 57660 --- [http-nio-8090-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:12.513+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/statistics/dashboard", parameters={}
+2026-01-28T01:32:12.514+08:00 DEBUG 57660 --- [http-nio-8090-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/statistics/emission-heatmap", parameters={}
+2026-01-28T01:32:12.514+08:00 DEBUG 57660 --- [http-nio-8090-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/statistics/carbon-reduction", parameters={}
+2026-01-28T01:32:12.517+08:00 DEBUG 57660 --- [http-nio-8090-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.EcoGo.controller.StatisticsController#getEmissionHeatmap()
+2026-01-28T01:32:12.514+08:00 DEBUG 57660 --- [http-nio-8090-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/statistics/redemption-volume", parameters={}
+2026-01-28T01:32:12.516+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.EcoGo.controller.StatisticsController#getDashboardStats()
+2026-01-28T01:32:12.517+08:00 DEBUG 57660 --- [http-nio-8090-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.EcoGo.controller.StatisticsController#getTotalCarbonReduction()
+2026-01-28T01:32:12.518+08:00 DEBUG 57660 --- [http-nio-8090-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.EcoGo.controller.StatisticsController#getRedemptionVolume()
+2026-01-28T01:32:12.522+08:00 DEBUG 57660 --- [http-nio-8090-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/statistics/active-users?days=30", parameters={masked}
+2026-01-28T01:32:12.524+08:00 DEBUG 57660 --- [http-nio-8090-exec-9] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.EcoGo.controller.StatisticsController#getActiveUserCount(int)
+2026-01-28T01:32:12.529+08:00 DEBUG 57660 --- [http-nio-8090-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/favicon.ico", parameters={}
+2026-01-28T01:32:12.531+08:00 DEBUG 57660 --- [http-nio-8090-exec-4] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:12.554+08:00 DEBUG 57660 --- [http-nio-8090-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:12.566+08:00  INFO 57660 --- [http-nio-8090-exec-3] c.e.E.controller.StatisticsController    : 获取总碳减排量
+2026-01-28T01:32:12.595+08:00  INFO 57660 --- [http-nio-8090-exec-1] c.e.E.controller.StatisticsController    : 获取仪表盘统计数据
+2026-01-28T01:32:12.595+08:00  INFO 57660 --- [http-nio-8090-exec-6] c.e.E.controller.StatisticsController    : 获取碳排热力图数据
+2026-01-28T01:32:12.596+08:00  INFO 57660 --- [http-nio-8090-exec-7] c.e.E.controller.StatisticsController    : 获取奖励兑换量
+2026-01-28T01:32:12.669+08:00 DEBUG 57660 --- [http-nio-8090-exec-3] o.s.d.m.r.query.MongoQueryCreator        : Created query Query: { "type" : "EARN"}, Fields: {}, Sort: {}
+2026-01-28T01:32:12.669+08:00 DEBUG 57660 --- [http-nio-8090-exec-7] o.s.d.m.r.query.MongoQueryCreator        : Created query Query: { "source" : "EXCHANGE", "type" : "SPEND"}, Fields: {}, Sort: {}
+2026-01-28T01:32:12.669+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.data.mongodb.core.MongoTemplate      : Executing count: {} in collection: advertisements
+2026-01-28T01:32:12.653+08:00  INFO 57660 --- [http-nio-8090-exec-9] c.e.E.controller.StatisticsController    : 获取活跃用户数，时间范围：30天
+2026-01-28T01:32:12.761+08:00 DEBUG 57660 --- [http-nio-8090-exec-3] o.s.data.mongodb.core.MongoTemplate      : find using query: { "type" : "EARN"} fields: Document{{}} sort: null for class: class com.example.EcoGo.model.CarbonRecord in collection: transactions
+2026-01-28T01:32:12.761+08:00 DEBUG 57660 --- [http-nio-8090-exec-7] o.s.data.mongodb.core.MongoTemplate      : find using query: { "source" : "EXCHANGE", "type" : "SPEND"} fields: Document{{}} sort: null for class: class com.example.EcoGo.model.CarbonRecord in collection: transactions
+2026-01-28T01:32:13.062+08:00 DEBUG 57660 --- [http-nio-8090-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-01-28T01:32:13.062+08:00 DEBUG 57660 --- [http-nio-8090-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-01-28T01:32:13.076+08:00 DEBUG 57660 --- [http-nio-8090-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Writing [com.example.EcoGo.dto.ResponseMessage@6ee36c54]
+2026-01-28T01:32:13.077+08:00 DEBUG 57660 --- [http-nio-8090-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Writing [com.example.EcoGo.dto.ResponseMessage@340dee28]
+2026-01-28T01:32:13.203+08:00 DEBUG 57660 --- [http-nio-8090-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:13.232+08:00 DEBUG 57660 --- [http-nio-8090-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:13.254+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.d.m.r.query.MongoQueryCreator        : Created query Query: { "status" : "Active"}, Fields: {}, Sort: {}
+2026-01-28T01:32:13.266+08:00 DEBUG 57660 --- [http-nio-8090-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-01-28T01:32:13.266+08:00 DEBUG 57660 --- [http-nio-8090-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-01-28T01:32:13.270+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.data.mongodb.core.MongoTemplate      : find using query: { "status" : "Active"} fields: Document{{}} sort: null for class: class com.example.EcoGo.model.Advertisement in collection: advertisements
+2026-01-28T01:32:13.270+08:00 DEBUG 57660 --- [http-nio-8090-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Writing [com.example.EcoGo.dto.ResponseMessage@3829a778]
+2026-01-28T01:32:13.270+08:00 DEBUG 57660 --- [http-nio-8090-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Writing [com.example.EcoGo.dto.ResponseMessage@249ea3f9]
+2026-01-28T01:32:13.279+08:00 DEBUG 57660 --- [http-nio-8090-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:13.279+08:00 DEBUG 57660 --- [http-nio-8090-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:13.290+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.data.mongodb.core.MongoTemplate      : Executing count: {} in collection: activities
+2026-01-28T01:32:13.308+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.d.m.r.query.MongoQueryCreator        : Created query Query: { "status" : "ONGOING"}, Fields: {}, Sort: {}
+2026-01-28T01:32:13.313+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.data.mongodb.core.MongoTemplate      : find using query: { "status" : "ONGOING"} fields: Document{{}} sort: null for class: class com.example.EcoGo.model.Activity in collection: activities
+2026-01-28T01:32:13.329+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.d.m.r.query.MongoQueryCreator        : Created query Query: { "status" : "PUBLISHED"}, Fields: {}, Sort: {}
+2026-01-28T01:32:13.333+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.data.mongodb.core.MongoTemplate      : find using query: { "status" : "PUBLISHED"} fields: Document{{}} sort: null for class: class com.example.EcoGo.model.Activity in collection: activities
+2026-01-28T01:32:13.354+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.d.m.r.query.MongoQueryCreator        : Created query Query: { "type" : "EARN"}, Fields: {}, Sort: {}
+2026-01-28T01:32:13.359+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.data.mongodb.core.MongoTemplate      : find using query: { "type" : "EARN"} fields: Document{{}} sort: null for class: class com.example.EcoGo.model.CarbonRecord in collection: transactions
+2026-01-28T01:32:13.374+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.d.m.r.query.MongoQueryCreator        : Created query Query: { "source" : "EXCHANGE", "type" : "SPEND"}, Fields: {}, Sort: {}
+2026-01-28T01:32:13.374+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.data.mongodb.core.MongoTemplate      : find using query: { "source" : "EXCHANGE", "type" : "SPEND"} fields: Document{{}} sort: null for class: class com.example.EcoGo.model.CarbonRecord in collection: transactions
+2026-01-28T01:32:13.400+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-01-28T01:32:13.400+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Writing [com.example.EcoGo.dto.ResponseMessage@1d70f78c]
+2026-01-28T01:32:13.407+08:00 DEBUG 57660 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:15.544+08:00 DEBUG 57660 --- [http-nio-8090-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/favicon.ico", parameters={}
+2026-01-28T01:32:15.547+08:00 DEBUG 57660 --- [http-nio-8090-exec-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:15.548+08:00 DEBUG 57660 --- [http-nio-8090-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:16.273+08:00 DEBUG 57660 --- [http-nio-8090-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/activities", parameters={}
+2026-01-28T01:32:16.273+08:00 DEBUG 57660 --- [http-nio-8090-exec-10] o.s.web.servlet.DispatcherServlet        : GET "/favicon.ico", parameters={}
+2026-01-28T01:32:16.273+08:00 DEBUG 57660 --- [http-nio-8090-exec-5] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.EcoGo.controller.ActivityController#getAllActivities()
+2026-01-28T01:32:16.278+08:00 DEBUG 57660 --- [http-nio-8090-exec-10] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:16.280+08:00  INFO 57660 --- [http-nio-8090-exec-5] c.e.EcoGo.controller.ActivityController  : 获取所有活动列表
+2026-01-28T01:32:16.281+08:00 DEBUG 57660 --- [http-nio-8090-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:16.281+08:00 DEBUG 57660 --- [http-nio-8090-exec-5] o.s.data.mongodb.core.MongoTemplate      : find using query: {} fields: Document{{}} sort: null for class: class com.example.EcoGo.model.Activity in collection: activities
+2026-01-28T01:32:16.295+08:00 DEBUG 57660 --- [http-nio-8090-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-01-28T01:32:16.299+08:00 DEBUG 57660 --- [http-nio-8090-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Writing [com.example.EcoGo.dto.ResponseMessage@17e235de]
+2026-01-28T01:32:16.303+08:00 DEBUG 57660 --- [http-nio-8090-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:17.742+08:00 DEBUG 57660 --- [http-nio-8090-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/leaderboards/periods", parameters={}
+2026-01-28T01:32:17.742+08:00 DEBUG 57660 --- [http-nio-8090-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/favicon.ico", parameters={}
+2026-01-28T01:32:17.744+08:00 DEBUG 57660 --- [http-nio-8090-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.EcoGo.controller.LeaderboardController#getAvailablePeriods()
+2026-01-28T01:32:17.745+08:00 DEBUG 57660 --- [http-nio-8090-exec-4] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:17.746+08:00  INFO 57660 --- [http-nio-8090-exec-8] c.e.E.controller.LeaderboardController   : Fetching all available leaderboard periods
+2026-01-28T01:32:17.751+08:00 DEBUG 57660 --- [http-nio-8090-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:17.757+08:00 DEBUG 57660 --- [http-nio-8090-exec-8] o.s.data.mongodb.core.MongoTemplate      : Executing findDistinct using query {} for field: period in collection: leaderboard
+2026-01-28T01:32:17.813+08:00 DEBUG 57660 --- [http-nio-8090-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-01-28T01:32:17.813+08:00 DEBUG 57660 --- [http-nio-8090-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Writing [com.example.EcoGo.dto.ResponseMessage@14fc073f]
+2026-01-28T01:32:17.815+08:00 DEBUG 57660 --- [http-nio-8090-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:18.504+08:00 DEBUG 57660 --- [http-nio-8090-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/activities", parameters={}
+2026-01-28T01:32:18.504+08:00 DEBUG 57660 --- [http-nio-8090-exec-9] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.EcoGo.controller.ActivityController#getAllActivities()
+2026-01-28T01:32:18.506+08:00  INFO 57660 --- [http-nio-8090-exec-9] c.e.EcoGo.controller.ActivityController  : 获取所有活动列表
+2026-01-28T01:32:18.507+08:00 DEBUG 57660 --- [http-nio-8090-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/favicon.ico", parameters={}
+2026-01-28T01:32:18.508+08:00 DEBUG 57660 --- [http-nio-8090-exec-9] o.s.data.mongodb.core.MongoTemplate      : find using query: {} fields: Document{{}} sort: null for class: class com.example.EcoGo.model.Activity in collection: activities
+2026-01-28T01:32:18.509+08:00 DEBUG 57660 --- [http-nio-8090-exec-6] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:18.511+08:00 DEBUG 57660 --- [http-nio-8090-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:18.535+08:00 DEBUG 57660 --- [http-nio-8090-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-01-28T01:32:18.539+08:00 DEBUG 57660 --- [http-nio-8090-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Writing [com.example.EcoGo.dto.ResponseMessage@62b6f38e]
+2026-01-28T01:32:18.541+08:00 DEBUG 57660 --- [http-nio-8090-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:18.933+08:00 DEBUG 57660 --- [http-nio-8090-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/advertisements", parameters={}
+2026-01-28T01:32:18.936+08:00 DEBUG 57660 --- [http-nio-8090-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.EcoGo.controller.AdvertisementController#getAllAdvertisements()
+2026-01-28T01:32:18.936+08:00  INFO 57660 --- [http-nio-8090-exec-7] c.e.E.c.AdvertisementController          : 获取所有广告列表
+2026-01-28T01:32:18.940+08:00 DEBUG 57660 --- [http-nio-8090-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/favicon.ico", parameters={}
+2026-01-28T01:32:18.940+08:00 DEBUG 57660 --- [http-nio-8090-exec-7] o.s.data.mongodb.core.MongoTemplate      : find using query: {} fields: Document{{}} sort: null for class: class com.example.EcoGo.model.Advertisement in collection: advertisements
+2026-01-28T01:32:18.942+08:00 DEBUG 57660 --- [http-nio-8090-exec-3] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:18.948+08:00 DEBUG 57660 --- [http-nio-8090-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:18.970+08:00 DEBUG 57660 --- [http-nio-8090-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-01-28T01:32:18.971+08:00 DEBUG 57660 --- [http-nio-8090-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Writing [com.example.EcoGo.dto.ResponseMessage@64370e4d]
+2026-01-28T01:32:18.973+08:00 DEBUG 57660 --- [http-nio-8090-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:19.863+08:00 DEBUG 57660 --- [http-nio-8090-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/activities", parameters={}
+2026-01-28T01:32:19.865+08:00 DEBUG 57660 --- [http-nio-8090-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.EcoGo.controller.ActivityController#getAllActivities()
+2026-01-28T01:32:19.867+08:00  INFO 57660 --- [http-nio-8090-exec-6] c.e.EcoGo.controller.ActivityController  : 获取所有活动列表
+2026-01-28T01:32:19.869+08:00 DEBUG 57660 --- [http-nio-8090-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/favicon.ico", parameters={}
+2026-01-28T01:32:19.869+08:00 DEBUG 57660 --- [http-nio-8090-exec-6] o.s.data.mongodb.core.MongoTemplate      : find using query: {} fields: Document{{}} sort: null for class: class com.example.EcoGo.model.Activity in collection: activities
+2026-01-28T01:32:19.871+08:00 DEBUG 57660 --- [http-nio-8090-exec-9] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:19.882+08:00 DEBUG 57660 --- [http-nio-8090-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-01-28T01:32:19.879+08:00 DEBUG 57660 --- [http-nio-8090-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:19.882+08:00 DEBUG 57660 --- [http-nio-8090-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Writing [com.example.EcoGo.dto.ResponseMessage@5aca7ec7]
+2026-01-28T01:32:19.886+08:00 DEBUG 57660 --- [http-nio-8090-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:20.529+08:00 DEBUG 57660 --- [http-nio-8090-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/leaderboards/periods", parameters={}
+2026-01-28T01:32:20.531+08:00 DEBUG 57660 --- [http-nio-8090-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.EcoGo.controller.LeaderboardController#getAvailablePeriods()
+2026-01-28T01:32:20.532+08:00  INFO 57660 --- [http-nio-8090-exec-3] c.e.E.controller.LeaderboardController   : Fetching all available leaderboard periods
+2026-01-28T01:32:20.534+08:00 DEBUG 57660 --- [http-nio-8090-exec-3] o.s.data.mongodb.core.MongoTemplate      : Executing findDistinct using query {} for field: period in collection: leaderboard
+2026-01-28T01:32:20.536+08:00 DEBUG 57660 --- [http-nio-8090-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/favicon.ico", parameters={}
+2026-01-28T01:32:20.540+08:00 DEBUG 57660 --- [http-nio-8090-exec-7] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:32:20.544+08:00 DEBUG 57660 --- [http-nio-8090-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:32:20.556+08:00 DEBUG 57660 --- [http-nio-8090-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-01-28T01:32:20.560+08:00 DEBUG 57660 --- [http-nio-8090-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Writing [com.example.EcoGo.dto.ResponseMessage@4fd70a97]
+2026-01-28T01:32:20.560+08:00 DEBUG 57660 --- [http-nio-8090-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:35:19.023+08:00  INFO 63976 --- [main] com.example.EcoGo.EcoGoApplication       : Starting EcoGoApplication using Java 21.0.9 with PID 63976 (C:\Users\25293\Desktop\CA_project\AD_Test\EcoGo\target\classes started by 25293 in C:\Users\25293\Desktop\CA_project\AD_Test\EcoGo)
+2026-01-28T01:35:19.025+08:00 DEBUG 63976 --- [main] com.example.EcoGo.EcoGoApplication       : Running with Spring Boot v3.5.9, Spring v6.2.15
+2026-01-28T01:35:19.026+08:00  INFO 63976 --- [main] com.example.EcoGo.EcoGoApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-01-28T01:35:20.082+08:00  INFO 63976 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2026-01-28T01:35:20.169+08:00  INFO 63976 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 80 ms. Found 9 MongoDB repository interfaces.
+2026-01-28T01:35:20.839+08:00  INFO 63976 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8090 (http)
+2026-01-28T01:35:20.854+08:00  INFO 63976 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-28T01:35:20.854+08:00  INFO 63976 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.50]
+2026-01-28T01:35:20.913+08:00  INFO 63976 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-01-28T01:35:20.914+08:00  INFO 63976 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1831 ms
+2026-01-28T01:35:20.993+08:00 DEBUG 63976 --- [main] c.e.E.config.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-01-28T01:35:21.267+08:00  INFO 63976 --- [main] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "5.5.2"}, "os": {"type": "Windows", "name": "Windows 11", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Eclipse Adoptium/21.0.9+10-LTS"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, transportSettings=null, commandListeners=[], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, CollectionCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.client.model.mql.ExpressionCodecProvider@2a50b32d, com.mongodb.Jep395RecordCodecProvider@36c7cbe1, com.mongodb.KotlinCodecProvider@1ac6dd3d]}, loggerSettings=LoggerSettings{maxDocumentLength=1000}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='15 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverMonitoringMode=AUTO, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, dnsClient=null, inetAddressResolver=null, contextProvider=null, timeoutMS=null}
+2026-01-28T01:35:21.325+08:00  INFO 63976 --- [cluster-ClusterId{value='6978f759611226f03dfe8738', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, cryptd=false, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=27, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=45502700, minRoundTripTimeNanos=0}
+2026-01-28T01:35:22.247+08:00  INFO 63976 --- [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2026-01-28T01:35:22.363+08:00 DEBUG 63976 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 67 mappings in 'requestMappingHandlerMapping'
+2026-01-28T01:35:22.368+08:00 DEBUG 63976 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/] in 'viewControllerHandlerMapping'
+2026-01-28T01:35:22.473+08:00 DEBUG 63976 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2026-01-28T01:35:22.504+08:00  WARN 63976 --- [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 96f93c15-8078-4d29-ba1c-a5278f778855
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-01-28T01:35:22.524+08:00  INFO 63976 --- [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-01-28T01:35:22.812+08:00 DEBUG 63976 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-01-28T01:35:22.878+08:00 DEBUG 63976 --- [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-01-28T01:35:23.003+08:00  INFO 63976 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8090 (http) with context path '/'
+2026-01-28T01:35:23.012+08:00  INFO 63976 --- [main] com.example.EcoGo.EcoGoApplication       : Started EcoGoApplication in 4.572 seconds (process running for 4.899)
+2026-01-28T01:35:39.988+08:00  INFO 63976 --- [http-nio-8090-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-28T01:35:39.988+08:00  INFO 63976 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-01-28T01:35:39.989+08:00 DEBUG 63976 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2026-01-28T01:35:39.989+08:00 DEBUG 63976 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2026-01-28T01:35:39.989+08:00 DEBUG 63976 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2026-01-28T01:35:39.991+08:00 DEBUG 63976 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@3ab7602
+2026-01-28T01:35:39.991+08:00 DEBUG 63976 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@1e89bc72
+2026-01-28T01:35:39.992+08:00 DEBUG 63976 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2026-01-28T01:35:39.993+08:00  INFO 63976 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms
+2026-01-28T01:35:40.030+08:00 DEBUG 63976 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/", parameters={}
+2026-01-28T01:35:40.034+08:00 DEBUG 63976 --- [http-nio-8090-exec-1] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ParameterizableViewController [view="forward:/index.html"]
+2026-01-28T01:35:40.056+08:00 DEBUG 63976 --- [http-nio-8090-exec-1] o.s.w.s.v.ContentNegotiatingViewResolver : Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2026-01-28T01:35:40.057+08:00 DEBUG 63976 --- [http-nio-8090-exec-1] o.s.w.servlet.view.InternalResourceView  : View name [forward:], model {}
+2026-01-28T01:35:40.061+08:00 DEBUG 63976 --- [http-nio-8090-exec-1] o.s.w.servlet.view.InternalResourceView  : Forwarding to [/index.html]
+2026-01-28T01:35:40.073+08:00 DEBUG 63976 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : "FORWARD" dispatch for GET "/index.html", parameters={}
+2026-01-28T01:35:40.075+08:00 DEBUG 63976 --- [http-nio-8090-exec-1] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:35:40.091+08:00 DEBUG 63976 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Exiting from "FORWARD" dispatch, status 200
+2026-01-28T01:35:40.096+08:00 DEBUG 63976 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:35:40.133+08:00 DEBUG 63976 --- [http-nio-8090-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/assets/styles/main.css", parameters={}
+2026-01-28T01:35:40.134+08:00 DEBUG 63976 --- [http-nio-8090-exec-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:35:40.136+08:00 DEBUG 63976 --- [http-nio-8090-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:35:40.150+08:00 DEBUG 63976 --- [http-nio-8090-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/js/app.js", parameters={}
+2026-01-28T01:35:40.153+08:00 DEBUG 63976 --- [http-nio-8090-exec-3] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:35:40.157+08:00 DEBUG 63976 --- [http-nio-8090-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:35:40.165+08:00 DEBUG 63976 --- [http-nio-8090-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/js/views/DashboardPage.js", parameters={}
+2026-01-28T01:35:40.166+08:00 DEBUG 63976 --- [http-nio-8090-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/js/views/LoginPage.js", parameters={}
+2026-01-28T01:35:40.167+08:00 DEBUG 63976 --- [http-nio-8090-exec-4] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:35:40.167+08:00 DEBUG 63976 --- [http-nio-8090-exec-5] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:35:40.168+08:00 DEBUG 63976 --- [http-nio-8090-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/js/views/LeaderboardPage.js", parameters={}
+2026-01-28T01:35:40.168+08:00 DEBUG 63976 --- [http-nio-8090-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/js/views/CarbonCreditsPage.js", parameters={}
+2026-01-28T01:35:40.168+08:00 DEBUG 63976 --- [http-nio-8090-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/js/views/UserListPage.js", parameters={}
+2026-01-28T01:35:40.168+08:00 DEBUG 63976 --- [http-nio-8090-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/js/views/ActivityListPage.js", parameters={}
+2026-01-28T01:35:40.169+08:00 DEBUG 63976 --- [http-nio-8090-exec-8] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:35:40.169+08:00 DEBUG 63976 --- [http-nio-8090-exec-7] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:35:40.169+08:00 DEBUG 63976 --- [http-nio-8090-exec-9] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:35:40.169+08:00 DEBUG 63976 --- [http-nio-8090-exec-6] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:35:40.170+08:00 DEBUG 63976 --- [http-nio-8090-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:35:40.170+08:00 DEBUG 63976 --- [http-nio-8090-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:35:40.172+08:00 DEBUG 63976 --- [http-nio-8090-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:35:40.172+08:00 DEBUG 63976 --- [http-nio-8090-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:35:40.173+08:00 DEBUG 63976 --- [http-nio-8090-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:35:40.174+08:00 DEBUG 63976 --- [http-nio-8090-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:35:40.175+08:00 DEBUG 63976 --- [http-nio-8090-exec-10] o.s.web.servlet.DispatcherServlet        : GET "/js/views/AdvertisementListPage.js", parameters={}
+2026-01-28T01:35:40.175+08:00 DEBUG 63976 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/js/views/AdvertisementFormPage.js", parameters={}
+2026-01-28T01:35:40.176+08:00 DEBUG 63976 --- [http-nio-8090-exec-10] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:35:40.176+08:00 DEBUG 63976 --- [http-nio-8090-exec-1] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:35:40.177+08:00 DEBUG 63976 --- [http-nio-8090-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/js/views/SettingsPage.js", parameters={}
+2026-01-28T01:35:40.178+08:00 DEBUG 63976 --- [http-nio-8090-exec-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:35:40.180+08:00 DEBUG 63976 --- [http-nio-8090-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:35:40.180+08:00 DEBUG 63976 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:35:40.182+08:00 DEBUG 63976 --- [http-nio-8090-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:35:40.182+08:00 DEBUG 63976 --- [http-nio-8090-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/js/services/advertisementService.js", parameters={}
+2026-01-28T01:35:40.182+08:00 DEBUG 63976 --- [http-nio-8090-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/js/services/userService.js", parameters={}
+2026-01-28T01:35:40.182+08:00 DEBUG 63976 --- [http-nio-8090-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/js/components/Layout.js", parameters={}
+2026-01-28T01:35:40.183+08:00 DEBUG 63976 --- [http-nio-8090-exec-4] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:35:40.183+08:00 DEBUG 63976 --- [http-nio-8090-exec-5] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:35:40.183+08:00 DEBUG 63976 --- [http-nio-8090-exec-3] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:35:40.184+08:00 DEBUG 63976 --- [http-nio-8090-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/js/services/activityService.js", parameters={}
+2026-01-28T01:35:40.185+08:00 DEBUG 63976 --- [http-nio-8090-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/js/services/leaderboardService.js", parameters={}
+2026-01-28T01:35:40.185+08:00 DEBUG 63976 --- [http-nio-8090-exec-7] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:35:40.186+08:00 DEBUG 63976 --- [http-nio-8090-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/js/services/statisticsService.js", parameters={}
+2026-01-28T01:35:40.186+08:00 DEBUG 63976 --- [http-nio-8090-exec-8] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:35:40.187+08:00 DEBUG 63976 --- [http-nio-8090-exec-6] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:35:40.187+08:00 DEBUG 63976 --- [http-nio-8090-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:35:40.187+08:00 DEBUG 63976 --- [http-nio-8090-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:35:40.187+08:00 DEBUG 63976 --- [http-nio-8090-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:35:40.189+08:00 DEBUG 63976 --- [http-nio-8090-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:35:40.190+08:00 DEBUG 63976 --- [http-nio-8090-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:35:40.190+08:00 DEBUG 63976 --- [http-nio-8090-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:35:40.197+08:00 DEBUG 63976 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/js/config/api.js", parameters={}
+2026-01-28T01:35:40.197+08:00 DEBUG 63976 --- [http-nio-8090-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/js/services/httpService.js", parameters={}
+2026-01-28T01:35:40.198+08:00 DEBUG 63976 --- [http-nio-8090-exec-1] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:35:40.198+08:00 DEBUG 63976 --- [http-nio-8090-exec-9] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:35:40.200+08:00 DEBUG 63976 --- [http-nio-8090-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:35:40.200+08:00 DEBUG 63976 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:35:40.899+08:00 DEBUG 63976 --- [http-nio-8090-exec-10] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/advertisements", parameters={}
+2026-01-28T01:35:40.899+08:00 DEBUG 63976 --- [http-nio-8090-exec-10] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.EcoGo.controller.AdvertisementController#getAllAdvertisements()
+2026-01-28T01:35:40.906+08:00 DEBUG 63976 --- [http-nio-8090-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/favicon.ico", parameters={}
+2026-01-28T01:35:40.907+08:00 DEBUG 63976 --- [http-nio-8090-exec-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [static/]]
+2026-01-28T01:35:40.916+08:00 DEBUG 63976 --- [http-nio-8090-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-28T01:35:40.919+08:00  INFO 63976 --- [http-nio-8090-exec-10] c.e.E.c.AdvertisementController          : 获取所有广告列表
+2026-01-28T01:35:40.958+08:00 DEBUG 63976 --- [http-nio-8090-exec-10] o.s.data.mongodb.core.MongoTemplate      : find using query: {} fields: Document{{}} sort: null for class: class com.example.EcoGo.model.Advertisement in collection: advertisements
+2026-01-28T01:35:41.165+08:00 DEBUG 63976 --- [http-nio-8090-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-01-28T01:35:41.168+08:00 DEBUG 63976 --- [http-nio-8090-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Writing [com.example.EcoGo.dto.ResponseMessage@7811376e]
+2026-01-28T01:35:41.185+08:00 DEBUG 63976 --- [http-nio-8090-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
