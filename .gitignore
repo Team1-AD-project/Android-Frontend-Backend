@@ -62,6 +62,13 @@ dependency-check-report.*
 spotbugsXml.xml
 checkstyle-result.xml
 
+# ZAP DAST reports
+zap-reports/
+zap-report.*
+testreport.*
+gen.conf
+app.log
+
 # Environment files
 .env
 .env.local

@@ -61,6 +61,22 @@ Scopes needed: write:packages, read:packages
 
 ## Optional Secrets
 
+### Staging Environment
+```
+Name: STAGING_URL
+Value: https://staging.ecogo.example.com
+Description: Staging environment URL for smoke tests
+Environment: Configure in Settings → Environments → staging
+```
+
+### Production Environment
+```
+Name: PRODUCTION_URL
+Value: https://ecogo.example.com
+Description: Production environment URL for smoke tests
+Environment: Configure in Settings → Environments → production
+```
+
 ### Slack Notifications (if using)
 ```
 Name: SLACK_WEBHOOK_URL

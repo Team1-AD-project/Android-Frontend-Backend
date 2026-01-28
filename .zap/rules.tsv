@@ -1,45 +1,14 @@
-# OWASP ZAP Security Rules Configuration
-# Format: RULE_ID	THRESHOLD	ACTION
-# Thresholds: IGNORE, INFO, WARN, FAIL
-# Actions: IGNORE, ALERT, BLOCK
+# OWASP ZAP 自定义规则
+# 格式: 规则ID	风险级别	URL正则	参数	启用	操作
+#
+# 风险级别: INFO, LOW, MEDIUM, HIGH
+# 操作: IGNORE (忽略), WARN (警告), FAIL (失败)
 
-# SQL Injection
-40018	WARN	ALERT
+# 忽略已知的误报
+10021	IGNORE	http://localhost:8090/actuator/.*	.*	TRUE	Actuator endpoints are internal monitoring tools
+10202	IGNORE	http://localhost:8090/webjars/.*	.*	TRUE	Third-party web resources
+10096	IGNORE	http://localhost:8090/static/.*	.*	TRUE	Static resources are safe
 
-# Cross-Site Scripting (XSS)
-40012	WARN	ALERT
-40014	WARN	ALERT
-40016	WARN	ALERT
-40017	WARN	ALERT
-
-# Path Traversal
-6	WARN	ALERT
-
-# Remote File Inclusion
-7	WARN	ALERT
-
-# Server Side Include
-40009	WARN	ALERT
-
-# CSRF Tokens
-10202	WARN	ALERT
-
-# Information Disclosure
-10096	INFO	ALERT
-
-# Cookie Security
-10054	WARN	ALERT
-10055	WARN	ALERT
-
-# Security Headers
-10020	INFO	ALERT
-10021	INFO	ALERT
-10023	INFO	ALERT
-10035	INFO	ALERT
-10038	INFO	ALERT
-
-# Authentication
-10105	WARN	ALERT
-
-# Session Management
-10112	WARN	ALERT
+# 调整特定规则的风险级别
+# 例如：将某些低风险问题设置为信息级别
+# 10015	INFO	.*	.*	TRUE	Informational finding only
