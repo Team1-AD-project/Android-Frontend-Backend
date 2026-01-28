@@ -18,8 +18,10 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter)
-            throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+            JwtAuthenticationFilter jwtAuthenticationFilter,
+            CustomAccessDeniedHandler accessDeniedHandler,
+            CustomAuthenticationEntryPoint authenticationEntryPoint) throws Exception {
         http
                 // Enable CORS using the custom configuration bean
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -36,6 +38,7 @@ public class SecurityConfig {
                         // Public Endpoints
                         .requestMatchers("/api/v1/mobile/users/login", "/api/v1/mobile/users/register").permitAll()
                         .requestMatchers("/api/v1/web/users/login").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // Swagger
 
                         // Secured Endpoints
                         .requestMatchers("/api/v1/mobile/**").authenticated()
@@ -44,6 +47,11 @@ public class SecurityConfig {
                         // Default
                         .anyRequest().permitAll() // Keep other paths open for development
                 )
+
+                // Exception Handling for 401 and 403
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler(accessDeniedHandler)
+                        .authenticationEntryPoint(authenticationEntryPoint))
 
                 // Add JWT Filter before the standard username/password filter
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

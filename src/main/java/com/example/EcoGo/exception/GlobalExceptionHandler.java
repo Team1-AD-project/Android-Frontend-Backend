@@ -51,4 +51,13 @@ public class GlobalExceptionHandler {
         log.error("System exception", e); // Log detailed error
         return new ResponseMessage<>(ErrorCode.SYSTEM_ERROR.getCode(), ErrorCode.SYSTEM_ERROR.getMessage(), null);
     }
+
+    // Handle Spring Security AccessDeniedException
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+    @ResponseBody
+    public ResponseMessage<?> handlerAccessDeniedException(
+            org.springframework.security.access.AccessDeniedException e) {
+        // This is a fallback if the CustomAccessDeniedHandler doesn't catch it
+        return new ResponseMessage<>(ErrorCode.NO_PERMISSION.getCode(), e.getMessage(), null);
+    }
 }
