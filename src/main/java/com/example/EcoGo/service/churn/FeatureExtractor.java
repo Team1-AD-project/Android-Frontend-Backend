@@ -1,15 +1,5 @@
 package com.example.EcoGo.service.churn;
 
-/**
- * 特征抽取接口
- *
- * 职责：
- * - 从数据源（Mongo / 未来可扩展）中抽取用户特征
- *
- * 注意：
- * - 不做模型推理
- * - 不做风险等级判断
- */
 public interface FeatureExtractor {
 
     /**

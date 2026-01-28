@@ -26,6 +26,7 @@ public class SupportServiceImpl implements SupportService {
         }
 
         double p = modelRunner.predictProbability(fv.toArray());
+
         return thresholds.toLevel(p);
     }
 }

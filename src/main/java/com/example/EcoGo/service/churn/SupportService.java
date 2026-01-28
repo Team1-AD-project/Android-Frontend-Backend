@@ -6,8 +6,7 @@ package com.example.EcoGo.service.churn;
 public interface SupportService {
 
     /**
-     * 获取用户流失风险等级
-     *
+
      * @param userId 用户唯一标识
      * @return 流失风险等级（LOW / MEDIUM / HIGH / INSUFFICIENT_DATA）
      */
