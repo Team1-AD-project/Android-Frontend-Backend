@@ -295,19 +295,9 @@ public class UserServiceImpl implements UserInterface {
     }
 
     @Override
-    public boolean authorizeUser(String token, String permission) {
-        try {
-            var claims = jwtUtils.validateToken(token);
-            return (boolean) claims.get("isAdmin");
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    @Override
     public UserProfileDto.UpdateProfileResponse manageUser(String userId,
             UserProfileDto.AdminManageUserRequest request) {
-        User user = userRepository.findById(userId)
+        User user = userRepository.findByUserid(userId) // Use Business ID
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         user.setAdmin(request.isAdmin);

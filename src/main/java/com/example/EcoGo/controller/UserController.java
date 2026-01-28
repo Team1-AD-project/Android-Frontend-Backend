@@ -108,13 +108,6 @@ public class UserController {
         return ResponseMessage.success(userService.authenticateUser(token));
     }
 
-    @GetMapping("/api/v1/web/users/authorize")
-    public ResponseMessage<Map<String, Boolean>> authorizeWeb(@RequestParam String token,
-            @RequestParam String permission) {
-        boolean authorized = userService.authorizeUser(token, permission);
-        return ResponseMessage.success(Map.of("authorized", authorized));
-    }
-
     @GetMapping("/api/v1/web/users/list")
     public ResponseMessage<java.util.List<UserResponseDto>> listAllUsers() {
         return ResponseMessage.success(userService.getAllUsers());

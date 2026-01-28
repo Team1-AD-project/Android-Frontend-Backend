@@ -30,8 +30,6 @@ public interface UserInterface {
     // Web - Admin
     UserProfileDto.AuthCheckResponse authenticateUser(String token);
 
-    boolean authorizeUser(String token, String permission);
-
     UserProfileDto.UpdateProfileResponse manageUser(String userId, UserProfileDto.AdminManageUserRequest request);
 
     UserProfileDto.UserDetailResponse getUserDetail(String token, String userId);
