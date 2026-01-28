@@ -23,10 +23,10 @@ public enum ErrorCode {
     ORDER_NOT_FOUND(4201, "订单不存在"),
     ORDER_STATUS_ERROR(4202, "订单状态错误，当前状态：%s"),
 
-    //Product module error (43xx)
+    // Product module error (43xx)
     PRODUCT_NOT_EXIST(4301, "The product does not exist,productId:%s"),
     PRODUCT_LIST_EMPTY(4302, "There are currently no products available"),
-    PARAM_CANNOT_BE_NULL (4303, "Request parameter cannot be empty:%s"),
+    PARAM_CANNOT_BE_NULL(4303, "Request parameter cannot be empty:%s"),
     PRODUCT_NAME_DUPLICATE(4304, "Product name already exists:%s"),
 
     // Activity module error (44xx)
