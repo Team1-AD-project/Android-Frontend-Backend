@@ -9,16 +9,14 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
+import java.util.Arrays;
 
 @Component
 public class MongoFeatureExtractor implements FeatureExtractor {
 
+    private static final String USERS_COL = "users";
+
     private final MongoTemplate mongoTemplate;
-
-
-    private final List<String> candidateCollections = List.of("users", "user", "Users", "User");
 
     public MongoFeatureExtractor(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
@@ -26,108 +24,93 @@ public class MongoFeatureExtractor implements FeatureExtractor {
 
     @Override
     public ChurnFeatureVector extract(String userId) {
-        Document doc = findUserDoc(userId);
-        if (doc == null) {
-            return new ChurnFeatureVector(new float[]{0, 0, 0, 0, 0, 0, 0});
+        System.out.println(">>> MongoFeatureExtractor CALLED, userId=" + userId);
+
+        Document user = findUserDoc(userId);
+        if (user == null) {
+            System.out.println(">>> user NOT FOUND for userId=" + userId);
+            return new ChurnFeatureVector(new float[0]);
         }
 
+        Document stats = getDoc(user, "stats");
+        Document vip = getDoc(user, "vip");
 
-        float f0 = getFloat(doc, "stats.totalTrips");
-        float f1 = getFloat(doc, "stats.activeDays");
-        float f2 = getFloat(doc, "stats.completedTasks");
-        float f3 = getFloat(doc, "totalCarbon");
-        float f4 = getFloat(doc, "totalPoints");
-        float f5 = getFloat(doc, "currentPoints");
-        float f6 = getVipSignal(doc);
+        // stats 兼容：totalTrips / total_trips、activeDays / active_days、completedTasks / completed_tasks
+        float totalTrips = num(stats, "totalTrips", "total_trips");
+        float activeDays = num(stats, "activeDays", "active_days");
+        float completedTasks = num(stats, "completedTasks", "completed_tasks");
 
-        return new ChurnFeatureVector(new float[]{f0, f1, f2, f3, f4, f5, f6});
-    }
+        // user 顶层：totalCarbon / total_carbon, totalPoints / total_points, currentPoints / current_points
+        float totalCarbon = num(user, "totalCarbon", "total_carbon");
+        float totalPoints = num(user, "totalPoints", "total_points");
+        float currentPoints = num(user, "currentPoints", "current_points");
 
-    private float getVipSignal(Document doc) {
-        // 兼容两套 vip 结构：
-        // 1) vip.isActive: boolean
-        // 2) vip.level: int
-        Float isActive = tryParseFloat(getByPath(doc, "vip.isActive"));
-        if (isActive != null) {
-            return (isActive != 0.0f) ? 1.0f : 0.0f;
+        // vip 兼容：level / isActive / is_active
+        float vipValue = 0f;
+        if (vip != null) {
+            vipValue = num(vip, "level"); // 优先 level
+            if (vipValue == 0f) {
+                boolean isActive = bool(vip, "isActive", "is_active");
+                vipValue = isActive ? 1f : 0f;
+            }
         }
 
-        Float level = tryParseFloat(getByPath(doc, "vip.level"));
-        if (level != null) {
-            // level 0/1/2... 直接作为数值信号
-            return level;
-        }
+        float[] features = new float[]{ totalTrips, activeDays, completedTasks, totalCarbon, totalPoints, currentPoints, vipValue };
 
-        return 0.0f;
+        System.out.println(">>> extracted features = " + Arrays.toString(features));
+        return new ChurnFeatureVector(features);
     }
 
     private Document findUserDoc(String userId) {
-        for (String col : candidateCollections) {
-            Document doc = findByIdOrUserid(col, userId);
-            if (doc != null) return doc;
-        }
-        return null;
-    }
+        Document d = mongoTemplate.findOne(
+                Query.query(Criteria.where("userid").is(userId)),
+                Document.class,
+                USERS_COL
+        );
+        if (d != null) return d;
 
-    private Document findByIdOrUserid(String collection, String userId) {
-        // 1) _id = userId（字符串）
-        Query q1 = new Query(Criteria.where("_id").is(userId));
-        Document d1 = mongoTemplate.findOne(q1, Document.class, collection);
-        if (d1 != null) return d1;
 
-        // 2) _id = ObjectId(userId)
+        d = mongoTemplate.findOne(
+                Query.query(Criteria.where("_id").is(userId)),
+                Document.class,
+                USERS_COL
+        );
+        if (d != null) return d;
+
+
         try {
             ObjectId oid = new ObjectId(userId);
-            Query q2 = new Query(Criteria.where("_id").is(oid));
-            Document d2 = mongoTemplate.findOne(q2, Document.class, collection);
-            if (d2 != null) return d2;
-        } catch (IllegalArgumentException ignored) { }
-
-        // 3) userid（注意：你库里字段名是小写 userid）
-        Query q3 = new Query(Criteria.where("userid").is(userId));
-        Document d3 = mongoTemplate.findOne(q3, Document.class, collection);
-        if (d3 != null) return d3;
-
-        // 4) 兼容旧写法 userId
-        Query q4 = new Query(Criteria.where("userId").is(userId));
-        Document d4 = mongoTemplate.findOne(q4, Document.class, collection);
-        if (d4 != null) return d4;
-
-        return null;
-    }
-
-    private float getFloat(Document doc, String path) {
-        Object v = getByPath(doc, path);
-        Float parsed = tryParseFloat(v);
-        return parsed != null ? parsed : 0.0f;
-    }
-
-    /**
-     * 支持 "stats.totalTrips" 这种点路径读取
-     */
-    private Object getByPath(Document doc, String path) {
-        if (doc == null || path == null || path.isEmpty()) return null;
-
-        String[] parts = path.split("\\.");
-        Object curr = doc;
-        for (String p : parts) {
-            if (!(curr instanceof Document d)) return null;
-            curr = d.get(p);
-            if (curr == null) return null;
-        }
-        return curr;
-    }
-
-    private Float tryParseFloat(Object v) {
-        if (v == null) return null;
-        if (v instanceof Boolean b) return b ? 1.0f : 0.0f;
-        if (v instanceof Number n) return n.floatValue();
-        try {
-            String s = String.valueOf(v).trim();
-            if (s.isEmpty()) return null;
-            return Float.parseFloat(s);
-        } catch (Exception e) {
+            return mongoTemplate.findOne(
+                    Query.query(Criteria.where("_id").is(oid)),
+                    Document.class,
+                    USERS_COL
+            );
+        } catch (IllegalArgumentException ignored) {
             return null;
         }
+    }
+
+    private static Document getDoc(Document doc, String key) {
+        if (doc == null) return null;
+        Object v = doc.get(key);
+        return (v instanceof Document) ? (Document) v : null;
+    }
+
+    private static float num(Document doc, String... keys) {
+        if (doc == null) return 0f;
+        for (String k : keys) {
+            Object v = doc.get(k);
+            if (v instanceof Number) return ((Number) v).floatValue();
+        }
+        return 0f;
+    }
+
+    private static boolean bool(Document doc, String... keys) {
+        if (doc == null) return false;
+        for (String k : keys) {
+            Object v = doc.get(k);
+            if (v instanceof Boolean) return (Boolean) v;
+        }
+        return false;
     }
 }

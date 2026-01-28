@@ -181,6 +181,14 @@ public class UserServiceImpl implements UserInterface {
 
     @Override
     public void logoutMobile(String token, String userId) {
+        if (userId == null) {
+            try {
+                userId = jwtUtils.validateToken(token).getSubject();
+            } catch (Exception e) {
+                logger.warn("Logout with invalid token");
+                return;
+            }
+        }
         // Implementation depends on Token blacklist strategy (Redis)
         // For now, stateless JWT, client side discard
         logger.info("User logout: {}", userId);
@@ -189,39 +197,63 @@ public class UserServiceImpl implements UserInterface {
     // --- Mobile Profile ---
 
     @Override
-    public UserProfileDto.UpdateProfileResponse updateProfile(UserProfileDto.UpdateProfileRequest request) {
-        User user = userRepository.findById(request.user_id)
+    public UserProfileDto.UpdateProfileResponse updateProfile(String token, String userId,
+            UserProfileDto.UpdateProfileRequest request) {
+        validateAccess(token, userId);
+        User user = userRepository.findByUserid(userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        if (request.nickname != null)
-            user.setNickname(request.nickname);
-        if (request.avatar != null)
-            user.setAvatar(request.avatar);
-        if (request.preferences != null)
-            user.setPreferences(request.preferences);
-
-        user.setUpdatedAt(LocalDateTime.now());
-        userRepository.save(user);
-
-        return new UserProfileDto.UpdateProfileResponse(user.getId(), user.getUpdatedAt());
+        return performUpdate(user, request);
     }
 
     @Override
-    public UserProfileDto.PreferencesResetResponse resetPreferences(String userId) {
-        User user = userRepository.findById(userId)
+    public UserProfileDto.PreferencesResetResponse resetPreferences(String token, String userId) {
+        validateAccess(token, userId);
+        // Mobile uses UserID (Business ID)
+        User user = userRepository.findByUserid(userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         // Reset to default logic here
         User.Preferences defaultPref = new User.Preferences();
         defaultPref.setLanguage("zh");
         defaultPref.setTheme("light");
-        // ... set other defaults
+        defaultPref.setPreferredTransport("bus");
+        defaultPref.setEnablePush(true);
+        defaultPref.setEnableEmail(true);
+        defaultPref.setEnableBusReminder(true);
+        defaultPref.setShareLocation(true);
+        defaultPref.setShowOnLeaderboard(true);
+        defaultPref.setShareAchievements(true);
 
         user.setPreferences(defaultPref);
         user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
 
         return new UserProfileDto.PreferencesResetResponse(defaultPref, user.getUpdatedAt());
+    }
+
+    @Override
+    public void deleteUser(String token, String userId) {
+        validateAccess(token, userId);
+        User user = userRepository.findByUserid(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        userRepository.delete(user);
+    }
+
+    @Override
+    public UserProfileDto.UserDetailResponse getUserDetail(String token, String userId) {
+        validateAccess(token, userId);
+        return userRepository.findById(userId)
+                .map(UserProfileDto.UserDetailResponse::new)
+                .or(() -> userRepository.findByUserid(userId).map(UserProfileDto.UserDetailResponse::new))
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    @Override
+    public java.util.List<UserResponseDto> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(u -> new UserResponseDto(u.getEmail(), u.getUserid(), u.getNickname(), u.getPhone()))
+                .collect(java.util.stream.Collectors.toList());
     }
 
     // --- Web Auth ---
@@ -271,19 +303,9 @@ public class UserServiceImpl implements UserInterface {
     }
 
     @Override
-    public boolean authorizeUser(String token, String permission) {
-        try {
-            var claims = jwtUtils.validateToken(token);
-            return (boolean) claims.get("isAdmin");
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    @Override
     public UserProfileDto.UpdateProfileResponse manageUser(String userId,
             UserProfileDto.AdminManageUserRequest request) {
-        User user = userRepository.findById(userId)
+        User user = userRepository.findByUserid(userId) // Use Business ID
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         user.setAdmin(request.isAdmin);
@@ -299,15 +321,55 @@ public class UserServiceImpl implements UserInterface {
     }
 
     @Override
-    public UserProfileDto.UserDetailResponse getUserDetail(String userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-        return new UserProfileDto.UserDetailResponse(user);
-    }
-
-    @Override
     public UserProfileDto.UpdateProfileResponse updateProfileAdmin(String userId,
             UserProfileDto.UpdateProfileRequest request) {
-        return updateProfile(request); // Reuse logic
+        // Admin uses UUID
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        return performUpdate(user, request);
+    }
+
+    private UserProfileDto.UpdateProfileResponse performUpdate(User user, UserProfileDto.UpdateProfileRequest request) {
+        if (request.nickname != null)
+            user.setNickname(request.nickname);
+        if (request.avatar != null)
+            user.setAvatar(request.avatar);
+        if (request.preferences != null)
+            user.setPreferences(request.preferences);
+
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+
+        return new UserProfileDto.UpdateProfileResponse(user.getId(), user.getUpdatedAt());
+    }
+
+    /**
+     * Security Validation:
+     * 1. Check if token is valid.
+     * 2. If Admin -> Pass.
+     * 3. If User -> Check if Token UUID matches Target User's UUID.
+     */
+    private void validateAccess(String token, String targetUserId) {
+        try {
+            var claims = jwtUtils.validateToken(token);
+            boolean isAdmin = (boolean) claims.get("isAdmin");
+            if (isAdmin)
+                return; // Admin can access anyone
+
+            String requesterId = claims.getSubject(); // This is UUID
+
+            // Mobile endpoints pass "userid" (Business ID), but we need to verify against
+            // UUID
+            User targetUser = userRepository.findByUserid(targetUserId)
+                    .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+            if (!targetUser.getId().equals(requesterId)) {
+                throw new BusinessException(ErrorCode.NO_PERMISSION, "您无权操作此账号");
+            }
+        } catch (BusinessException be) {
+            throw be;
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.NO_PERMISSION, "Token无效或过期");
+        }
     }
 }

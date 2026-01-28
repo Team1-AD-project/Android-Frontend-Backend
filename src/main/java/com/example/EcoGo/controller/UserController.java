@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,21 +54,47 @@ public class UserController {
     }
 
     @PostMapping("/api/v1/mobile/users/logout")
-    public ResponseMessage<Void> logoutMobile(@RequestBody Map<String, String> body) {
-        userService.logoutMobile(body.get("token"), body.get("user_id"));
+    public ResponseMessage<Void> logoutMobile(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        // Ideally we extract UserID from token here or in service
+        // For keeping the service interface clean, let's pass token.
+        // Service implementation will validate and extract if needed.
+        userService.logoutMobile(token, null); // userId is optional or extracted in service
         return ResponseMessage.success(null);
     }
 
-    @PutMapping("/api/v1/mobile/users/profile")
-    public ResponseMessage<UserProfileDto.UpdateProfileResponse> updateProfileMobile(
-            @RequestBody UserProfileDto.UpdateProfileRequest request) {
-        return ResponseMessage.success(userService.updateProfile(request));
+    @GetMapping("/api/v1/mobile/users/profile/{userId}")
+    public ResponseMessage<UserProfileDto.UserDetailResponse> getUserProfileMobile(
+            @RequestHeader("Authorization") String authHeader,
+            @PathVariable String userId) {
+        String token = authHeader.replace("Bearer ", "");
+        return ResponseMessage.success(userService.getUserDetail(token, userId));
     }
 
-    @PutMapping("/api/v1/mobile/users/preferences/reset")
+    @PutMapping("/api/v1/mobile/users/profile/{userId}")
+    public ResponseMessage<UserProfileDto.UpdateProfileResponse> updateProfileMobile(
+            @RequestHeader("Authorization") String authHeader,
+            @PathVariable String userId,
+            @RequestBody UserProfileDto.UpdateProfileRequest request) {
+        String token = authHeader.replace("Bearer ", "");
+        return ResponseMessage.success(userService.updateProfile(token, userId, request));
+    }
+
+    @PutMapping("/api/v1/mobile/users/preferences/reset/{userId}")
     public ResponseMessage<UserProfileDto.PreferencesResetResponse> resetPreferences(
-            @RequestBody Map<String, String> body) {
-        return ResponseMessage.success(userService.resetPreferences(body.get("user_id")));
+            @RequestHeader("Authorization") String authHeader,
+            @PathVariable String userId) {
+        String token = authHeader.replace("Bearer ", "");
+        return ResponseMessage.success(userService.resetPreferences(token, userId));
+    }
+
+    @DeleteMapping("/api/v1/mobile/users/{userId}")
+    public ResponseMessage<Map<String, Boolean>> deleteUser(
+            @RequestHeader("Authorization") String authHeader,
+            @PathVariable String userId) {
+        String token = authHeader.replace("Bearer ", "");
+        userService.deleteUser(token, userId);
+        return ResponseMessage.success(Map.of("success", true));
     }
 
     // --- Web Endpoints ---
@@ -78,8 +105,9 @@ public class UserController {
     }
 
     @PostMapping("/api/v1/web/users/logout")
-    public ResponseMessage<Map<String, Boolean>> logoutWeb(@RequestBody Map<String, String> body) {
-        userService.logoutWeb(body.get("token"));
+    public ResponseMessage<Map<String, Boolean>> logoutWeb(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        userService.logoutWeb(token);
         return ResponseMessage.success(Map.of("success", true));
     }
 
@@ -90,11 +118,9 @@ public class UserController {
         return ResponseMessage.success(userService.authenticateUser(token));
     }
 
-    @GetMapping("/api/v1/web/users/authorize")
-    public ResponseMessage<Map<String, Boolean>> authorizeWeb(@RequestParam String token,
-            @RequestParam String permission) {
-        boolean authorized = userService.authorizeUser(token, permission);
-        return ResponseMessage.success(Map.of("authorized", authorized));
+    @GetMapping("/api/v1/web/users/list")
+    public ResponseMessage<java.util.List<UserResponseDto>> listAllUsers() {
+        return ResponseMessage.success(userService.getAllUsers());
     }
 
     @PutMapping("/api/v1/web/users/manage/{userId}")
@@ -104,14 +130,18 @@ public class UserController {
     }
 
     @GetMapping("/api/v1/web/users/profile/{userId}")
-    public ResponseMessage<UserProfileDto.UserDetailResponse> getUserDetail(@PathVariable String userId) {
-        return ResponseMessage.success(userService.getUserDetail(userId));
+    public ResponseMessage<UserProfileDto.UserDetailResponse> getUserDetail(
+            @RequestHeader("Authorization") String authHeader,
+            @PathVariable String userId) {
+        String token = authHeader.replace("Bearer ", "");
+        // Admin also needs to pass validation (auto-pass)
+        return ResponseMessage.success(userService.getUserDetail(token, userId));
     }
 
     @PutMapping("/api/v1/web/users/profile/{userId}")
     public ResponseMessage<UserProfileDto.UpdateProfileResponse> updateUserProfile(@PathVariable String userId,
             @RequestBody UserProfileDto.UpdateProfileRequest request) {
-        request.user_id = userId; // Ensure ID matches path
+        // userId from path is used directly in service
         return ResponseMessage.success(userService.updateProfileAdmin(userId, request));
     }
 

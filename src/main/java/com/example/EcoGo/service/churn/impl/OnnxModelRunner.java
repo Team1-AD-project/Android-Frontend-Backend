@@ -10,11 +10,6 @@ import java.nio.FloatBuffer;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * ONNX 推理实现：从 resources/ml/churn_model.onnx 加载
- * 输入：float[7]
- * 输出：概率 p in [0,1]
- */
 @Component
 public class OnnxModelRunner implements ModelRunner {
 
@@ -31,18 +26,28 @@ public class OnnxModelRunner implements ModelRunner {
             byte[] modelBytes = readAllBytesFromResource(MODEL_PATH);
 
             OrtSession.SessionOptions opts = new OrtSession.SessionOptions();
-            // opts.setOptimizationLevel(OrtSession.SessionOptions.OptLevel.ALL_OPT); // 可选
-
             this.session = env.createSession(modelBytes, opts);
 
             Set<String> inputs = session.getInputNames();
             Set<String> outputs = session.getOutputNames();
-            this.inputName = inputs.iterator().next();
-            this.outputName = outputs.iterator().next();
 
+            this.inputName = inputs.iterator().next();
+            this.outputName = pickProbabilityOutputName(outputs);
+
+            System.out.println(">>> OnnxModelRunner loaded, input=" + inputName + ", output=" + outputName + ", allOutputs=" + outputs);
         } catch (Exception e) {
             throw new IllegalStateException("Failed to load ONNX model from " + MODEL_PATH, e);
         }
+    }
+
+    private static String pickProbabilityOutputName(Set<String> outputs) {
+        for (String o : outputs) {
+            String s = o.toLowerCase();
+            if (s.contains("prob") || s.contains("proba") || s.contains("probabilities")) return o;
+        }
+        String last = null;
+        for (String o : outputs) last = o;
+        return last != null ? last : outputs.iterator().next();
     }
 
     @Override
@@ -50,44 +55,66 @@ public class OnnxModelRunner implements ModelRunner {
         if (features == null || features.length == 0) return Double.NaN;
 
         try {
-            // 期望 shape: [1, N]
             long[] shape = new long[]{1, features.length};
             FloatBuffer fb = FloatBuffer.wrap(features);
 
             try (OnnxTensor inputTensor = OnnxTensor.createTensor(env, fb, shape);
                  OrtSession.Result result = session.run(Map.of(inputName, inputTensor))) {
 
-                Object out = result.get(outputName).get().getValue();
+                double p = tryParseProbability(result.get(outputName).get().getValue());
+                if (!Double.isNaN(p)) return p;
 
-                // 常见情况：float[][] probs = [[p0, p1]]
-                if (out instanceof float[][] probs && probs.length > 0) {
-                    float[] row = probs[0];
-                    if (row.length == 1) return clamp01(row[0]);
-                    // 二分类，正类一般在 index=1
-                    return clamp01(row[Math.min(1, row.length - 1)]);
-                }
-
-                // 兼容：float[] probs = [p0, p1]
-                if (out instanceof float[] arr) {
-                    if (arr.length == 1) return clamp01(arr[0]);
-                    return clamp01(arr[Math.min(1, arr.length - 1)]);
-                }
-
-                // 兼容：Map 输出（如果导出时 zipmap=True）
-                if (out instanceof Map<?, ?> map) {
-                    // 取最大 key 的概率不可靠，这里尽量取 value 中的数值
-                    for (Object v : map.values()) {
-                        if (v instanceof Number n) return clamp01(n.doubleValue());
+                for (Map.Entry<String, OnnxValue> e : result) {
+                    double p2 = tryParseProbability(e.getValue().getValue());
+                    if (!Double.isNaN(p2)) {
+                        System.out.println(">>> OnnxModelRunner fallback output used: " + e.getKey());
+                        return p2;
                     }
                 }
 
-                // 兜底：无法解析输出
                 return Double.NaN;
             }
         } catch (Exception e) {
-            // 推理失败视作数据不足（你要求不乱造）
+            System.out.println(">>> OnnxModelRunner exception: " + e.getMessage());
             return Double.NaN;
         }
+    }
+
+    private static double tryParseProbability(Object out) {
+        if (out == null) return Double.NaN;
+
+        // float[][] probs = [[p0, p1]] / [[p]]
+        if (out instanceof float[][] probs && probs.length > 0) {
+            float[] row = probs[0];
+            if (row.length == 1) return clamp01(row[0]);
+            return clamp01(row[Math.min(1, row.length - 1)]);
+        }
+
+        // float[] probs = [p0, p1] / [p]
+        if (out instanceof float[] arr) {
+            if (arr.length == 1) return clamp01(arr[0]);
+            return clamp01(arr[Math.min(1, arr.length - 1)]);
+        }
+
+        // double[][] / double[]
+        if (out instanceof double[][] dprobs && dprobs.length > 0) {
+            double[] row = dprobs[0];
+            if (row.length == 1) return clamp01(row[0]);
+            return clamp01(row[Math.min(1, row.length - 1)]);
+        }
+        if (out instanceof double[] darr) {
+            if (darr.length == 1) return clamp01(darr[0]);
+            return clamp01(darr[Math.min(1, darr.length - 1)]);
+        }
+
+        // Map 输出（zipmap=True）
+        if (out instanceof Map<?, ?> map) {
+            for (Object v : map.values()) {
+                if (v instanceof Number n) return clamp01(n.doubleValue());
+            }
+        }
+
+        return Double.NaN;
     }
 
     private static double clamp01(double x) {
