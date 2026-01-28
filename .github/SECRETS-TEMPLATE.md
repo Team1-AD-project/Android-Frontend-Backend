@@ -61,21 +61,29 @@ Scopes needed: write:packages, read:packages
 
 ## Optional Secrets
 
-### Staging Environment
+### Environment URLs (for Smoke Tests)
+
+**Note:** These should be configured as repository secrets, not environment URLs.
+
 ```
 Name: STAGING_URL
 Value: https://staging.ecogo.example.com
 Description: Staging environment URL for smoke tests
-Environment: Configure in Settings → Environments → staging
+Location: Settings → Secrets and variables → Actions → New repository secret
 ```
 
-### Production Environment
 ```
 Name: PRODUCTION_URL
 Value: https://ecogo.example.com
 Description: Production environment URL for smoke tests
-Environment: Configure in Settings → Environments → production
+Location: Settings → Secrets and variables → Actions → New repository secret
 ```
+
+**To configure GitHub Environments:**
+1. Go to Settings → Environments
+2. Create "staging" environment (no protection rules needed)
+3. Create "production" environment (enable "Required reviewers" for manual approval)
+4. Optionally set environment-specific secrets within each environment
 
 ### Slack Notifications (if using)
 ```
