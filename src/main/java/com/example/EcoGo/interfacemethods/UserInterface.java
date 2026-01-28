@@ -22,6 +22,8 @@ public interface UserInterface {
 
     UserProfileDto.PreferencesResetResponse resetPreferences(String token, String userId);
 
+    void deleteUser(String token, String userId);
+
     // Web - Auth
     AuthDto.LoginResponse loginWeb(AuthDto.WebLoginRequest request);
 

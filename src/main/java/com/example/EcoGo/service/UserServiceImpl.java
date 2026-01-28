@@ -233,6 +233,14 @@ public class UserServiceImpl implements UserInterface {
     }
 
     @Override
+    public void deleteUser(String token, String userId) {
+        validateAccess(token, userId);
+        User user = userRepository.findByUserid(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        userRepository.delete(user);
+    }
+
+    @Override
     public UserProfileDto.UserDetailResponse getUserDetail(String token, String userId) {
         validateAccess(token, userId);
         return userRepository.findById(userId)
