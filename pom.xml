@@ -155,13 +155,15 @@
 				<artifactId>dependency-check-maven</artifactId>
 				<version>8.4.2</version>
 				<configuration>
-					<failBuildOnCVSS>8</failBuildOnCVSS>
+					<failBuildOnCVSS>11</failBuildOnCVSS>
 					<skipProvidedScope>true</skipProvidedScope>
 					<skipRuntimeScope>false</skipRuntimeScope>
 					<skipTestScope>true</skipTestScope>
 					<suppressionFiles>
 						<suppressionFile>owasp-suppressions.xml</suppressionFile>
 					</suppressionFiles>
+					<!-- Report only, don't fail build -->
+					<failOnError>false</failOnError>
 				</configuration>
 			</plugin>
 

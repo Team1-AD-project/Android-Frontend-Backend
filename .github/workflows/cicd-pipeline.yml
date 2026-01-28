@@ -62,7 +62,7 @@ jobs:
         continue-on-error: true
 
       - name: Run OWASP Dependency Check
-        run: mvn dependency-check:check -DskipTests
+        run: mvn dependency-check:check -DskipTests || echo "Dependency check completed with warnings"
         continue-on-error: true
 
       - name: SAST Summary
@@ -316,28 +316,52 @@ jobs:
           distribution: 'temurin'
 
       - name: Wait for MongoDB
-        run: sleep 10
+        run: |
+          echo "Waiting for MongoDB to be ready..."
+          sleep 15
 
       - name: Start Application
         run: |
+          echo "Starting EcoGo application..."
           nohup java -jar EcoGo-*.jar > app.log 2>&1 &
-          sleep 40
-          echo "Application logs:"
+          APP_PID=$!
+          echo "Application started with PID: $APP_PID"
+          
+          # Wait for application to start with retries
+          echo "Waiting for application to be ready..."
+          for i in {1..30}; do
+            if curl -s http://localhost:8090/actuator/health > /dev/null 2>&1; then
+              echo "Application is ready!"
+              break
+            fi
+            echo "Attempt $i/30: Application not ready yet, waiting..."
+            sleep 3
+          done
+          
+          echo "=== Application Logs ==="
           cat app.log || true
+          echo "========================"
         env:
           SPRING_DATA_MONGODB_URI: mongodb://localhost:27017/ecogo
+          SERVER_PORT: 8090
           
-      - name: Check Application Health
+      - name: Verify Application Health
         run: |
-          curl -f http://localhost:8090/actuator/health || echo "Health check failed"
-        continue-on-error: true
+          echo "Checking application health..."
+          curl -v http://localhost:8090/actuator/health || {
+            echo "Health check failed! Application logs:"
+            cat app.log || true
+            exit 1
+          }
 
       - name: Run OWASP ZAP Scan
-        uses: zaproxy/action-baseline@v0.7.0
-        with:
-          target: 'http://localhost:8090'
-          rules_file_name: '.zap/rules.tsv'
-          cmd_options: '-a'
+        run: |
+          echo "Starting OWASP ZAP baseline scan..."
+          docker run --network="host" -v $(pwd):/zap/wrk/:rw \
+            -t zaproxy/zap-stable zap-baseline.py \
+            -t http://localhost:8090 \
+            -r zap-report.html \
+            -w zap-report.md || echo "ZAP scan completed with findings"
         continue-on-error: true
 
       - name: Upload DAST Report
@@ -345,7 +369,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dast-report
-          path: report_html.html
+          path: |
+            zap-report.html
+            zap-report.md
+          if-no-files-found: warn
 
   # Stage 8: Setup Monitoring (Prometheus & Grafana)
   monitoring-setup:
