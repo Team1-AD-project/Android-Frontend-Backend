@@ -32,4 +32,36 @@ public interface PointsService {
      * Get points history
      */
     List<PointsDto.PointsLogResponse> getPointsHistory(String userId);
+
+    // --- Extended Features ---
+
+    /**
+     * Calculate points based on Mode and Distance
+     * Formula: (CarCarbon - ModeCarbon) * Distance * 10
+     */
+    long calculatePoints(String mode, double distance);
+
+    /**
+     * Get Trip Statistics
+     * 
+     * @param userId If null, returns Global stats. If present, returns User stats.
+     */
+    PointsDto.TripStatsResponse getTripStats(String userId);
+
+    /**
+     * Admin: Get all users' current balance (Simple list)
+     */
+    List<PointsDto.CurrentPointsResponse> getAllUserPoints();
+
+    /**
+     * Admin: Get all transaction history
+     */
+    List<PointsDto.PointsLogResponse> getAllPointsHistory();
+
+    // --- Internal Logic (Not exposed directly as API) ---
+    void settleTrip(String userId, String tripId, double carbonAmount);
+
+    void redeemPoints(String userId, String orderId, long points);
+
+    void refundPoints(String userId, String orderId);
 }

@@ -44,4 +44,14 @@ public class PointsDto {
         public String reason;
         public String approval_status;
     }
+
+    public static class TripStatsResponse {
+        public long totalTrips;
+        public long totalPointsEarned;
+
+        public TripStatsResponse(long trips, long points) {
+            this.totalTrips = trips;
+            this.totalPointsEarned = points;
+        }
+    }
 }
