@@ -8,20 +8,20 @@ package com.example.EcoGo.exception.errorcode;
  * - 按模块细分：40xx=通用客户端错，41xx=用户模块错，42xx=订单模块错...
  */
 public enum ErrorCode {
-    // 通用客户端错误（40xx）
-    SUCCESS(200, "操作成功"),
-    PARAM_ERROR(4001, "参数错误：%s"), // 带占位符，动态填充具体参数
-    NOT_LOGIN(4002, "请先登录"),
-    NO_PERMISSION(4003, "无权限访问"),
+    // Generic Client Errors (40xx)
+    SUCCESS(200, "Operation successful"),
+    PARAM_ERROR(4001, "Parameter error: %s"), // Dynamic placeholder
+    NOT_LOGIN(4002, "Please login first"),
+    NO_PERMISSION(4003, "Permission denied"),
 
-    // 用户模块错误（41xx）
-    USER_NOT_FOUND(4101, "用户不存在"),
-    USER_NAME_DUPLICATE(4102, "用户名已被占用"),
-    PASSWORD_ERROR(4103, "密码错误"),
+    // User Module Errors (41xx)
+    USER_NOT_FOUND(4101, "User not found"),
+    USER_NAME_DUPLICATE(4102, "Username already taken"),
+    PASSWORD_ERROR(4103, "Incorrect password"),
 
-    // 订单模块错误（42xx）
-    ORDER_NOT_FOUND(4201, "订单不存在"),
-    ORDER_STATUS_ERROR(4202, "订单状态错误，当前状态：%s"),
+    // Order Module Errors (42xx)
+    ORDER_NOT_FOUND(4201, "Order not found"),
+    ORDER_STATUS_ERROR(4202, "Order status error, current status: %s"),
 
     // Product module error (43xx)
     PRODUCT_NOT_EXIST(4301, "The product does not exist,productId:%s"),
@@ -30,17 +30,17 @@ public enum ErrorCode {
     PRODUCT_NAME_DUPLICATE(4304, "Product name already exists:%s"),
 
     // Activity module error (44xx)
-    ACTIVITY_NOT_FOUND(4401, "活动不存在"),
-    ACTIVITY_FULL(4402, "活动人数已满"),
-    ALREADY_JOINED(4403, "您已参加该活动"),
+    ACTIVITY_NOT_FOUND(4401, "Activity not found"),
+    ACTIVITY_FULL(4402, "Activity is full"),
+    ALREADY_JOINED(4403, "You have already joined this activity"),
 
     // Advertisement module error (45xx)
-    ADVERTISEMENT_NOT_FOUND(4501, "广告不存在"),
+    ADVERTISEMENT_NOT_FOUND(4501, "Advertisement not found"),
 
-    // 服务端错误（5xxx）
-    DB_ERROR(5001, "数据库操作失败"),
-    SYSTEM_ERROR(5002, "系统内部错误，请稍后重试"),
-    REDIS_ERROR(5003, "缓存服务异常");
+    // Server Errors (5xxx)
+    DB_ERROR(5001, "Database operation failed"),
+    SYSTEM_ERROR(5002, "Internal server error, please try again later"),
+    REDIS_ERROR(5003, "Cache service exception");
 
     // 错误码
     private final int code;

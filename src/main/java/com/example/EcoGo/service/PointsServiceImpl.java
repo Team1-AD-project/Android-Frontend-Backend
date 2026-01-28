@@ -36,7 +36,7 @@ public class PointsServiceImpl implements PointsService {
         long newBalance = user.getCurrentPoints() + points;
         if (newBalance < 0) {
             // Usually we don't allow negative balance
-            throw new BusinessException(ErrorCode.PARAM_ERROR, "积分不足");
+            throw new BusinessException(ErrorCode.PARAM_ERROR, "Insufficient points");
         }
 
         // 3. Update User
