@@ -36,6 +36,9 @@ public class Order {
     private Integer pointsUsed = 0;               // 使用的积分
     private Integer pointsEarned = 0;             // 获得的积分
     
+    // Stripe支付相关字段
+    private String stripePaymentIntentId;         // Stripe交易ID
+    
     // 订单项内部类
     public static class OrderItem {
         private String goodsId;
@@ -132,4 +135,7 @@ public class Order {
     
     public Integer getPointsEarned() { return pointsEarned; }
     public void setPointsEarned(Integer pointsEarned) { this.pointsEarned = pointsEarned; }
+    
+    public String getStripePaymentIntentId() { return stripePaymentIntentId; }
+    public void setStripePaymentIntentId(String stripePaymentIntentId) { this.stripePaymentIntentId = stripePaymentIntentId; }
 }

@@ -5,9 +5,9 @@
         android:icon="@drawable/ic_navigation"
         android:title="@string/nav_home" />
     <item
-        android:id="@+id/routesFragment"
-        android:icon="@drawable/ic_bus"
-        android:title="@string/nav_routes" />
+        android:id="@+id/mapGreenGoFragment"
+        android:icon="@drawable/ic_map_pin"
+        android:title="@string/nav_green_go" />
     <item
         android:id="@+id/communityFragment"
         android:icon="@drawable/ic_users"

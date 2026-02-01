@@ -98,6 +98,12 @@
             <version>1.18.0</version>
         </dependency>
 
+        <!-- Stripe SDK -->
+        <dependency>
+            <groupId>com.stripe</groupId>
+            <artifactId>stripe-java</artifactId>
+            <version>24.0.0</version>
+        </dependency>
 
 
 	</dependencies>

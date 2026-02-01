@@ -65,13 +65,12 @@
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp" />
 
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/image_avatar"
+                    <com.ecogo.ui.views.MascotLionView
+                        android:id="@+id/mascot_lion"
                         android:layout_width="160dp"
                         android:layout_height="160dp"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="12dp"
-                        android:src="@drawable/app_icon" />
+                        android:layout_marginTop="12dp" />
 
                     <TextView
                         android:id="@+id/text_name"
@@ -156,11 +155,21 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Section: Closet / Badges / History -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/profile_shop_section"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
         <!-- Tabs -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:orientation="horizontal"
             android:paddingBottom="12dp">
 
@@ -238,27 +247,64 @@
             </LinearLayout>
         </LinearLayout>
 
+        <!-- 学院服装 -->
+        <TextView
+            android:id="@+id/text_faculty_outfits"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/profile_faculty_outfits"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_faculty_outfits"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:minHeight="120dp"
+            android:nestedScrollingEnabled="false"
+            android:overScrollMode="never"
+            android:visibility="gone" />
+
+        <!-- 全部服装 -->
+        <TextView
+            android:id="@+id/text_all_outfits"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/profile_all_outfits"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_shop"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="400dp"
             android:layout_marginTop="12dp"
-            android:nestedScrollingEnabled="false" />
+            android:nestedScrollingEnabled="false"
+            android:overScrollMode="never" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_achievements"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="280dp"
             android:layout_marginTop="12dp"
             android:nestedScrollingEnabled="false"
+            android:overScrollMode="never"
             android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_history"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="200dp"
             android:layout_marginTop="12dp"
             android:nestedScrollingEnabled="false"
+            android:overScrollMode="never"
             android:visibility="gone" />
     </LinearLayout>
 </ScrollView>

@@ -2,6 +2,171 @@ package com.ecogo.data
 
 object MockData {
     
+    // === 导航相关Mock数据 ===
+    
+    /**
+     * 校园地点数据
+     */
+    val CAMPUS_LOCATIONS = listOf(
+        NavLocation(
+            id = "1",
+            name = "COM1",
+            address = "School of Computing",
+            latitude = 1.2948,
+            longitude = 103.7743,
+            type = LocationType.FACULTY,
+            icon = "💻",
+            isFavorite = true,
+            visitCount = 15
+        ),
+        NavLocation(
+            id = "2",
+            name = "UTown",
+            address = "University Town",
+            latitude = 1.3036,
+            longitude = 103.7739,
+            type = LocationType.FACILITY,
+            icon = "🏙️",
+            isFavorite = true,
+            visitCount = 20
+        ),
+        NavLocation(
+            id = "3",
+            name = "Central Library",
+            address = "Main Library",
+            latitude = 1.2966,
+            longitude = 103.7723,
+            type = LocationType.LIBRARY,
+            icon = "📚",
+            isFavorite = false,
+            visitCount = 8
+        ),
+        NavLocation(
+            id = "4",
+            name = "PGP Residence",
+            address = "Prince George's Park",
+            latitude = 1.2913,
+            longitude = 103.7803,
+            type = LocationType.RESIDENCE,
+            icon = "🏠",
+            isFavorite = true,
+            visitCount = 30
+        ),
+        NavLocation(
+            id = "5",
+            name = "The Deck",
+            address = "Faculty of Engineering",
+            latitude = 1.2993,
+            longitude = 103.7710,
+            type = LocationType.CANTEEN,
+            icon = "🍜",
+            isFavorite = false,
+            visitCount = 12
+        ),
+        NavLocation(
+            id = "6",
+            name = "Kent Ridge MRT",
+            address = "MRT Station",
+            latitude = 1.2931,
+            longitude = 103.7843,
+            type = LocationType.BUS_STOP,
+            icon = "🚇",
+            isFavorite = false,
+            visitCount = 5
+        ),
+        NavLocation(
+            id = "7",
+            name = "Business School",
+            address = "NUS Business School",
+            latitude = 1.2935,
+            longitude = 103.7751,
+            type = LocationType.FACULTY,
+            icon = "📈",
+            isFavorite = false,
+            visitCount = 3
+        ),
+        NavLocation(
+            id = "8",
+            name = "Science Park",
+            address = "Science Faculty",
+            latitude = 1.2958,
+            longitude = 103.7807,
+            type = LocationType.FACULTY,
+            icon = "🧪",
+            isFavorite = false,
+            visitCount = 7
+        ),
+        NavLocation(
+            id = "9",
+            name = "Sports Hall",
+            address = "MPSH",
+            latitude = 1.3010,
+            longitude = 103.7765,
+            type = LocationType.FACILITY,
+            icon = "⚽",
+            isFavorite = false,
+            visitCount = 4
+        ),
+        NavLocation(
+            id = "10",
+            name = "Yusof Ishak House",
+            address = "YIH",
+            latitude = 1.2979,
+            longitude = 103.7757,
+            type = LocationType.FACILITY,
+            icon = "🏢",
+            isFavorite = false,
+            visitCount = 6
+        )
+    )
+    
+    /**
+     * 示例公交信息
+     */
+    val BUS_INFO_LIST = listOf(
+        BusInfo(
+            busId = "D1",
+            routeName = "D1",
+            destination = "UTown",
+            currentLat = 1.2950,
+            currentLng = 103.7750,
+            etaMinutes = 2,
+            stopsAway = 3,
+            crowdLevel = "低",
+            plateNumber = "SBS3421A",
+            status = "arriving",
+            color = "#DB2777"
+        ),
+        BusInfo(
+            busId = "D1",
+            routeName = "D1",
+            destination = "UTown",
+            currentLat = 1.2920,
+            currentLng = 103.7800,
+            etaMinutes = 12,
+            stopsAway = 8,
+            crowdLevel = "中",
+            plateNumber = "SBS3422B",
+            status = "coming",
+            color = "#DB2777"
+        ),
+        BusInfo(
+            busId = "A1",
+            routeName = "A1",
+            destination = "Kent Ridge MRT",
+            currentLat = 1.2990,
+            currentLng = 103.7720,
+            etaMinutes = 15,
+            stopsAway = 6,
+            crowdLevel = "高",
+            plateNumber = "SBS1234C",
+            status = "delayed",
+            color = "#DC2626"
+        )
+    )
+    
+    // === 原有的Mock数据 ===
+    
     val ROUTES = listOf(
         BusRoute(
             id = "D1",
@@ -104,40 +269,96 @@ object MockData {
     )
     
     val SHOP_ITEMS = listOf(
+        // Head items (4 items)
         ShopItem(
-            id = "hat1",
-            name = "Baseball Cap",
+            id = "hat_grad",
+            name = "Grad Cap",
             type = "head",
-            cost = 150,
-            owned = false
+            cost = 500,
+            owned = true,
+            equipped = false
         ),
         ShopItem(
-            id = "glasses1",
-            name = "Cool Sunglasses",
-            type = "face",
-            cost = 100,
-            owned = false
-        ),
-        ShopItem(
-            id = "shirt1",
-            name = "NUS T-Shirt",
-            type = "body",
+            id = "hat_cap",
+            name = "Orange Cap",
+            type = "head",
             cost = 200,
-            owned = true
+            owned = false,
+            equipped = false
         ),
         ShopItem(
-            id = "hat2",
-            name = "Wizard Hat",
+            id = "hat_helmet",
+            name = "Safety Helmet",
             type = "head",
             cost = 300,
-            owned = false
+            owned = false,
+            equipped = false
         ),
         ShopItem(
-            id = "glasses2",
-            name = "Reading Glasses",
+            id = "hat_beret",
+            name = "Artist Beret",
+            type = "head",
+            cost = 300,
+            owned = false,
+            equipped = false
+        ),
+        // Face items (2 items)
+        ShopItem(
+            id = "glasses_sun",
+            name = "Shades",
             type = "face",
-            cost = 120,
-            owned = false
+            cost = 300,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "face_goggles",
+            name = "Safety Goggles",
+            type = "face",
+            cost = 250,
+            owned = false,
+            equipped = false
+        ),
+        // Body items (5 items)
+        ShopItem(
+            id = "shirt_nus",
+            name = "NUS Tee",
+            type = "body",
+            cost = 400,
+            owned = true,
+            equipped = true
+        ),
+        ShopItem(
+            id = "shirt_hoodie",
+            name = "Blue Hoodie",
+            type = "body",
+            cost = 600,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "body_plaid",
+            name = "Engin Plaid",
+            type = "body",
+            cost = 400,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "body_suit",
+            name = "Biz Suit",
+            type = "body",
+            cost = 500,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "body_coat",
+            name = "Lab Coat",
+            type = "body",
+            cost = 450,
+            owned = false,
+            equipped = false
         )
     )
     
@@ -363,6 +584,270 @@ object MockData {
             y = 0.6f,
             score = 13450,
             rank = 5
+        )
+    )
+    
+    // Faculty data for signup with outfit configurations
+    val FACULTY_DATA = listOf(
+        FacultyData(
+            id = "eng",
+            name = "Engineering",
+            color = "#3B82F6",
+            slogan = "Building the Future 🛠️",
+            outfit = Outfit(head = "hat_helmet", face = "none", body = "body_plaid")
+        ),
+        FacultyData(
+            id = "biz",
+            name = "Business School",
+            color = "#EAB308",
+            slogan = "Leading the Way 💼",
+            outfit = Outfit(head = "none", face = "none", body = "body_suit")
+        ),
+        FacultyData(
+            id = "arts",
+            name = "Arts & Social Sci",
+            color = "#F97316",
+            slogan = "Create & Inspire 🎨",
+            outfit = Outfit(head = "hat_beret", face = "none", body = "body_coat")
+        ),
+        FacultyData(
+            id = "med",
+            name = "Medicine",
+            color = "#10B981",
+            slogan = "Saving Lives 🩺",
+            outfit = Outfit(head = "none", face = "none", body = "body_coat")
+        ),
+        FacultyData(
+            id = "sci",
+            name = "Science",
+            color = "#6366F1",
+            slogan = "Discovering Truth 🧪",
+            outfit = Outfit(head = "none", face = "face_goggles", body = "body_coat")
+        )
+    )
+    
+    // Check-in Mock Data
+    val CHECK_IN_STATUS = CheckInStatus(
+        userId = "user123",
+        lastCheckInDate = "2026-01-30",
+        consecutiveDays = 5,
+        totalCheckIns = 28,
+        pointsEarned = 350
+    )
+    
+    // Daily Goal Mock Data
+    val DAILY_GOAL = DailyGoal(
+        id = "goal123",
+        userId = "user123",
+        date = "2026-01-31",
+        stepGoal = 10000,
+        currentSteps = 6500,
+        tripGoal = 3,
+        currentTrips = 2,
+        co2SavedGoal = 2.0f,
+        currentCo2Saved = 1.5f
+    )
+    
+    // Weather Mock Data
+    val WEATHER = Weather(
+        location = "NUS",
+        temperature = 21,
+        condition = "Sunny",
+        humidity = 75,
+        aqi = 45,
+        aqiLevel = "Good",
+        recommendation = "Perfect day for walking or cycling!"
+    )
+    
+    // Notifications Mock Data
+    val NOTIFICATIONS = listOf(
+        Notification(
+            id = "notif1",
+            type = "activity",
+            title = "Upcoming Activity",
+            message = "Campus Clean-Up starts in 1 hour!",
+            timestamp = "2026-01-31T09:00:00",
+            isRead = false,
+            actionUrl = "activities/activity1"
+        ),
+        Notification(
+            id = "notif2",
+            type = "bus_delay",
+            title = "Bus Delay",
+            message = "D1 is delayed by 5 minutes",
+            timestamp = "2026-01-31T08:45:00",
+            isRead = false,
+            actionUrl = "routes"
+        ),
+        Notification(
+            id = "notif3",
+            type = "achievement",
+            title = "New Achievement!",
+            message = "You've unlocked 'Week Warrior' badge",
+            timestamp = "2026-01-31T08:30:00",
+            isRead = true,
+            actionUrl = "profile/achievements"
+        )
+    )
+    
+    // Carbon Footprint Mock Data
+    val CARBON_FOOTPRINT = CarbonFootprint(
+        userId = "user123",
+        period = "monthly",
+        co2Saved = 12.5f,
+        equivalentTrees = 3,
+        tripsByBus = 45,
+        tripsByWalking = 28,
+        tripsByBicycle = 5
+    )
+    
+    // Friends Mock Data
+    val FRIENDS = listOf(
+        Friend(
+            userId = "friend1",
+            nickname = "Alex Chen",
+            avatarUrl = null,
+            points = 920,
+            rank = 1,
+            faculty = "School of Computing"
+        ),
+        Friend(
+            userId = "friend2",
+            nickname = "Sarah Tan",
+            avatarUrl = null,
+            points = 875,
+            rank = 2,
+            faculty = "Faculty of Engineering"
+        ),
+        Friend(
+            userId = "friend3",
+            nickname = "Kevin Wong",
+            avatarUrl = null,
+            points = 850,
+            rank = 3,
+            faculty = "School of Computing"
+        )
+    )
+    
+    // Friend Activities Mock Data
+    val FRIEND_ACTIVITIES = listOf(
+        FriendActivity(
+            friendId = "friend1",
+            friendName = "Alex Chen",
+            action = "joined_activity",
+            timestamp = "30 mins ago",
+            details = "Joined Campus Clean-Up Day"
+        ),
+        FriendActivity(
+            friendId = "friend2",
+            friendName = "Sarah Tan",
+            action = "earned_badge",
+            timestamp = "1 hour ago",
+            details = "Unlocked 'Century Club' achievement"
+        )
+    )
+    
+    // Shop Products Mock Data
+    val PRODUCTS = listOf(
+        // Voucher类型
+        Product(
+            id = "p1",
+            name = "Starbucks $5 Off",
+            type = "voucher",
+            category = "food",
+            description = "Valid at all campus locations",
+            pointsPrice = 500,
+            cashPrice = 3.00,
+            available = true,
+            imageUrl = null,
+            tags = listOf("popular", "food")
+        ),
+        Product(
+            id = "p2",
+            name = "Grab $10 Voucher",
+            type = "voucher",
+            category = "transport",
+            description = "$10 credit for Grab rides",
+            pointsPrice = 800,
+            cashPrice = 6.00,
+            available = true,
+            tags = listOf("transport")
+        ),
+        Product(
+            id = "p3",
+            name = "Foodpanda $8 Off",
+            type = "voucher",
+            category = "food",
+            description = "Save $8 on food delivery",
+            pointsPrice = 650,
+            cashPrice = 5.00,
+            available = false,  // 暂时不可用
+            tags = listOf("food")
+        ),
+        
+        // Goods类型
+        Product(
+            id = "p4",
+            name = "Eco Bamboo Bottle",
+            type = "goods",
+            category = "eco_product",
+            description = "Sustainable 500ml water bottle",
+            pointsPrice = 1200,
+            cashPrice = 15.00,
+            available = true,
+            stock = 50,
+            brand = "EcoWare",
+            tags = listOf("eco", "popular")
+        ),
+        Product(
+            id = "p5",
+            name = "EcoGo T-Shirt",
+            type = "goods",
+            category = "merchandise",
+            description = "Official EcoGo merchandise",
+            pointsPrice = null,  // 只支持现金
+            cashPrice = 20.00,
+            available = true,
+            stock = 30,
+            brand = "EcoGo",
+            tags = listOf("merchandise")
+        ),
+        Product(
+            id = "p6",
+            name = "Tree Planting Certificate",
+            type = "goods",
+            category = "digital",
+            description = "Digital certificate - Plant a tree in your name",
+            pointsPrice = 300,
+            cashPrice = null,  // 只支持积分
+            available = true,
+            stock = null,  // 无限库存
+            tags = listOf("eco", "digital")
+        ),
+        Product(
+            id = "p7",
+            name = "Reusable Tote Bag",
+            type = "goods",
+            category = "eco_product",
+            description = "Canvas tote bag for sustainable shopping",
+            pointsPrice = 600,
+            cashPrice = 8.00,
+            available = true,
+            stock = 100,
+            brand = "EcoWare",
+            tags = listOf("eco")
+        ),
+        Product(
+            id = "p8",
+            name = "NUS Bookstore 15% Off",
+            type = "voucher",
+            category = "merchandise",
+            description = "15% discount on books and stationery",
+            pointsPrice = 450,
+            cashPrice = 3.50,
+            available = true,
+            validUntil = "2026-12-31",
+            tags = listOf("education")
         )
     )
 }

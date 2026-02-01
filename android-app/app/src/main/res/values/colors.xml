@@ -3,7 +3,7 @@
     <!-- Primary Colors -->
     <color name="primary">#15803D</color>
     <color name="primary_dark">#14532D</color>
-    <color name="primary_light">#22C55E</color>
+    <color name="primary_light">#F0FDF4</color>
     
     <!-- Secondary Colors -->
     <color name="secondary">#F97316</color>

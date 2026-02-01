@@ -9,7 +9,8 @@ import com.ecogo.R
 import com.ecogo.data.Achievement
 
 class AchievementAdapter(
-    private val achievements: List<Achievement>
+    private val achievements: List<Achievement>,
+    private val onBadgeClick: ((String) -> Unit)? = null
 ) : RecyclerView.Adapter<AchievementAdapter.AchievementViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AchievementViewHolder {
@@ -19,7 +20,7 @@ class AchievementAdapter(
     }
 
     override fun onBindViewHolder(holder: AchievementViewHolder, position: Int) {
-        holder.bind(achievements[position])
+        holder.bind(achievements[position], onBadgeClick)
     }
 
     override fun getItemCount(): Int = achievements.size
@@ -29,15 +30,28 @@ class AchievementAdapter(
         private val name: TextView = itemView.findViewById(R.id.text_badge_name)
         private val desc: TextView = itemView.findViewById(R.id.text_badge_desc)
 
-        fun bind(achievement: Achievement) {
+        fun bind(achievement: Achievement, onBadgeClick: ((String) -> Unit)?) {
             name.text = achievement.name
             desc.text = achievement.description
-            icon.text = achievement.name.firstOrNull()?.uppercase() ?: "★"
+            // 成就图标使用 emoji 展示
+            icon.text = when (achievement.id) {
+                "a1" -> "🚌"  // First Ride
+                "a2" -> "⚡"  // Week Warrior
+                "a3" -> "💯"  // Century Club
+                "a4" -> "🦋"  // Social Butterfly
+                "a5" -> "🎫"  // Master Saver
+                "a6" -> "🏆"  // Eco Champion
+                else -> "🏅"
+            }
 
             if (!achievement.unlocked) {
                 itemView.alpha = 0.5f
             } else {
                 itemView.alpha = 1f
+            }
+            
+            itemView.setOnClickListener {
+                onBadgeClick?.invoke(achievement.id)
             }
         }
     }

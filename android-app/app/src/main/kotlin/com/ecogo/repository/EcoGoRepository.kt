@@ -3,16 +3,28 @@ package com.ecogo.repository
 import com.ecogo.api.*
 import com.ecogo.data.Activity
 import com.ecogo.data.BusRoute
+import com.ecogo.data.CarbonFootprint
 import com.ecogo.data.ChatRequest
 import com.ecogo.data.ChatResponse
+import com.ecogo.data.CheckInResponse
+import com.ecogo.data.CheckInStatus
+import com.ecogo.data.DailyGoal
 import com.ecogo.data.Faculty
+import com.ecogo.data.Friend
+import com.ecogo.data.FriendActivity
 import com.ecogo.data.HistoryItem
+import com.ecogo.data.MockData
+import com.ecogo.data.Notification
+import com.ecogo.data.Product
 import com.ecogo.data.Ranking
 import com.ecogo.data.RecommendationRequest
 import com.ecogo.data.RecommendationResponse
+import com.ecogo.data.RedeemRequest
+import com.ecogo.data.RedeemResponse
 import com.ecogo.data.Voucher
 import com.ecogo.data.VoucherRedeemRequest
 import com.ecogo.data.WalkingRoute
+import com.ecogo.data.Weather
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -441,4 +453,220 @@ class EcoGoRepository {
                 Result.failure(e)
             }
         }
+    
+    // ==================== 新功能 API 方法 ====================
+    
+    /**
+     * 每日签到
+     */
+    suspend fun checkIn(userId: String): Result<CheckInResponse> =
+        withContext(Dispatchers.IO) {
+            try {
+                // 模拟API调用，实际应调用真实API
+                val response = CheckInResponse(
+                    success = true,
+                    pointsEarned = 10,
+                    consecutiveDays = MockData.CHECK_IN_STATUS.consecutiveDays + 1,
+                    message = "签到成功！"
+                )
+                Result.success(response)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    
+    /**
+     * 获取签到状态
+     */
+    suspend fun getCheckInStatus(userId: String): Result<CheckInStatus> =
+        withContext(Dispatchers.IO) {
+            try {
+                Result.success(MockData.CHECK_IN_STATUS)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    
+    /**
+     * 获取今日目标进度
+     */
+    suspend fun getDailyGoal(userId: String): Result<DailyGoal> =
+        withContext(Dispatchers.IO) {
+            try {
+                Result.success(MockData.DAILY_GOAL)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    
+    /**
+     * 获取天气和空气质量
+     */
+    suspend fun getWeather(location: String = "NUS"): Result<Weather> =
+        withContext(Dispatchers.IO) {
+            try {
+                Result.success(MockData.WEATHER)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    
+    /**
+     * 获取通知列表
+     */
+    suspend fun getNotifications(userId: String): Result<List<Notification>> =
+        withContext(Dispatchers.IO) {
+            try {
+                Result.success(MockData.NOTIFICATIONS.filter { !it.isRead })
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    
+    /**
+     * 标记通知为已读
+     */
+    suspend fun markNotificationAsRead(notificationId: String): Result<Boolean> =
+        withContext(Dispatchers.IO) {
+            try {
+                Result.success(true)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    
+    /**
+     * 获取碳足迹数据
+     */
+    suspend fun getCarbonFootprint(userId: String, period: String = "monthly"): Result<CarbonFootprint> =
+        withContext(Dispatchers.IO) {
+            try {
+                Result.success(MockData.CARBON_FOOTPRINT)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    
+    /**
+     * 获取好友列表
+     */
+    suspend fun getFriends(userId: String): Result<List<Friend>> =
+        withContext(Dispatchers.IO) {
+            try {
+                Result.success(MockData.FRIENDS)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    
+    /**
+     * 获取好友动态
+     */
+    suspend fun getFriendActivities(userId: String): Result<List<FriendActivity>> =
+        withContext(Dispatchers.IO) {
+            try {
+                Result.success(MockData.FRIEND_ACTIVITIES)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    
+    // ==================== 商店相关 ====================
+    
+    /**
+     * 获取商店商品列表
+     */
+    suspend fun getShopProducts(
+        type: String? = null,
+        category: String? = null
+    ): Result<List<Product>> = withContext(Dispatchers.IO) {
+        try {
+            val response = api.getShopProducts(type, category)
+            if (response.success && response.data != null) {
+                Result.success(response.data.data)
+            } else {
+                Result.failure(Exception(response.message))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    /**
+     * 获取商品详情
+     */
+    suspend fun getProductById(productId: String): Result<Product> = withContext(Dispatchers.IO) {
+        try {
+            val response = api.getProductById(productId)
+            if (response.success && response.data != null) {
+                Result.success(response.data)
+            } else {
+                Result.failure(Exception(response.message))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    /**
+     * 积分兑换商品
+     */
+    suspend fun redeemProduct(
+        userId: String,
+        productId: String,
+        productType: String
+    ): Result<RedeemResponse> = withContext(Dispatchers.IO) {
+        try {
+            val request = RedeemRequest(userId, productId, productType)
+            val response = api.redeemProduct(request)
+            if (response.success && response.data != null) {
+                Result.success(response.data)
+            } else {
+                Result.failure(Exception(response.message))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    /**
+     * 创建支付Intent
+     */
+    suspend fun createPaymentIntent(
+        userId: String,
+        productId: String
+    ): Result<PaymentIntentResponse> = withContext(Dispatchers.IO) {
+        try {
+            val request = PaymentIntentRequest(userId, productId)
+            val response = api.createPaymentIntent(request)
+            if (response.success && response.data != null) {
+                Result.success(response.data)
+            } else {
+                Result.failure(Exception(response.message))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    /**
+     * 确认支付
+     */
+    suspend fun confirmPayment(
+        userId: String,
+        productId: String,
+        paymentIntentId: String
+    ): Result<OrderDto> = withContext(Dispatchers.IO) {
+        try {
+            val request = ConfirmPaymentRequest(userId, productId, paymentIntentId)
+            val response = api.confirmPayment(request)
+            if (response.success && response.data != null) {
+                Result.success(response.data)
+            } else {
+                Result.failure(Exception(response.message))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

@@ -11,12 +11,29 @@
         android:label="Login"
         tools:layout="@layout/fragment_login">
         <action
+            android:id="@+id/action_login_to_signup"
+            app:destination="@id/signupWizardFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="false" />
+        <action
             android:id="@+id/action_login_to_onboarding"
             app:destination="@id/onboardingFragment"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_login_to_home"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/signupWizardFragment"
+        android:name="com.ecogo.ui.fragments.SignupWizardFragment"
+        android:label="Signup Wizard"
+        tools:layout="@layout/fragment_signup_wizard">
+        <action
+            android:id="@+id/action_signup_to_home"
             app:destination="@id/homeFragment"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true" />
@@ -91,5 +108,23 @@
         android:name="com.ecogo.ui.fragments.MapFragment"
         android:label="Map"
         tools:layout="@layout/fragment_map" />
+
+    <fragment
+        android:id="@+id/mapGreenGoFragment"
+        android:name="com.ecogo.ui.fragments.MapGreenGoFragment"
+        android:label="Map Green Go"
+        tools:layout="@layout/fragment_map_green_go" />
+
+    <fragment
+        android:id="@+id/friendsFragment"
+        android:name="com.ecogo.ui.fragments.FriendsFragment"
+        android:label="Friends"
+        tools:layout="@layout/fragment_friends" />
+
+    <fragment
+        android:id="@+id/shopFragment"
+        android:name="com.ecogo.ui.fragments.ShopFragment"
+        android:label="Shop"
+        tools:layout="@layout/fragment_shop" />
 
 </navigation>

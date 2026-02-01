@@ -2,16 +2,26 @@ package com.ecogo.api
 
 import com.ecogo.data.Activity
 import com.ecogo.data.BusRoute
+import com.ecogo.data.CarbonFootprint
 import com.ecogo.data.ChatRequest
 import com.ecogo.data.ChatResponse
+import com.ecogo.data.CheckIn
+import com.ecogo.data.DailyGoal
 import com.ecogo.data.Faculty
+import com.ecogo.data.Friend
+import com.ecogo.data.FriendActivity
 import com.ecogo.data.HistoryItem
+import com.ecogo.data.Notification
+import com.ecogo.data.Product
 import com.ecogo.data.Ranking
 import com.ecogo.data.RecommendationRequest
 import com.ecogo.data.RecommendationResponse
+import com.ecogo.data.RedeemRequest
+import com.ecogo.data.RedeemResponse
 import com.ecogo.data.Voucher
 import com.ecogo.data.VoucherRedeemRequest
 import com.ecogo.data.WalkingRoute
+import com.ecogo.data.Weather
 import retrofit2.http.*
 
 /**
@@ -272,6 +282,195 @@ interface ApiService {
      */
     @POST("api/v1/chat/send")
     suspend fun sendChat(@Body request: ChatRequest): ApiResponse<ChatResponse>
+    
+    // ==================== 签到相关 ====================
+    
+    /**
+     * 执行签到
+     * POST /api/v1/checkin?userId={userId}
+     */
+    @POST("api/v1/checkin")
+    suspend fun performCheckIn(@Query("userId") userId: String): ApiResponse<Map<String, Any>>
+    
+    /**
+     * 获取签到状态
+     * GET /api/v1/checkin/status/{userId}
+     */
+    @GET("api/v1/checkin/status/{userId}")
+    suspend fun getCheckInStatus(@Path("userId") userId: String): ApiResponse<Map<String, Any>>
+    
+    /**
+     * 获取签到历史
+     * GET /api/v1/checkin/history/{userId}
+     */
+    @GET("api/v1/checkin/history/{userId}")
+    suspend fun getCheckInHistory(@Path("userId") userId: String): ApiResponse<List<CheckIn>>
+    
+    // ==================== 每日目标相关 ====================
+    
+    /**
+     * 获取今日目标
+     * GET /api/v1/goals/daily/{userId}
+     */
+    @GET("api/v1/goals/daily/{userId}")
+    suspend fun getDailyGoal(@Path("userId") userId: String): ApiResponse<DailyGoal>
+    
+    /**
+     * 更新今日目标
+     * PUT /api/v1/goals/daily/{userId}
+     */
+    @PUT("api/v1/goals/daily/{userId}")
+    suspend fun updateDailyGoal(
+        @Path("userId") userId: String,
+        @Body updates: Map<String, Any>
+    ): ApiResponse<DailyGoal>
+    
+    // ==================== 碳足迹相关 ====================
+    
+    /**
+     * 获取碳足迹数据
+     * GET /api/v1/carbon/{userId}?period={period}
+     */
+    @GET("api/v1/carbon/{userId}")
+    suspend fun getCarbonFootprint(
+        @Path("userId") userId: String,
+        @Query("period") period: String = "monthly"
+    ): ApiResponse<CarbonFootprint>
+    
+    /**
+     * 记录出行
+     * POST /api/v1/carbon/record
+     */
+    @POST("api/v1/carbon/record")
+    suspend fun recordTrip(@Body request: Map<String, Any>): ApiResponse<CarbonFootprint>
+    
+    // ==================== 通知相关 ====================
+    
+    /**
+     * 获取用户通知
+     * GET /api/v1/notifications/{userId}
+     */
+    @GET("api/v1/notifications/{userId}")
+    suspend fun getNotifications(@Path("userId") userId: String): ApiResponse<List<Notification>>
+    
+    /**
+     * 获取未读通知
+     * GET /api/v1/notifications/{userId}/unread
+     */
+    @GET("api/v1/notifications/{userId}/unread")
+    suspend fun getUnreadNotifications(@Path("userId") userId: String): ApiResponse<List<Notification>>
+    
+    /**
+     * 标记通知为已读
+     * POST /api/v1/notifications/{notificationId}/read
+     */
+    @POST("api/v1/notifications/{notificationId}/read")
+    suspend fun markNotificationAsRead(@Path("notificationId") notificationId: String): ApiResponse<Notification>
+    
+    /**
+     * 标记所有通知为已读
+     * POST /api/v1/notifications/{userId}/read-all
+     */
+    @POST("api/v1/notifications/{userId}/read-all")
+    suspend fun markAllNotificationsAsRead(@Path("userId") userId: String): ApiResponse<Unit>
+    
+    // ==================== 好友相关 ====================
+    
+    /**
+     * 获取好友列表
+     * GET /api/v1/friends/{userId}
+     */
+    @GET("api/v1/friends/{userId}")
+    suspend fun getFriends(@Path("userId") userId: String): ApiResponse<List<Friend>>
+    
+    /**
+     * 添加好友
+     * POST /api/v1/friends/add
+     */
+    @POST("api/v1/friends/add")
+    suspend fun addFriend(@Body request: Map<String, String>): ApiResponse<Friend>
+    
+    /**
+     * 删除好友
+     * DELETE /api/v1/friends/{userId}/{friendId}
+     */
+    @DELETE("api/v1/friends/{userId}/{friendId}")
+    suspend fun removeFriend(
+        @Path("userId") userId: String,
+        @Path("friendId") friendId: String
+    ): ApiResponse<Unit>
+    
+    /**
+     * 获取好友请求
+     * GET /api/v1/friends/requests/{userId}
+     */
+    @GET("api/v1/friends/requests/{userId}")
+    suspend fun getFriendRequests(@Path("userId") userId: String): ApiResponse<List<Friend>>
+    
+    /**
+     * 接受好友请求
+     * POST /api/v1/friends/accept
+     */
+    @POST("api/v1/friends/accept")
+    suspend fun acceptFriendRequest(@Body request: Map<String, String>): ApiResponse<Friend>
+    
+    /**
+     * 获取好友动态
+     * GET /api/v1/friends/{userId}/activities
+     */
+    @GET("api/v1/friends/{userId}/activities")
+    suspend fun getFriendActivities(@Path("userId") userId: String): ApiResponse<List<FriendActivity>>
+    
+    // ==================== 天气相关（可选，使用第三方API） ====================
+    
+    /**
+     * 获取天气数据
+     * GET /api/v1/weather?location={location}
+     */
+    @GET("api/v1/weather")
+    suspend fun getWeather(@Query("location") location: String = "NUS"): ApiResponse<Weather>
+    
+    // ==================== 商店相关 ====================
+    
+    /**
+     * 获取所有商品
+     * GET /api/v1/shop/products
+     */
+    @GET("api/v1/shop/products")
+    suspend fun getShopProducts(
+        @Query("type") type: String? = null,  // "voucher", "goods", "all"
+        @Query("category") category: String? = null,
+        @Query("page") page: Int = 1,
+        @Query("size") size: Int = 20
+    ): ApiResponse<ProductsResponse>
+    
+    /**
+     * 获取单个商品详情
+     * GET /api/v1/shop/products/{id}
+     */
+    @GET("api/v1/shop/products/{id}")
+    suspend fun getProductById(@Path("id") id: String): ApiResponse<Product>
+    
+    /**
+     * 积分兑换
+     * POST /api/v1/shop/redeem
+     */
+    @POST("api/v1/shop/redeem")
+    suspend fun redeemProduct(@Body request: RedeemRequest): ApiResponse<RedeemResponse>
+    
+    /**
+     * 创建PaymentIntent
+     * POST /api/v1/shop/payment-intent
+     */
+    @POST("api/v1/shop/payment-intent")
+    suspend fun createPaymentIntent(@Body request: PaymentIntentRequest): ApiResponse<PaymentIntentResponse>
+    
+    /**
+     * 确认支付
+     * POST /api/v1/shop/confirm-payment
+     */
+    @POST("api/v1/shop/confirm-payment")
+    suspend fun confirmPayment(@Body request: ConfirmPaymentRequest): ApiResponse<OrderDto>
 }
 
 // ==================== DTO 数据类 ====================
@@ -412,4 +611,37 @@ data class DashboardStatsDto(
     val totalCarbonCredits: Long,
     val totalCarbonReduction: Long,
     val redemptionVolume: Long
+)
+
+/**
+ * 商品响应（带分页）
+ */
+data class ProductsResponse(
+    val data: List<Product>,
+    val pagination: PaginationDto
+)
+
+/**
+ * 支付Intent请求
+ */
+data class PaymentIntentRequest(
+    val userId: String,
+    val productId: String
+)
+
+/**
+ * 支付Intent响应
+ */
+data class PaymentIntentResponse(
+    val clientSecret: String,
+    val publishableKey: String
+)
+
+/**
+ * 确认支付请求
+ */
+data class ConfirmPaymentRequest(
+    val userId: String,
+    val productId: String,
+    val paymentIntentId: String
 )

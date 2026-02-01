@@ -37,8 +37,8 @@ class LoginFragment : Fragment() {
         }
         
         binding.buttonRegister.setOnClickListener {
-            // Handle registration
-            findNavController().navigate(R.id.action_login_to_onboarding)
+            // Navigate to signup wizard
+            findNavController().navigate(R.id.action_login_to_signup)
         }
     }
     

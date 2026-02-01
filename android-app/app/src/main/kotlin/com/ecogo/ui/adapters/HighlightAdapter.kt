@@ -9,7 +9,8 @@ import com.ecogo.R
 import com.ecogo.data.Activity
 
 class HighlightAdapter(
-    private val activities: List<Activity>
+    private val activities: List<Activity>,
+    private val onItemClick: (Activity) -> Unit
 ) : RecyclerView.Adapter<HighlightAdapter.HighlightViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HighlightViewHolder {
@@ -19,7 +20,7 @@ class HighlightAdapter(
     }
 
     override fun onBindViewHolder(holder: HighlightViewHolder, position: Int) {
-        holder.bind(activities[position])
+        holder.bind(activities[position], onItemClick)
     }
 
     override fun getItemCount(): Int = activities.size
@@ -29,7 +30,7 @@ class HighlightAdapter(
         private val title: TextView = itemView.findViewById(R.id.text_highlight_title)
         private val desc: TextView = itemView.findViewById(R.id.text_highlight_desc)
 
-        fun bind(activity: Activity) {
+        fun bind(activity: Activity, onItemClick: (Activity) -> Unit) {
             title.text = activity.title
             val dateStr = activity.startTime?.let { it.substring(0, 10) } ?: "TBD"
             desc.text = "$dateStr • ${activity.description.take(20)}"
@@ -42,6 +43,10 @@ class HighlightAdapter(
                 activity.title.contains("Friday", ignoreCase = true) -> "🚶"
                 activity.title.contains("Container", ignoreCase = true) -> "🍱"
                 else -> "🌱"
+            }
+            
+            itemView.setOnClickListener {
+                onItemClick(activity)
             }
         }
     }

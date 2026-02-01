@@ -33,19 +33,21 @@ class OnboardingFragment : Fragment() {
         adapter = OnboardingAdapter()
         binding.viewPager.adapter = adapter
         
-        // Setup tab layout with view pager
-        TabLayoutMediator(binding.tabLayout, binding.viewPager) { _, _ -> }.attach()
-        
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
+                updateProgressDots(position)
                 if (position == 2) {
                     binding.buttonNext.text = getString(R.string.onboarding_get_started)
+                    binding.buttonNext.icon = null
                 } else {
                     binding.buttonNext.text = getString(R.string.onboarding_next)
+                    binding.buttonNext.setIconResource(R.drawable.ic_chevron_right)
                 }
             }
         })
+        
+        updateProgressDots(0)
         
         binding.buttonNext.setOnClickListener {
             val currentItem = binding.viewPager.currentItem

@@ -10,7 +10,8 @@ import com.ecogo.R
 import com.ecogo.data.WalkingRoute
 
 class WalkingRouteAdapter(
-    private val routes: List<WalkingRoute>
+    private val routes: List<WalkingRoute>,
+    private val onItemClick: (WalkingRoute) -> Unit
 ) : RecyclerView.Adapter<WalkingRouteAdapter.WalkingRouteViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WalkingRouteViewHolder {
@@ -20,7 +21,7 @@ class WalkingRouteAdapter(
     }
 
     override fun onBindViewHolder(holder: WalkingRouteViewHolder, position: Int) {
-        holder.bind(routes[position], position)
+        holder.bind(routes[position], position, onItemClick)
     }
 
     override fun getItemCount(): Int = routes.size
@@ -31,7 +32,7 @@ class WalkingRouteAdapter(
         private val title: TextView = itemView.findViewById(R.id.text_route_title)
         private val distance: TextView = itemView.findViewById(R.id.text_route_distance)
 
-        fun bind(route: WalkingRoute, position: Int) {
+        fun bind(route: WalkingRoute, position: Int, onItemClick: (WalkingRoute) -> Unit) {
             time.text = route.time
             title.text = route.title
             distance.text = route.distance
@@ -42,6 +43,10 @@ class WalkingRouteAdapter(
                 R.drawable.bg_route_gradient_orange
             )
             background.setBackgroundResource(gradients[position % gradients.size])
+            
+            itemView.setOnClickListener {
+                onItemClick(route)
+            }
         }
     }
 }

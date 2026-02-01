@@ -34,8 +34,8 @@
     <string name="home_upcoming_activities">Upcoming Activities</string>
     <string name="home_view_all">View All</string>
     <string name="home_greeting">Hello, Alex</string>
-    <string name="home_location">Near University Town</string>
-    <string name="home_plan_title">Where to today?</string>
+    <string name="home_location">Sunday, February 1, 2026</string>
+    <string name="home_plan_title">+ Today\'s Goals</string>
     <string name="home_plan_hint">e.g. Science Library, Gym...</string>
     <string name="home_plan_go">Go</string>
     <string name="home_monthly_label">Monthly</string>
@@ -73,6 +73,9 @@
     <string name="profile_title">Profile</string>
     <string name="profile_points">GREEN POINTS</string>
     <string name="profile_shop">Closet</string>
+    <string name="profile_shop_section">Closet &amp; Badges</string>
+    <string name="profile_faculty_outfits">学院服装</string>
+    <string name="profile_all_outfits">全部服装</string>
     <string name="profile_achievements">Badges</string>
     <string name="profile_history">History</string>
     <string name="profile_settings">Settings</string>
@@ -107,10 +110,53 @@
     <string name="map_faculties">Faculties</string>
     <string name="map_placeholder">Interactive map preview</string>
     
+    <!-- Map Green Go Navigation -->
+    <string name="nav_green_go">Green Go</string>
+    <string name="search_location">搜索地点...</string>
+    <string name="search_locations_hint">搜索校园地点</string>
+    <string name="my_location">我的位置</string>
+    <string name="current_location">当前位置</string>
+    <string name="select_destination">选择目的地</string>
+    <string name="plan_your_route">规划路线</string>
+    <string name="choose_transport_mode">选择交通方式</string>
+    <string name="transport_mode">交通方式</string>
+    <string name="walk">步行</string>
+    <string name="cycle">骑行</string>
+    <string name="bus">公交</string>
+    <string name="mixed">混合</string>
+    <string name="route_options">路线选项</string>
+    <string name="start_navigation">开始导航</string>
+    <string name="end_navigation">结束导航</string>
+    <string name="pause_navigation">暂停导航</string>
+    <string name="resume_navigation">继续导航</string>
+    <string name="estimated_time">预计时间</string>
+    <string name="distance">距离</string>
+    <string name="carbon_saved">CO₂节省</string>
+    <string name="green_points">绿色积分</string>
+    <string name="money_saved">节省金额</string>
+    <string name="search">搜索</string>
+    <string name="back">返回</string>
+    <string name="trip_history">行程历史</string>
+    <string name="map_settings">地图设置</string>
+    <string name="share_route">分享路线</string>
+    <string name="navigation_in_progress">导航进行中</string>
+    <string name="trip_completed">行程完成</string>
+    <string name="congratulations">恭喜！</string>
+    <string name="total_carbon_saved">总共节省CO₂</string>
+    <string name="total_points_earned">获得积分</string>
+    
     <!-- Common -->
     <string name="common_loading">Loading...</string>
     <string name="common_error">An error occurred</string>
     <string name="common_retry">Retry</string>
     <string name="common_cancel">Cancel</string>
     <string name="common_ok">OK</string>
+    
+    <!-- Empty States -->
+    <string name="empty_network_error_title">Network Error</string>
+    <string name="empty_network_error_desc">Please check your connection and try again</string>
+    <string name="empty_no_data_title">No Data Available</string>
+    <string name="empty_no_data_desc">There is nothing to display at the moment</string>
+    <string name="empty_loading_title">Loading</string>
+    <string name="empty_loading_desc">Please wait while we fetch your data</string>
 </resources>
