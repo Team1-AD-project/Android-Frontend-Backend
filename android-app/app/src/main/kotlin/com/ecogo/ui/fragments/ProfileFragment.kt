@@ -354,7 +354,13 @@ class ProfileFragment : Fragment() {
             findNavController().navigate(R.id.action_profile_to_settings)
         }
         binding.buttonRedeem.setOnClickListener {
-            findNavController().navigate(R.id.voucherFragment)
+            findNavController().navigate(R.id.action_profile_to_voucher)
+        }
+        
+        // 添加商店入口：点击Closet tab可以进入完整商店
+        binding.tabCloset.setOnLongClickListener {
+            findNavController().navigate(R.id.action_profile_to_shop)
+            true
         }
     }
     

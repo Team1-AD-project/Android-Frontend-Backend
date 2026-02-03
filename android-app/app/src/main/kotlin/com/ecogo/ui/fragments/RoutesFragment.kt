@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ecogo.R
 import com.ecogo.data.MockData
 import com.ecogo.databinding.FragmentRoutesBinding
 import com.ecogo.ui.adapters.BusRouteAdapter
@@ -40,15 +42,25 @@ class RoutesFragment : Fragment() {
     private fun setupRecyclerView() {
         binding.recyclerRoutes.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = BusRouteAdapter(emptyList())
+            adapter = BusRouteAdapter(emptyList()) { route ->
+                handleRouteClick(route)
+            }
         }
     }
 
     private fun loadRoutes() {
         viewLifecycleOwner.lifecycleScope.launch {
             val routes = repository.getBusRoutes().getOrElse { MockData.ROUTES }
-            binding.recyclerRoutes.adapter = BusRouteAdapter(routes)
+            binding.recyclerRoutes.adapter = BusRouteAdapter(routes) { route ->
+                handleRouteClick(route)
+            }
         }
+    }
+    
+    private fun handleRouteClick(route: com.ecogo.data.BusRoute) {
+        // 跳转到路线规划页面
+        findNavController()
+            .navigate(R.id.action_routes_to_routePlanner)
     }
 
     private fun setupAnimations() {

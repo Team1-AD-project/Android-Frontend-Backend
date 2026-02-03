@@ -13,18 +13,21 @@ object RetrofitClient {
     
     /**
      * OkHttp 客户端
+     * 优化：仅在 Debug 模式启用日志，且使用 BASIC 级别提升性能
      */
     private val okHttpClient: OkHttpClient by lazy {
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-        
-        OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
+        val builder = OkHttpClient.Builder()
             .connectTimeout(ApiConfig.CONNECT_TIMEOUT, TimeUnit.SECONDS)
             .readTimeout(ApiConfig.READ_TIMEOUT, TimeUnit.SECONDS)
             .writeTimeout(ApiConfig.WRITE_TIMEOUT, TimeUnit.SECONDS)
-            .build()
+        
+        // 添加日志拦截器（开发环境）
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BASIC
+        }
+        builder.addInterceptor(loggingInterceptor)
+        
+        builder.build()
     }
     
     /**

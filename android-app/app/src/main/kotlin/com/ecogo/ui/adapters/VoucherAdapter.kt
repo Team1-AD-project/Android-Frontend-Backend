@@ -9,8 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ecogo.R
 import com.ecogo.data.Voucher
 
-class VoucherAdapter(private val vouchers: List<Voucher>) :
-    RecyclerView.Adapter<VoucherAdapter.VoucherViewHolder>() {
+class VoucherAdapter(
+    private var vouchers: List<Voucher>,
+    private val onVoucherClick: (Voucher) -> Unit = {}
+) : RecyclerView.Adapter<VoucherAdapter.VoucherViewHolder>() {
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VoucherViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -19,10 +21,19 @@ class VoucherAdapter(private val vouchers: List<Voucher>) :
     }
     
     override fun onBindViewHolder(holder: VoucherViewHolder, position: Int) {
-        holder.bind(vouchers[position])
+        val voucher = vouchers[position]
+        holder.bind(voucher)
+        holder.itemView.setOnClickListener {
+            onVoucherClick(voucher)
+        }
     }
     
     override fun getItemCount() = vouchers.size
+    
+    fun updateVouchers(newVouchers: List<Voucher>) {
+        vouchers = newVouchers
+        notifyDataSetChanged()
+    }
     
     class VoucherViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val icon: TextView = itemView.findViewById(R.id.text_icon)

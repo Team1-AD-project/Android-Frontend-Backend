@@ -27,16 +27,19 @@ object ApiConfig {
     
     /**
      * 连接超时时间（秒）
+     * 优化：从30秒减少到10秒，避免长时间等待
      */
-    const val CONNECT_TIMEOUT = 30L
+    const val CONNECT_TIMEOUT = 10L
     
     /**
      * 读取超时时间（秒）
+     * 优化：从30秒减少到15秒
      */
-    const val READ_TIMEOUT = 30L
+    const val READ_TIMEOUT = 15L
     
     /**
      * 写入超时时间（秒）
+     * 优化：从30秒减少到15秒
      */
-    const val WRITE_TIMEOUT = 30L
+    const val WRITE_TIMEOUT = 15L
 }

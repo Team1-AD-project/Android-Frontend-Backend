@@ -44,11 +44,11 @@ class FriendsFragment : Fragment() {
             adapter = FriendAdapter(emptyList(), 
                 onMessageClick = { friend ->
                     // 跳转到聊天页面
-                    findNavController().navigate(com.ecogo.R.id.chatFragment)
+                    findNavController().navigate(com.ecogo.R.id.action_friends_to_chat)
                 },
                 onFriendClick = { friend ->
-                    // 跳转到好友详情（可以是个人资料页）
-                    findNavController().navigate(com.ecogo.R.id.profileFragment)
+                    // 跳转到好友详情（个人资料页）
+                    findNavController().navigate(com.ecogo.R.id.action_friends_to_profile)
                 }
             )
         }
@@ -67,6 +67,7 @@ class FriendsFragment : Fragment() {
                 },
                 onFriendClick = { friend ->
                     // 查看请求详情
+                    findNavController().navigate(com.ecogo.R.id.action_friends_to_profile)
                 }
             )
         }
@@ -85,10 +86,10 @@ class FriendsFragment : Fragment() {
             val friends = repository.getFriends("user123").getOrElse { MockData.FRIENDS }
             binding.recyclerFriends.adapter = FriendAdapter(friends,
                 onMessageClick = { friend ->
-                    findNavController().navigate(com.ecogo.R.id.chatFragment)
+                    findNavController().navigate(com.ecogo.R.id.action_friends_to_chat)
                 },
                 onFriendClick = { friend ->
-                    findNavController().navigate(com.ecogo.R.id.profileFragment)
+                    findNavController().navigate(com.ecogo.R.id.action_friends_to_profile)
                 }
             )
 

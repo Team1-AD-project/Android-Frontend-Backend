@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="0dp"
+    android:layout_height="48dp"
+    android:layout_margin="2dp"
+    android:background="@drawable/bg_calendar_day"
+    android:clickable="true"
+    android:focusable="true">
+
+    <!-- 选中状态背景 -->
+    <View
+        android:id="@+id/view_selected"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_calendar_selected"
+        android:visibility="gone" />
+
+    <!-- 日期文字 -->
+    <TextView
+        android:id="@+id/text_day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="1"
+        android:textColor="@color/text_primary"
+        android:textSize="15sp" />
+
+    <!-- 已签到标记 -->
+    <ImageView
+        android:id="@+id/icon_check"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="4dp"
+        android:src="@drawable/ic_check"
+        android:visibility="gone"
+        app:tint="@color/text_white" />
+</FrameLayout>

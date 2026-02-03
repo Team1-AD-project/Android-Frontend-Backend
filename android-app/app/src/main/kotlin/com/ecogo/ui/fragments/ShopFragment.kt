@@ -96,8 +96,8 @@ class ShopFragment : Fragment() {
                 // When API returns empty list (e.g. no vouchers in backend), use MockData so voucher/goods tabs show content
                 val listToShow = if (products.isEmpty()) {
                     when (currentFilter) {
-                        "voucher" -> MockData.PRODUCTS.filter { it.type == "voucher" }
-                        "goods" -> MockData.PRODUCTS.filter { it.type == "goods" }
+                        "voucher" -> MockData.PRODUCTS.filter { product -> product.type == "voucher" }
+                        "goods" -> MockData.PRODUCTS.filter { product -> product.type == "goods" }
                         else -> MockData.PRODUCTS
                     }
                 } else {
@@ -107,8 +107,8 @@ class ShopFragment : Fragment() {
             }.onFailure { error: Throwable ->
                 Toast.makeText(context, "加载失败: ${error.message}", Toast.LENGTH_SHORT).show()
                 val filteredProducts = when (currentFilter) {
-                    "voucher" -> MockData.PRODUCTS.filter { it.type == "voucher" }
-                    "goods" -> MockData.PRODUCTS.filter { it.type == "goods" }
+                    "voucher" -> MockData.PRODUCTS.filter { product -> product.type == "voucher" }
+                    "goods" -> MockData.PRODUCTS.filter { product -> product.type == "goods" }
                     else -> MockData.PRODUCTS
                 }
                 (binding.recyclerProducts.adapter as ProductAdapter).updateProducts(filteredProducts)
@@ -236,7 +236,7 @@ class ShopFragment : Fragment() {
                 productId = product.id
             )
             
-            result.onSuccess { paymentData ->
+            result.onSuccess { paymentData: com.ecogo.api.PaymentIntentResponse ->
                 // 配置Stripe
                 PaymentConfiguration.init(
                     requireContext(),
@@ -248,7 +248,7 @@ class ShopFragment : Fragment() {
                 
                 // 显示支付表单
                 presentPaymentSheet(paymentData.clientSecret)
-            }.onFailure { error ->
+            }.onFailure { error: Throwable ->
                 Toast.makeText(context, "初始化支付失败: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         }
@@ -295,10 +295,10 @@ class ShopFragment : Fragment() {
                 paymentIntentId = paymentIntentId
             )
             
-            result.onSuccess { order ->
+            result.onSuccess { order: com.ecogo.api.OrderDto ->
                 showPurchaseSuccessDialog(product)
                 loadProducts()  // 刷新列表
-            }.onFailure { error ->
+            }.onFailure { error: Throwable ->
                 Toast.makeText(context, "确认订单失败: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         }

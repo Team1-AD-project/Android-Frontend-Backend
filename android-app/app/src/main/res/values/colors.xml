@@ -18,6 +18,7 @@
     <!-- Text Colors -->
     <color name="text_primary">#1E293B</color>
     <color name="text_secondary">#64748B</color>
+    <color name="text_muted">#94A3B8</color>
     <color name="text_hint">#9CA3AF</color>
     <color name="text_white">#FFFFFF</color>
     

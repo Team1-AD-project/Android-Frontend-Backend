@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.ecogo.data.MockData
 import com.ecogo.databinding.FragmentMapBinding
 import com.ecogo.repository.EcoGoRepository
@@ -34,7 +35,22 @@ class MapFragment : Fragment() {
         val slideUp = AnimationUtils.loadAnimation(requireContext(), com.ecogo.R.anim.slide_up)
         binding.cardFaculty.startAnimation(slideUp)
 
+        setupActions()
         loadFaculty()
+    }
+    
+    private fun setupActions() {
+        // 点击地图区域跳转到 Green Go 地图
+        binding.textPlaceholder.setOnClickListener {
+            findNavController()
+                .navigate(com.ecogo.R.id.action_map_to_mapGreenGo)
+        }
+        
+        // 点击学院卡片跳转到路线规划
+        binding.cardFaculty.setOnClickListener {
+            findNavController()
+                .navigate(com.ecogo.R.id.action_map_to_routePlanner)
+        }
     }
 
     private fun loadFaculty() {

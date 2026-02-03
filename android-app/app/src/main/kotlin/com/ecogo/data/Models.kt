@@ -23,7 +23,7 @@ data class Community(
     val change: Int
 )
 
-// Ranking（排行榜数据，匹配后端 Ranking.java）
+// Ranking (Leaderboard data, matches backend Ranking.java)
 data class Ranking(
     val id: String? = null,
     val period: String,
@@ -64,7 +64,7 @@ data class WalkingRoute(
     val description: String
 )
 
-// Activity（匹配后端 Activity.java）
+// Activity (Matches backend Activity.java)
 data class Activity(
     val id: String? = null,
     val title: String,
@@ -100,22 +100,22 @@ data class HistoryItem(
 
 // Mascot Emotion States
 enum class MascotEmotion {
-    NORMAL,      // 正常表情
-    HAPPY,       // 开心（已有）
-    SAD,         // 伤心
-    THINKING,    // 思考
-    WAVING,      // 挥手
-    CELEBRATING, // 庆祝
-    SLEEPING,    // 睡觉
-    CONFUSED     // 困惑
+    NORMAL,      // Normal expression
+    HAPPY,       // Happy (existing)
+    SAD,         // Sad
+    THINKING,    // Thinking
+    WAVING,      // Waving
+    CELEBRATING, // Celebrating
+    SLEEPING,    // Sleeping
+    CONFUSED     // Confused
 }
 
 // Mascot Size Presets
 enum class MascotSize(val dp: Int) {
-    SMALL(32),    // 小图标
-    MEDIUM(48),   // 中等尺寸（头像）
-    LARGE(120),   // 大尺寸（Profile）
-    XLARGE(200)   // 超大尺寸（弹窗展示）
+    SMALL(32),    // Small icon
+    MEDIUM(48),   // Medium size (avatar)
+    LARGE(120),   // Large size (Profile)
+    XLARGE(200)   // Extra large size (popup display)
 }
 
 // Mascot Outfit
@@ -123,7 +123,7 @@ data class Outfit(
     val head: String = "none",
     val face: String = "none",
     val body: String = "none",
-    val badge: String = "none"  // 新增徽章槽位
+    val badge: String = "none"  // Added badge slot
 )
 
 // Faculty for Map
@@ -218,7 +218,7 @@ data class Weather(
     val humidity: Int, // percentage
     val aqi: Int, // Air Quality Index
     val aqiLevel: String, // Good, Moderate, Unhealthy, etc.
-    val recommendation: String // 出行建议
+    val recommendation: String // Travel recommendation
 )
 
 // Notification
@@ -229,7 +229,7 @@ data class Notification(
     val message: String,
     val timestamp: String,
     val isRead: Boolean = false,
-    val actionUrl: String? = null // 点击后跳转的目标
+    val actionUrl: String? = null // Target to navigate after click
 )
 
 // Carbon Footprint
@@ -237,7 +237,7 @@ data class CarbonFootprint(
     val userId: String,
     val period: String, // daily, weekly, monthly
     val co2Saved: Float, // kg
-    val equivalentTrees: Int, // 相当于多少棵树
+    val equivalentTrees: Int, // Equivalent to how many trees
     val tripsByBus: Int,
     val tripsByWalking: Int,
     val tripsByBicycle: Int = 0
@@ -261,7 +261,7 @@ data class FriendActivity(
     val details: String
 )
 
-// Shop Product (统一商品模型)
+// Shop Product (Unified product model)
 data class Product(
     val id: String,
     val name: String,
@@ -269,22 +269,22 @@ data class Product(
     val type: String,  // "voucher" 或 "goods"
     val category: String,  // "food", "transport", "eco_product", "merchandise", "digital"
     
-    // 双重价格
-    val pointsPrice: Int?,  // null表示不支持积分
-    val cashPrice: Double?,  // null表示不支持现金
+    // Dual pricing
+    val pointsPrice: Int?,  // null means points not supported
+    val cashPrice: Double?,  // null means cash not supported
     
-    // 库存和可用性
+    // Stock and availability
     val available: Boolean = true,
     val stock: Int? = null,
     
-    // 额外信息
+    // Additional info
     val imageUrl: String? = null,
     val brand: String? = null,
     val validUntil: String? = null,
     val tags: List<String> = emptyList()
 )
 
-// 兑换请求
+// Redeem request
 data class RedeemRequest(
     val userId: String,
     val productId: String,
@@ -292,7 +292,7 @@ data class RedeemRequest(
     val quantity: Int = 1
 )
 
-// 订单数据
+// Order data
 data class OrderDto(
     val id: String,
     val userId: String,
@@ -307,10 +307,60 @@ data class OrderDto(
     val updatedAt: String? = null
 )
 
-// 兑换响应
+// Redeem response
 data class RedeemResponse(
     val success: Boolean,
     val message: String,
     val order: OrderDto?,
     val remainingPoints: Int?
+)
+
+// Challenge - Challenge data model
+data class Challenge(
+    val id: String,
+    val title: String,
+    val description: String,
+    val type: String, // INDIVIDUAL, TEAM, FACULTY
+    val target: Int,  // Target value (e.g. 10 trips)
+    val current: Int = 0, // Current progress
+    val reward: Int,  // Points reward
+    val badge: String? = null, // Badge ID
+    val startTime: String,
+    val endTime: String,
+    val participants: Int = 0,
+    val topUsers: List<User> = emptyList(),
+    val status: String = "ACTIVE", // ACTIVE, COMPLETED, EXPIRED
+    val icon: String = "🏆"
+)
+
+// User - Simplified user model (for challenge leaderboard)
+data class User(
+    val id: String,
+    val username: String,
+    val points: Int = 0,
+    val avatar: String? = null
+)
+
+// FeedItem - Community feed data model
+data class FeedItem(
+    val id: String,
+    val userId: String,
+    val username: String,
+    val type: String, // TRIP, ACHIEVEMENT, ACTIVITY, CHALLENGE
+    val content: String,
+    val timestamp: Long,
+    val likes: Int = 0,
+    val iconUrl: String? = null
+)
+
+// GreenSpot - Green spot data model
+data class GreenSpot(
+    val id: String,
+    val name: String,
+    val lat: Double,
+    val lng: Double,
+    val type: String, // TREE, RECYCLE_BIN, PARK, LANDMARK
+    val reward: Int,
+    val description: String,
+    val collected: Boolean = false
 )

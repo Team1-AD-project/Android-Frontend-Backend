@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ecogo.R
 import com.ecogo.data.MascotSize
 import com.ecogo.data.MockData
 import com.ecogo.data.Outfit
@@ -81,32 +82,52 @@ class HomeFragment : Fragment() {
         }
     }
 
+    /**
+     * 优化：使用并发加载和懒加载策略
+     * 1. 关键数据立即加载（巴士信息）
+     * 2. 次要数据并发加载
+     * 3. 非关键数据延迟加载
+     */
     private fun loadData() {
         viewLifecycleOwner.lifecycleScope.launch {
-            val routesResult = repository.getBusRoutes().getOrElse { MockData.ROUTES }
-            val firstRoute = routesResult.firstOrNull()
-            if (firstRoute != null) {
-                binding.textBusNumber.text = firstRoute.name
-                binding.textBusTime.text = firstRoute.time ?: "${firstRoute.nextArrival} min"
-                binding.textBusRoute.text = if (firstRoute.to.isNotEmpty()) "to ${firstRoute.to}" else "to ${firstRoute.name}"
-            }
-
-            val activitiesResult = repository.getAllActivities().getOrElse { MockData.ACTIVITIES }
-            binding.recyclerHighlights.adapter = HighlightAdapter(activitiesResult.take(3)) { activity ->
-                findNavController().navigate(com.ecogo.R.id.activitiesFragment)
-            }
-
-            val walkingRoutes = repository.getWalkingRoutes().getOrElse { MockData.WALKING_ROUTES }
-            binding.recyclerWalkingRoutes.adapter = WalkingRouteAdapter(walkingRoutes) { route ->
-                findNavController().navigate(com.ecogo.R.id.routesFragment)
-            }
+            // 第一优先级：立即加载关键数据（巴士信息）
+            loadBusInfo()
             
-            // === 加载新功能数据 ===
-            loadCheckInStatus()
-            loadNotifications()
-            loadDailyGoal()
-            loadCarbonFootprint()
-            loadWeather()
+            // 第二优先级：并发加载次要数据
+            launch { loadActivities() }
+            launch { loadWalkingRoutes() }
+            
+            // 第三优先级：延迟加载非关键数据（200ms后）
+            kotlinx.coroutines.delay(200)
+            launch { loadCheckInStatus() }
+            launch { loadNotifications() }
+            launch { loadDailyGoal() }
+            launch { loadCarbonFootprint() }
+            launch { loadWeather() }
+        }
+    }
+    
+    private suspend fun loadBusInfo() {
+        val routesResult = repository.getBusRoutes().getOrElse { MockData.ROUTES }
+        val firstRoute = routesResult.firstOrNull()
+        if (firstRoute != null) {
+            binding.textBusNumber.text = firstRoute.name
+            binding.textBusTime.text = firstRoute.time ?: "${firstRoute.nextArrival} min"
+            binding.textBusRoute.text = if (firstRoute.to.isNotEmpty()) "to ${firstRoute.to}" else "to ${firstRoute.name}"
+        }
+    }
+    
+    private suspend fun loadActivities() {
+        val activitiesResult = repository.getAllActivities().getOrElse { MockData.ACTIVITIES }
+        binding.recyclerHighlights.adapter = HighlightAdapter(activitiesResult.take(3)) { activity ->
+            findNavController().navigate(com.ecogo.R.id.activitiesFragment)
+        }
+    }
+    
+    private suspend fun loadWalkingRoutes() {
+        val walkingRoutes = repository.getWalkingRoutes().getOrElse { MockData.WALKING_ROUTES }
+        binding.recyclerWalkingRoutes.adapter = WalkingRouteAdapter(walkingRoutes) { route ->
+            findNavController().navigate(com.ecogo.R.id.routesFragment)
         }
     }
 
@@ -166,9 +187,9 @@ class HomeFragment : Fragment() {
         
         // === 新功能点击事件 ===
         
-        // 每日签到按钮
+        // 每日签到按钮 - 跳转到完整日历界面
         binding.buttonCheckin.setOnClickListener {
-            performCheckIn()
+            findNavController().navigate(R.id.action_home_to_checkInCalendar)
         }
         
         // 通知横幅关闭按钮
@@ -189,6 +210,18 @@ class HomeFragment : Fragment() {
         // 今日目标卡片点击
         binding.cardDailyGoal.setOnClickListener {
             findNavController().navigate(com.ecogo.R.id.profileFragment)
+        }
+        
+        // === 快捷入口点击事件 ===
+        
+        // Voucher快捷入口
+        binding.cardVoucherShortcut.setOnClickListener {
+            findNavController().navigate(com.ecogo.R.id.action_home_to_voucher)
+        }
+        
+        // Challenges快捷入口
+        binding.cardChallengesShortcut.setOnClickListener {
+            findNavController().navigate(com.ecogo.R.id.action_home_to_challenges)
         }
     }
 

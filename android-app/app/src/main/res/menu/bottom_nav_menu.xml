@@ -4,10 +4,15 @@
         android:id="@+id/homeFragment"
         android:icon="@drawable/ic_navigation"
         android:title="@string/nav_home" />
-    <item
+    <!-- 临时禁用地图按钮 -->
+    <!-- <item
         android:id="@+id/mapGreenGoFragment"
         android:icon="@drawable/ic_map_pin"
-        android:title="@string/nav_green_go" />
+        android:title="@string/nav_green_go" /> -->
+    <item
+        android:id="@+id/routesFragment"
+        android:icon="@drawable/ic_route"
+        android:title="@string/nav_routes" />
     <item
         android:id="@+id/communityFragment"
         android:icon="@drawable/ic_users"

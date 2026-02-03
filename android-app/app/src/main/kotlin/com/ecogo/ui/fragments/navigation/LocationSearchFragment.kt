@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ecogo.data.MockData
 import com.ecogo.data.NavLocation
@@ -23,6 +25,7 @@ class LocationSearchFragment : Fragment() {
     private var _binding: FragmentLocationSearchBinding? = null
     private val binding get() = _binding!!
     
+    private val args: LocationSearchFragmentArgs by navArgs()
     private lateinit var viewModel: NavigationViewModel
     private lateinit var locationAdapter: LocationAdapter
     
@@ -41,6 +44,7 @@ class LocationSearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
+        isSelectingOrigin = args.isSelectingOrigin
         viewModel = ViewModelProvider(requireActivity())[NavigationViewModel::class.java]
         
         setupRecyclerView()
@@ -76,8 +80,10 @@ class LocationSearchFragment : Fragment() {
     
     private fun setupUI() {
         binding.btnBack.setOnClickListener {
-            parentFragmentManager.popBackStack()
+            findNavController().navigateUp()
         }
+        
+        // 标题已在布局中设置
     }
     
     private fun showAllLocations() {
@@ -118,7 +124,7 @@ class LocationSearchFragment : Fragment() {
         }
         
         // 返回到上一个界面
-        parentFragmentManager.popBackStack()
+        findNavController().navigateUp()
     }
 
     override fun onDestroyView() {

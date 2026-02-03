@@ -20,6 +20,38 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
+        <!-- Edit Profile -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_edit_profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:text="编辑个人资料"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="@color/text_secondary" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- Notifications -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"

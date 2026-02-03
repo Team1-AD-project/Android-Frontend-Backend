@@ -2,12 +2,13 @@ package com.ecogo.data
 
 object MockData {
     
-    // === 导航相关Mock数据 ===
+    // === Navigation Related Mock Data ===
     
     /**
-     * 校园地点数据
+     * Campus Location Data
+     * 使用 lazy 延迟初始化，避免启动时加载
      */
-    val CAMPUS_LOCATIONS = listOf(
+    val CAMPUS_LOCATIONS by lazy { listOf(
         NavLocation(
             id = "1",
             name = "COM1",
@@ -118,12 +119,13 @@ object MockData {
             isFavorite = false,
             visitCount = 6
         )
-    )
+    ) }
     
     /**
-     * 示例公交信息
+     * Sample Bus Information
+     * 使用 lazy 延迟初始化
      */
-    val BUS_INFO_LIST = listOf(
+    val BUS_INFO_LIST by lazy { listOf(
         BusInfo(
             busId = "D1",
             routeName = "D1",
@@ -132,7 +134,7 @@ object MockData {
             currentLng = 103.7750,
             etaMinutes = 2,
             stopsAway = 3,
-            crowdLevel = "低",
+            crowdLevel = "Low",
             plateNumber = "SBS3421A",
             status = "arriving",
             color = "#DB2777"
@@ -145,7 +147,7 @@ object MockData {
             currentLng = 103.7800,
             etaMinutes = 12,
             stopsAway = 8,
-            crowdLevel = "中",
+            crowdLevel = "Medium",
             plateNumber = "SBS3422B",
             status = "coming",
             color = "#DB2777"
@@ -158,16 +160,16 @@ object MockData {
             currentLng = 103.7720,
             etaMinutes = 15,
             stopsAway = 6,
-            crowdLevel = "高",
+            crowdLevel = "High",
             plateNumber = "SBS1234C",
             status = "delayed",
             color = "#DC2626"
         )
-    )
+    ) }
     
-    // === 原有的Mock数据 ===
+    // === Original Mock Data ===
     
-    val ROUTES = listOf(
+    val ROUTES by lazy { listOf(
         BusRoute(
             id = "D1",
             name = "D1",
@@ -238,9 +240,9 @@ object MockData {
             crowding = "Medium",
             operational = false
         )
-    )
+    ) }
     
-    val COMMUNITIES = listOf(
+    val COMMUNITIES by lazy { listOf(
         Community(
             name = "School of Computing",
             points = 15420,
@@ -266,9 +268,9 @@ object MockData {
             points = 13450,
             change = -80
         )
-    )
+    ) }
     
-    val SHOP_ITEMS = listOf(
+    val SHOP_ITEMS by lazy { listOf(
         // Head items (4 items)
         ShopItem(
             id = "hat_grad",
@@ -360,9 +362,9 @@ object MockData {
             owned = false,
             equipped = false
         )
-    )
+    ) }
     
-    val VOUCHERS = listOf(
+    val VOUCHERS by lazy { listOf(
         Voucher(
             id = "v1",
             name = "Starbucks $5 Off",
@@ -391,9 +393,9 @@ object MockData {
             description = "15% discount on books and stationery",
             available = true
         )
-    )
+    ) }
     
-    val WALKING_ROUTES = listOf(
+    val WALKING_ROUTES by lazy { listOf(
         WalkingRoute(
             id = 1,
             title = "Central Library Loop",
@@ -421,9 +423,9 @@ object MockData {
             tags = listOf("Urban", "Easy"),
             description = "Quick walk around UTown"
         )
-    )
+    ) }
     
-    val ACTIVITIES = listOf(
+    val ACTIVITIES by lazy { listOf(
         Activity(
             id = "activity1",
             title = "Campus Clean-Up Day",
@@ -472,9 +474,9 @@ object MockData {
             startTime = "2026-02-28T09:00:00",
             endTime = "2026-02-28T18:00:00"
         )
-    )
+    ) }
     
-    val ACHIEVEMENTS = listOf(
+    val ACHIEVEMENTS by lazy { listOf(
         Achievement(
             id = "a1",
             name = "First Ride",
@@ -511,9 +513,9 @@ object MockData {
             description = "Reach top of leaderboard",
             unlocked = false
         )
-    )
+    ) }
     
-    val HISTORY = listOf(
+    val HISTORY by lazy { listOf(
         HistoryItem(
             id = 1,
             action = "Bus Ride (D1)",
@@ -542,9 +544,9 @@ object MockData {
             points = "+150",
             type = "earn"
         )
-    )
+    ) }
     
-    val FACULTIES = listOf(
+    val FACULTIES by lazy { listOf(
         Faculty(
             id = "soc",
             name = "School of Computing",
@@ -585,10 +587,10 @@ object MockData {
             score = 13450,
             rank = 5
         )
-    )
+    ) }
     
     // Faculty data for signup with outfit configurations
-    val FACULTY_DATA = listOf(
+    val FACULTY_DATA by lazy { listOf(
         FacultyData(
             id = "eng",
             name = "Engineering",
@@ -624,19 +626,143 @@ object MockData {
             slogan = "Discovering Truth 🧪",
             outfit = Outfit(head = "none", face = "face_goggles", body = "body_coat")
         )
-    )
+    ) }
     
     // Check-in Mock Data
-    val CHECK_IN_STATUS = CheckInStatus(
+    val CHECK_IN_STATUS by lazy { CheckInStatus(
         userId = "user123",
         lastCheckInDate = "2026-01-30",
         consecutiveDays = 5,
         totalCheckIns = 28,
         pointsEarned = 350
-    )
+    ) }
+    
+    // Check-in History Mock Data (last 30 days of check-ins)
+    val CHECK_IN_HISTORY by lazy { listOf(
+        CheckIn(
+            id = "checkin_001",
+            userId = "user123",
+            checkInDate = "2026-02-02",
+            pointsEarned = 10,
+            consecutiveDays = 8,
+            timestamp = "2026-02-02T08:30:00Z"
+        ),
+        CheckIn(
+            id = "checkin_002",
+            userId = "user123",
+            checkInDate = "2026-02-01",
+            pointsEarned = 10,
+            consecutiveDays = 7,
+            timestamp = "2026-02-01T09:15:00Z"
+        ),
+        CheckIn(
+            id = "checkin_003",
+            userId = "user123",
+            checkInDate = "2026-01-31",
+            pointsEarned = 10,
+            consecutiveDays = 6,
+            timestamp = "2026-01-31T07:45:00Z"
+        ),
+        CheckIn(
+            id = "checkin_004",
+            userId = "user123",
+            checkInDate = "2026-01-30",
+            pointsEarned = 10,
+            consecutiveDays = 5,
+            timestamp = "2026-01-30T08:20:00Z"
+        ),
+        CheckIn(
+            id = "checkin_005",
+            userId = "user123",
+            checkInDate = "2026-01-29",
+            pointsEarned = 10,
+            consecutiveDays = 4,
+            timestamp = "2026-01-29T09:00:00Z"
+        ),
+        CheckIn(
+            id = "checkin_006",
+            userId = "user123",
+            checkInDate = "2026-01-28",
+            pointsEarned = 10,
+            consecutiveDays = 3,
+            timestamp = "2026-01-28T08:10:00Z"
+        ),
+        CheckIn(
+            id = "checkin_007",
+            userId = "user123",
+            checkInDate = "2026-01-27",
+            pointsEarned = 10,
+            consecutiveDays = 2,
+            timestamp = "2026-01-27T07:55:00Z"
+        ),
+        CheckIn(
+            id = "checkin_008",
+            userId = "user123",
+            checkInDate = "2026-01-26",
+            pointsEarned = 10,
+            consecutiveDays = 1,
+            timestamp = "2026-01-26T08:30:00Z"
+        ),
+        CheckIn(
+            id = "checkin_009",
+            userId = "user123",
+            checkInDate = "2026-01-24",
+            pointsEarned = 10,
+            consecutiveDays = 1,
+            timestamp = "2026-01-24T09:20:00Z"
+        ),
+        CheckIn(
+            id = "checkin_010",
+            userId = "user123",
+            checkInDate = "2026-01-23",
+            pointsEarned = 10,
+            consecutiveDays = 2,
+            timestamp = "2026-01-23T08:40:00Z"
+        ),
+        CheckIn(
+            id = "checkin_011",
+            userId = "user123",
+            checkInDate = "2026-01-22",
+            pointsEarned = 10,
+            consecutiveDays = 1,
+            timestamp = "2026-01-22T07:50:00Z"
+        ),
+        CheckIn(
+            id = "checkin_012",
+            userId = "user123",
+            checkInDate = "2026-01-20",
+            pointsEarned = 10,
+            consecutiveDays = 1,
+            timestamp = "2026-01-20T08:15:00Z"
+        ),
+        CheckIn(
+            id = "checkin_013",
+            userId = "user123",
+            checkInDate = "2026-01-19",
+            pointsEarned = 10,
+            consecutiveDays = 3,
+            timestamp = "2026-01-19T09:10:00Z"
+        ),
+        CheckIn(
+            id = "checkin_014",
+            userId = "user123",
+            checkInDate = "2026-01-18",
+            pointsEarned = 10,
+            consecutiveDays = 2,
+            timestamp = "2026-01-18T08:05:00Z"
+        ),
+        CheckIn(
+            id = "checkin_015",
+            userId = "user123",
+            checkInDate = "2026-01-17",
+            pointsEarned = 10,
+            consecutiveDays = 1,
+            timestamp = "2026-01-17T07:45:00Z"
+        )
+    ) }
     
     // Daily Goal Mock Data
-    val DAILY_GOAL = DailyGoal(
+    val DAILY_GOAL by lazy { DailyGoal(
         id = "goal123",
         userId = "user123",
         date = "2026-01-31",
@@ -646,10 +772,10 @@ object MockData {
         currentTrips = 2,
         co2SavedGoal = 2.0f,
         currentCo2Saved = 1.5f
-    )
+    ) }
     
     // Weather Mock Data
-    val WEATHER = Weather(
+    val WEATHER by lazy { Weather(
         location = "NUS",
         temperature = 21,
         condition = "Sunny",
@@ -657,10 +783,10 @@ object MockData {
         aqi = 45,
         aqiLevel = "Good",
         recommendation = "Perfect day for walking or cycling!"
-    )
+    ) }
     
     // Notifications Mock Data
-    val NOTIFICATIONS = listOf(
+    val NOTIFICATIONS by lazy { listOf(
         Notification(
             id = "notif1",
             type = "activity",
@@ -688,10 +814,10 @@ object MockData {
             isRead = true,
             actionUrl = "profile/achievements"
         )
-    )
+    ) }
     
     // Carbon Footprint Mock Data
-    val CARBON_FOOTPRINT = CarbonFootprint(
+    val CARBON_FOOTPRINT by lazy { CarbonFootprint(
         userId = "user123",
         period = "monthly",
         co2Saved = 12.5f,
@@ -699,7 +825,7 @@ object MockData {
         tripsByBus = 45,
         tripsByWalking = 28,
         tripsByBicycle = 5
-    )
+    ) }
     
     // Friends Mock Data
     val FRIENDS = listOf(
@@ -749,7 +875,7 @@ object MockData {
     
     // Shop Products Mock Data
     val PRODUCTS = listOf(
-        // Voucher类型
+        // Voucher Type
         Product(
             id = "p1",
             name = "Starbucks $5 Off",
@@ -781,11 +907,11 @@ object MockData {
             description = "Save $8 on food delivery",
             pointsPrice = 650,
             cashPrice = 5.00,
-            available = false,  // 暂时不可用
+            available = false,  // Temporarily unavailable
             tags = listOf("food")
         ),
         
-        // Goods类型
+        // Goods Type
         Product(
             id = "p4",
             name = "Eco Bamboo Bottle",
@@ -848,6 +974,202 @@ object MockData {
             available = true,
             validUntil = "2026-12-31",
             tags = listOf("education")
+        )
+    )
+    
+    // Green Spots Mock Data
+    val GREEN_SPOTS = listOf(
+        GreenSpot(
+            id = "spot1",
+            name = "Campus Heritage Tree",
+            lat = 1.2966,
+            lng = 103.7764,
+            type = "TREE",
+            reward = 50,
+            description = "A century-old tree on campus, witnessing the growth of countless students.",
+            collected = false
+        ),
+        GreenSpot(
+            id = "spot2",
+            name = "Central Recycling Station",
+            lat = 1.2970,
+            lng = 103.7770,
+            type = "RECYCLE_BIN",
+            reward = 30,
+            description = "Campus center recycling station, supporting multiple material types.",
+            collected = false
+        ),
+        GreenSpot(
+            id = "spot3",
+            name = "Eco Park",
+            lat = 1.2960,
+            lng = 103.7758,
+            type = "PARK",
+            reward = 100,
+            description = "Campus ecological park with rich vegetation and wildlife.",
+            collected = true
+        ),
+        GreenSpot(
+            id = "spot4",
+            name = "Sustainability Center",
+            lat = 1.2975,
+            lng = 103.7780,
+            type = "LANDMARK",
+            reward = 75,
+            description = "Campus sustainability research and education center.",
+            collected = false
+        )
+    )
+    
+    // Challenges Mock Data
+    val CHALLENGES = listOf(
+        Challenge(
+            id = "ch1",
+            title = "Weekly Green Transport Challenge",
+            description = "Complete 10 green trips this week and top the eco leaderboard!",
+            type = "INDIVIDUAL",
+            target = 10,
+            current = 6,
+            reward = 500,
+            badge = "a6",
+            startTime = "2026-02-03T00:00:00",
+            endTime = "2026-02-09T23:59:59",
+            participants = 342,
+            topUsers = listOf(
+                User(id = "u1", username = "Alex Chen", points = 9),
+                User(id = "u2", username = "Sarah Tan", points = 8),
+                User(id = "u3", username = "Kevin Wong", points = 7)
+            ),
+            status = "ACTIVE",
+            icon = "🚶"
+        ),
+        Challenge(
+            id = "ch2",
+            title = "Faculty Championship",
+            description = "Represent your faculty and compete for the champion trophy!",
+            type = "FACULTY",
+            target = 5000,
+            current = 3250,
+            reward = 1000,
+            badge = null,
+            startTime = "2026-02-01T00:00:00",
+            endTime = "2026-02-29T23:59:59",
+            participants = 1520,
+            topUsers = listOf(
+                User(id = "soc", username = "School of Computing", points = 3250),
+                User(id = "eng", username = "Engineering", points = 3100),
+                User(id = "sci", username = "Science", points = 2890)
+            ),
+            status = "ACTIVE",
+            icon = "🏆"
+        ),
+        Challenge(
+            id = "ch3",
+            title = "Carbon Footprint Master",
+            description = "Reduce 500g CO₂ emissions this month",
+            type = "INDIVIDUAL",
+            target = 500,
+            current = 325,
+            reward = 300,
+            badge = "a5",
+            startTime = "2026-02-01T00:00:00",
+            endTime = "2026-02-28T23:59:59",
+            participants = 567,
+            topUsers = emptyList(),
+            status = "ACTIVE",
+            icon = "🌱"
+        ),
+        Challenge(
+            id = "ch4",
+            title = "Weekend Hiking Group",
+            description = "Team up to complete a 5km hiking trail",
+            type = "TEAM",
+            target = 5,
+            current = 5,
+            reward = 250,
+            badge = "a4",
+            startTime = "2026-01-25T00:00:00",
+            endTime = "2026-01-31T23:59:59",
+            participants = 45,
+            topUsers = emptyList(),
+            status = "COMPLETED",
+            icon = "🥾"
+        )
+    )
+    
+    // Feed Items Mock Data
+    val FEED_ITEMS = listOf(
+        FeedItem(
+            id = "f1",
+            userId = "friend1",
+            username = "Alex Chen",
+            type = "TRIP",
+            content = "Completed a green trip, saved 125g CO₂!",
+            timestamp = System.currentTimeMillis() - 1800000, // 30 mins ago
+            likes = 12
+        ),
+        FeedItem(
+            id = "f2",
+            userId = "friend2",
+            username = "Sarah Tan",
+            type = "ACHIEVEMENT",
+            content = "Unlocked 'Week Warrior' achievement!",
+            timestamp = System.currentTimeMillis() - 3600000, // 1 hour ago
+            likes = 25
+        ),
+        FeedItem(
+            id = "f3",
+            userId = "friend3",
+            username = "Kevin Wong",
+            type = "ACTIVITY",
+            content = "Joined Campus Clean-Up Day activity",
+            timestamp = System.currentTimeMillis() - 7200000, // 2 hours ago
+            likes = 8
+        ),
+        FeedItem(
+            id = "f4",
+            userId = "friend4",
+            username = "Emily Liu",
+            type = "CHALLENGE",
+            content = "Ranked #1 in 'Weekly Green Transport Challenge'!",
+            timestamp = System.currentTimeMillis() - 10800000, // 3 hours ago
+            likes = 35
+        ),
+        FeedItem(
+            id = "f5",
+            userId = "friend5",
+            username = "David Ng",
+            type = "TRIP",
+            content = "Cycled 3.5 km, earned 175 points",
+            timestamp = System.currentTimeMillis() - 18000000, // 5 hours ago
+            likes = 6
+        ),
+        FeedItem(
+            id = "f6",
+            userId = "friend1",
+            username = "Alex Chen",
+            type = "ACHIEVEMENT",
+            content = "Reduced 5kg CO₂ emissions in total!",
+            timestamp = System.currentTimeMillis() - 86400000, // 1 day ago
+            likes = 42
+        ),
+        FeedItem(
+            id = "f7",
+            userId = "friend6",
+            username = "Jennifer Lim",
+            type = "TRIP",
+            content = "Walked to library, completed daily step goal!",
+            timestamp = System.currentTimeMillis() - 172800000, // 2 days ago
+            likes = 15
+        ),
+        FeedItem(
+            id = "f8",
+            userId = "friend7",
+            username = "Michael Tan",
+            type = "CHALLENGE",
+            content = "Accepted 'Carbon Footprint Master' challenge",
+            timestamp = System.currentTimeMillis() - 259200000, // 3 days ago
+            likes = 9
         )
     )
 }

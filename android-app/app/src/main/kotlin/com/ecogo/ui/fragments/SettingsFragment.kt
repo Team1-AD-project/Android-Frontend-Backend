@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.ecogo.databinding.FragmentSettingsBinding
 
 class SettingsFragment : Fragment() {
@@ -26,6 +27,16 @@ class SettingsFragment : Fragment() {
         
         binding.switchNotifications.isChecked = true
         binding.switchDarkMode.isChecked = false
+        
+        setupActions()
+    }
+    
+    private fun setupActions() {
+        // 点击编辑个人资料跳转到个人资料页面
+        binding.cardEditProfile.setOnClickListener {
+            findNavController()
+                .navigate(com.ecogo.R.id.action_settings_to_profile)
+        }
     }
     
     override fun onDestroyView() {

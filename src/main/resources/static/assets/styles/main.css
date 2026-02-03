@@ -942,6 +942,345 @@ table tbody tr:last-child td {
     gap: 24px;
 }
 
+/* ========== Leaderboard Page ========== */
+.leaderboard-page-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-card .card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--card-color) 18%, transparent);
+    color: var(--card-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.stat-card .card-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.stat-card .card-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.stat-card .card-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.stat-card .card-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.filter-bar .period-select {
+    width: auto;
+    min-width: 180px;
+}
+
+.filter-bar .search-input {
+    flex: 1;
+    min-width: 200px;
+    max-width: 320px;
+}
+
+.filter-bar-meta {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* Top 3 Podium */
+.card-podium .card-body {
+    padding: 32px 24px;
+}
+
+.top3-container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 16px;
+    padding: 0 16px;
+}
+
+.rank-card {
+    flex: 1;
+    max-width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px;
+    border-radius: var(--radius-lg);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rank-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.rank-card.rank-1 {
+    order: 2;
+    padding-bottom: 40px;
+    background: linear-gradient(180deg, rgba(255, 215, 0, 0.08) 0%, var(--bg-secondary) 100%);
+    border-color: rgba(255, 215, 0, 0.3);
+}
+
+.rank-card.rank-2 {
+    order: 1;
+    padding-bottom: 24px;
+    background: linear-gradient(180deg, rgba(192, 192, 192, 0.08) 0%, var(--bg-secondary) 100%);
+    border-color: rgba(192, 192, 192, 0.3);
+}
+
+.rank-card.rank-3 {
+    order: 3;
+    padding-bottom: 24px;
+    background: linear-gradient(180deg, rgba(205, 127, 50, 0.08) 0%, var(--bg-secondary) 100%);
+    border-color: rgba(205, 127, 50, 0.3);
+}
+
+.rank-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    font-size: 24px;
+    color: #fff;
+}
+
+.rank-avatar.gold {
+    background: linear-gradient(135deg, #f4d03f 0%, #d4a017 100%);
+    box-shadow: 0 4px 14px rgba(212, 160, 23, 0.4);
+}
+
+.rank-avatar.silver {
+    background: linear-gradient(135deg, #e8e8e8 0%, #a0a0a0 100%);
+    box-shadow: 0 4px 14px rgba(128, 128, 128, 0.3);
+}
+
+.rank-avatar.bronze {
+    background: linear-gradient(135deg, #e8a84a 0%, #b87333 100%);
+    box-shadow: 0 4px 14px rgba(184, 115, 51, 0.3);
+}
+
+.rank-card .rank-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 15px;
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+.rank-card .rank-steps {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.rank-card .vip-badge {
+    margin-bottom: 6px;
+}
+
+.top3-empty {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-muted);
+}
+
+.card-header-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.card-header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-header-actions-right {
+    display: flex;
+    gap: 8px;
+}
+
+.card-body-table {
+    padding: 0;
+    overflow-x: auto;
+}
+
+.leaderboard-table {
+    margin: 0;
+}
+
+.leaderboard-table .rank-user-cell {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+}
+
+.leaderboard-table .rank-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.leaderboard-table .rank-user-id {
+    font-size: 12px;
+}
+
+.leaderboard-table .rank-steps-cell {
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+}
+
+.leaderboard-table tr.top-10 {
+    background: linear-gradient(90deg, rgba(5, 150, 105, 0.04) 0%, transparent 100%);
+}
+
+.leaderboard-table tr.top-10:hover {
+    background: linear-gradient(90deg, rgba(5, 150, 105, 0.08) 0%, var(--bg-secondary) 100%);
+}
+
+.rank-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.rank-badge.gold {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(212, 160, 23, 0.15) 100%);
+    color: #b8860b;
+}
+
+.rank-badge.silver {
+    background: linear-gradient(135deg, rgba(192, 192, 192, 0.25) 0%, rgba(160, 160, 160, 0.2) 100%);
+    color: #606060;
+}
+
+.rank-badge.bronze {
+    background: linear-gradient(135deg, rgba(205, 127, 50, 0.2) 0%, rgba(184, 115, 51, 0.15) 100%);
+    color: #8b4513;
+}
+
+.vip-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.steps-bar-wrap {
+    position: relative;
+    min-width: 100px;
+    max-width: 140px;
+    height: 24px;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.steps-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+    border-radius: 12px;
+    transition: width 0.3s ease;
+}
+
+.steps-bar-label {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-primary);
+    z-index: 1;
+    text-shadow: 0 0 2px #fff;
+}
+
+.empty-rows {
+    text-align: center;
+    padding: 40px 20px !important;
+    color: var(--text-muted);
+}
+
+.pagination-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 20px 24px;
+    border-top: 1px solid var(--border-light);
+}
+
+.pagination-info {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-ellipsis {
+    padding: 0 8px;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
 /* ========== Responsive ========== */
 @media (max-width: 1400px) {
     .stats-grid {
@@ -983,5 +1322,37 @@ table tbody tr:last-child td {
 
     .grid-2 {
         grid-template-columns: 1fr;
+    }
+
+    .top3-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .rank-card {
+        max-width: 100%;
+        flex-direction: row;
+        width: 100%;
+        text-align: left;
+        gap: 16px;
+    }
+
+    .rank-card.rank-1,
+    .rank-card.rank-2,
+    .rank-card.rank-3 {
+        padding-bottom: 24px;
+    }
+
+    .rank-avatar {
+        margin-bottom: 0;
+    }
+
+    .filter-bar .search-input {
+        max-width: none;
+    }
+
+    .pagination-wrap {
+        flex-direction: column;
+        align-items: stretch;
     }
 }

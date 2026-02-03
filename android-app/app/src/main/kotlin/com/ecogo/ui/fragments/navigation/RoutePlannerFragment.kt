@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ecogo.R
 import com.ecogo.data.MockData
@@ -66,14 +67,16 @@ class RoutePlannerFragment : Fragment() {
     private fun setupUI() {
         // 起点容器点击
         binding.originContainer.setOnClickListener {
-            // TODO: 打开地点搜索界面（选择起点）
-            Snackbar.make(binding.root, "选择起点", Snackbar.LENGTH_SHORT).show()
+            val action = RoutePlannerFragmentDirections
+                .actionRoutePlannerToLocationSearch(isSelectingOrigin = true)
+            findNavController().navigate(action)
         }
         
         // 终点容器点击
         binding.destinationContainer.setOnClickListener {
-            // TODO: 打开地点搜索界面（选择终点）
-            Snackbar.make(binding.root, "选择终点", Snackbar.LENGTH_SHORT).show()
+            val action = RoutePlannerFragmentDirections
+                .actionRoutePlannerToLocationSearch(isSelectingOrigin = false)
+            findNavController().navigate(action)
         }
         
         // 交通方式选择
@@ -92,8 +95,9 @@ class RoutePlannerFragment : Fragment() {
         // 开始导航按钮
         binding.btnStartNavigation.setOnClickListener {
             viewModel.startNavigation()
-            // TODO: 导航到实时导航界面
-            Snackbar.make(binding.root, "开始导航", Snackbar.LENGTH_SHORT).show()
+            // 导航到TripStartFragment
+            val action = RoutePlannerFragmentDirections.actionRoutePlannerToTripStart()
+            findNavController().navigate(action)
         }
     }
     

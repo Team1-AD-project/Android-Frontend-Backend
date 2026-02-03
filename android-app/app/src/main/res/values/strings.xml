@@ -63,6 +63,13 @@
     <string name="community_current_leader">Current Leader</string>
     <string name="community_rankings">Rankings</string>
     <string name="community_crowd_label">Crowd:</string>
+    <string name="community_tab_faculties">Faculties</string>
+    <string name="community_tab_friends">Friends</string>
+    <string name="community_tab_steps">Steps</string>
+    <string name="community_steps_leaderboard_title">Steps Leaderboard (by Period)</string>
+    <string name="community_steps_leaderboard_empty">No ranking data for this period</string>
+    <string name="community_steps_unit">steps</string>
+    <string name="community_vip_badge">VIP</string>
     
     <!-- Chat -->
     <string name="chat_title">Chat with LiNUS</string>
@@ -74,8 +81,8 @@
     <string name="profile_points">GREEN POINTS</string>
     <string name="profile_shop">Closet</string>
     <string name="profile_shop_section">Closet &amp; Badges</string>
-    <string name="profile_faculty_outfits">学院服装</string>
-    <string name="profile_all_outfits">全部服装</string>
+    <string name="profile_faculty_outfits">Faculty Outfits</string>
+    <string name="profile_all_outfits">All Outfits</string>
     <string name="profile_achievements">Badges</string>
     <string name="profile_history">History</string>
     <string name="profile_settings">Settings</string>
@@ -112,38 +119,38 @@
     
     <!-- Map Green Go Navigation -->
     <string name="nav_green_go">Green Go</string>
-    <string name="search_location">搜索地点...</string>
-    <string name="search_locations_hint">搜索校园地点</string>
-    <string name="my_location">我的位置</string>
-    <string name="current_location">当前位置</string>
-    <string name="select_destination">选择目的地</string>
-    <string name="plan_your_route">规划路线</string>
-    <string name="choose_transport_mode">选择交通方式</string>
-    <string name="transport_mode">交通方式</string>
-    <string name="walk">步行</string>
-    <string name="cycle">骑行</string>
-    <string name="bus">公交</string>
-    <string name="mixed">混合</string>
-    <string name="route_options">路线选项</string>
-    <string name="start_navigation">开始导航</string>
-    <string name="end_navigation">结束导航</string>
-    <string name="pause_navigation">暂停导航</string>
-    <string name="resume_navigation">继续导航</string>
-    <string name="estimated_time">预计时间</string>
-    <string name="distance">距离</string>
-    <string name="carbon_saved">CO₂节省</string>
-    <string name="green_points">绿色积分</string>
-    <string name="money_saved">节省金额</string>
-    <string name="search">搜索</string>
-    <string name="back">返回</string>
-    <string name="trip_history">行程历史</string>
-    <string name="map_settings">地图设置</string>
-    <string name="share_route">分享路线</string>
-    <string name="navigation_in_progress">导航进行中</string>
-    <string name="trip_completed">行程完成</string>
-    <string name="congratulations">恭喜！</string>
-    <string name="total_carbon_saved">总共节省CO₂</string>
-    <string name="total_points_earned">获得积分</string>
+    <string name="search_location">Search location...</string>
+    <string name="search_locations_hint">Search campus locations</string>
+    <string name="my_location">My Location</string>
+    <string name="current_location">Current Location</string>
+    <string name="select_destination">Select Destination</string>
+    <string name="plan_your_route">Plan Your Route</string>
+    <string name="choose_transport_mode">Choose Transport Mode</string>
+    <string name="transport_mode">Transport Mode</string>
+    <string name="walk">Walk</string>
+    <string name="cycle">Cycle</string>
+    <string name="bus">Bus</string>
+    <string name="mixed">Mixed</string>
+    <string name="route_options">Route Options</string>
+    <string name="start_navigation">Start Navigation</string>
+    <string name="end_navigation">End Navigation</string>
+    <string name="pause_navigation">Pause Navigation</string>
+    <string name="resume_navigation">Resume Navigation</string>
+    <string name="estimated_time">Estimated Time</string>
+    <string name="distance">Distance</string>
+    <string name="carbon_saved">CO₂ Saved</string>
+    <string name="green_points">Green Points</string>
+    <string name="money_saved">Money Saved</string>
+    <string name="search">Search</string>
+    <string name="back">Back</string>
+    <string name="trip_history">Trip History</string>
+    <string name="map_settings">Map Settings</string>
+    <string name="share_route">Share Route</string>
+    <string name="navigation_in_progress">Navigation in Progress</string>
+    <string name="trip_completed">Trip Completed</string>
+    <string name="congratulations">Congratulations!</string>
+    <string name="total_carbon_saved">Total CO₂ Saved</string>
+    <string name="total_points_earned">Points Earned</string>
     
     <!-- Common -->
     <string name="common_loading">Loading...</string>

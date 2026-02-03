@@ -10,15 +10,22 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.ecogo.R
+import com.ecogo.data.GreenSpot
 import com.ecogo.databinding.FragmentMapGreenGoBinding
+import com.ecogo.data.MockData
 import com.ecogo.data.NavigationState
+import com.ecogo.ui.dialogs.SpotDetailBottomSheet
+import com.ecogo.utils.MapUtils
 import com.ecogo.viewmodel.NavigationViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
 
@@ -37,6 +44,9 @@ class MapGreenGoFragment : Fragment(), OnMapReadyCallback {
     
     // NUS 中心位置
     private val NUS_CENTER = LatLng(1.2966, 103.7764)
+    
+    // 绿色点位标记映射
+    private val spotMarkers = mutableMapOf<Marker, GreenSpot>()
     
     // 权限请求
     private val locationPermissionRequest = registerForActivityResult(
@@ -137,6 +147,15 @@ class MapGreenGoFragment : Fragment(), OnMapReadyCallback {
         map.setOnMapClickListener { latLng ->
             handleMapClick(latLng)
         }
+        
+        // 标记点击监听
+        map.setOnMarkerClickListener { marker ->
+            handleMarkerClick(marker)
+            true
+        }
+        
+        // 显示绿色点位
+        displayGreenSpots()
     }
     
     private fun checkAndRequestLocationPermission() {
@@ -207,8 +226,12 @@ class MapGreenGoFragment : Fragment(), OnMapReadyCallback {
     
     private fun displayRoute(route: com.ecogo.data.NavRoute) {
         googleMap?.let { map ->
-            // 清除之前的标记
+            // 清除之前的标记（但保留绿色点位）
+            val spots = spotMarkers.keys.toList()
             map.clear()
+            
+            // 重新添加绿色点位
+            displayGreenSpots()
             
             // 添加起点标记
             map.addMarker(
@@ -226,6 +249,84 @@ class MapGreenGoFragment : Fragment(), OnMapReadyCallback {
             
             // TODO: 绘制路线
         }
+    }
+    
+    private fun displayGreenSpots() {
+        googleMap?.let { map ->
+            spotMarkers.clear()
+            
+            MockData.GREEN_SPOTS.forEach { spot ->
+                val marker = map.addMarker(
+                    MarkerOptions()
+                        .position(LatLng(spot.lat, spot.lng))
+                        .title(spot.name)
+                        .snippet(spot.description)
+                        .icon(getSpotIcon(spot))
+                )
+                
+                marker?.let {
+                    spotMarkers[it] = spot
+                }
+            }
+        }
+    }
+    
+    private fun getSpotIcon(spot: GreenSpot): com.google.android.gms.maps.model.BitmapDescriptor {
+        // 根据点位类型和收集状态返回不同的图标
+        val iconRes = when (spot.type) {
+            "TREE" -> R.drawable.ic_tree
+            "RECYCLE_BIN" -> R.drawable.ic_leaf // 或创建新图标
+            "PARK" -> R.drawable.ic_leaf
+            "LANDMARK" -> R.drawable.ic_city
+            else -> R.drawable.ic_location_pin
+        }
+        
+        // 如果已收集，使用灰色图标
+        return try {
+            MapUtils.bitmapDescriptorFromVector(requireContext(), iconRes) ?: BitmapDescriptorFactory.defaultMarker(
+                if (spot.collected) BitmapDescriptorFactory.HUE_AZURE 
+                else BitmapDescriptorFactory.HUE_GREEN
+            )
+        } catch (e: Exception) {
+            BitmapDescriptorFactory.defaultMarker(
+                if (spot.collected) BitmapDescriptorFactory.HUE_AZURE 
+                else BitmapDescriptorFactory.HUE_GREEN
+            )
+        }
+    }
+    
+    private fun handleMarkerClick(marker: Marker) {
+        val spot = spotMarkers[marker]
+        if (spot != null) {
+            showSpotDetail(spot)
+        }
+    }
+    
+    private fun showSpotDetail(spot: GreenSpot) {
+        val bottomSheet = SpotDetailBottomSheet(
+            spot = spot,
+            onWalkThere = {
+                // 导航到路线规划，设置该点位为目的地
+                findNavController().navigate(R.id.action_mapGreenGo_to_routePlanner)
+            },
+            onCollect = {
+                collectSpot(spot)
+            }
+        )
+        bottomSheet.show(childFragmentManager, "spot_detail")
+    }
+    
+    private fun collectSpot(spot: GreenSpot) {
+        // TODO: 调用API收集点位
+        // 显示成功消息
+        android.widget.Toast.makeText(
+            requireContext(),
+            "已领取 ${spot.name} 的奖励 +${spot.reward} 积分",
+            android.widget.Toast.LENGTH_SHORT
+        ).show()
+        
+        // 更新地图标记（变灰）
+        displayGreenSpots()
     }
     
     override fun onDestroyView() {

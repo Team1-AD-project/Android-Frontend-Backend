@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ecogo.R
 import com.ecogo.data.Activity
 
-class ActivityAdapter(private val activities: List<Activity>) : 
-    RecyclerView.Adapter<ActivityAdapter.ActivityViewHolder>() {
+class ActivityAdapter(
+    private val activities: List<Activity>,
+    private val onActivityClick: (Activity) -> Unit = {}
+) : RecyclerView.Adapter<ActivityAdapter.ActivityViewHolder>() {
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActivityViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -18,7 +20,11 @@ class ActivityAdapter(private val activities: List<Activity>) :
     }
     
     override fun onBindViewHolder(holder: ActivityViewHolder, position: Int) {
-        holder.bind(activities[position])
+        val activity = activities[position]
+        holder.bind(activity)
+        holder.itemView.setOnClickListener {
+            onActivityClick(activity)
+        }
     }
     
     override fun getItemCount() = activities.size

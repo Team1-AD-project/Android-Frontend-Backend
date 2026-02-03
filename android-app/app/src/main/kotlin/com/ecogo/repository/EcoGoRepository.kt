@@ -6,6 +6,7 @@ import com.ecogo.data.BusRoute
 import com.ecogo.data.CarbonFootprint
 import com.ecogo.data.ChatRequest
 import com.ecogo.data.ChatResponse
+import com.ecogo.data.CheckIn
 import com.ecogo.data.CheckInResponse
 import com.ecogo.data.CheckInStatus
 import com.ecogo.data.DailyGoal
@@ -105,37 +106,54 @@ class EcoGoRepository {
         }
     
     // ==================== 排行榜相关 ====================
-    
+
+    private val mockLeaderboardPeriods = listOf("Week 4, 2026", "Week 3, 2026", "Week 2, 2026")
+
+    private fun mockRankings(period: String): List<Ranking> = listOf(
+        Ranking(period = period, rank = 1, userId = "user_001", nickname = "小明", steps = 125000, isVip = true),
+        Ranking(period = period, rank = 2, userId = "user_002", nickname = "EcoRunner", steps = 98200, isVip = true),
+        Ranking(period = period, rank = 3, userId = "user_003", nickname = "绿行侠", steps = 87600, isVip = false),
+        Ranking(period = period, rank = 4, userId = "user_004", nickname = "步数达人", steps = 75400, isVip = true),
+        Ranking(period = period, rank = 5, userId = "user_005", nickname = "晨跑王", steps = 68100, isVip = false),
+        Ranking(period = period, rank = 6, userId = "user_006", nickname = "林小绿", steps = 59200, isVip = true),
+        Ranking(period = period, rank = 7, userId = "user_007", nickname = "低碳生活", steps = 51800, isVip = false),
+        Ranking(period = period, rank = 8, userId = "user_008", nickname = "天天走路", steps = 44500, isVip = false),
+        Ranking(period = period, rank = 9, userId = "user_009", nickname = "校园行者", steps = 38100, isVip = true),
+        Ranking(period = period, rank = 10, userId = "user_010", nickname = "环保先锋", steps = 32600, isVip = false),
+        Ranking(period = period, rank = 11, userId = "user_011", nickname = "小步快跑", steps = 27800, isVip = false),
+        Ranking(period = period, rank = 12, userId = "user_012", nickname = "绿色出行", steps = 22100, isVip = false),
+    )
+
     /**
-     * 获取排行榜数据
+     * 获取排行榜数据（API 失败或空时返回 mock 数据）
      */
     suspend fun getLeaderboard(period: String = "Week 4, 2026"): Result<List<Ranking>> =
         withContext(Dispatchers.IO) {
             try {
                 val response = api.getRankingsByPeriod(period)
-                if (response.success && response.data != null) {
+                if (response.success && response.data != null && response.data.isNotEmpty()) {
                     Result.success(response.data)
                 } else {
-                    Result.failure(Exception(response.message))
+                    Result.success(mockRankings(period))
                 }
             } catch (e: Exception) {
-                Result.failure(e)
+                Result.success(mockRankings(period))
             }
         }
-    
+
     /**
-     * 获取可用的排行榜周期
+     * 获取可用的排行榜周期（API 失败或空时返回 mock 周期）
      */
     suspend fun getAvailablePeriods(): Result<List<String>> = withContext(Dispatchers.IO) {
         try {
             val response = api.getLeaderboardPeriods()
-            if (response.success && response.data != null) {
+            if (response.success && response.data != null && response.data.isNotEmpty()) {
                 Result.success(response.data)
             } else {
-                Result.failure(Exception(response.message))
+                Result.success(mockLeaderboardPeriods)
             }
         } catch (e: Exception) {
-            Result.failure(e)
+            Result.success(mockLeaderboardPeriods)
         }
     }
     
@@ -488,6 +506,18 @@ class EcoGoRepository {
         }
     
     /**
+     * 获取签到历史记录
+     */
+    suspend fun getCheckInHistory(userId: String): Result<List<CheckIn>> =
+        withContext(Dispatchers.IO) {
+            try {
+                Result.success(MockData.CHECK_IN_HISTORY)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    
+    /**
      * 获取今日目标进度
      */
     suspend fun getDailyGoal(userId: String): Result<DailyGoal> =
@@ -669,4 +699,191 @@ class EcoGoRepository {
             Result.failure(e)
         }
     }
+    
+    // ==================== 社区动态相关 ====================
+    
+    /**
+     * 获取社区动态信息流
+     */
+    suspend fun getFeed(userId: String): Result<List<com.ecogo.data.FeedItem>> =
+        withContext(Dispatchers.IO) {
+            try {
+                // TODO: 实际应调用真实API
+                // val response = api.getFeed(userId)
+                // if (response.success && response.data != null) {
+                //     Result.success(response.data)
+                // } else {
+                //     Result.failure(Exception(response.message))
+                // }
+                
+                // 目前返回Mock数据
+                val now = System.currentTimeMillis()
+                val mockFeed = listOf(
+                    com.ecogo.data.FeedItem(
+                        id = "f1",
+                        userId = "friend1",
+                        username = "Alex Chen",
+                        type = "TRIP",
+                        content = "完成了一次绿色出行，节省了 125g CO₂！",
+                        timestamp = now - 1800000, // 30分钟前
+                        likes = 12
+                    ),
+                    com.ecogo.data.FeedItem(
+                        id = "f2",
+                        userId = "friend2",
+                        username = "Sarah Tan",
+                        type = "ACHIEVEMENT",
+                        content = "解锁了 'Week Warrior' 成就！",
+                        timestamp = now - 3600000, // 1小时前
+                        likes = 25
+                    ),
+                    com.ecogo.data.FeedItem(
+                        id = "f3",
+                        userId = "friend3",
+                        username = "Kevin Wong",
+                        type = "ACTIVITY",
+                        content = "参加了 Campus Clean-Up Day 活动",
+                        timestamp = now - 7200000, // 2小时前
+                        likes = 8
+                    ),
+                    com.ecogo.data.FeedItem(
+                        id = "f4",
+                        userId = "friend4",
+                        username = "Emily Liu",
+                        type = "CHALLENGE",
+                        content = "在 '本周绿色出行挑战' 中取得第一名！",
+                        timestamp = now - 10800000, // 3小时前
+                        likes = 35
+                    ),
+                    com.ecogo.data.FeedItem(
+                        id = "f5",
+                        userId = "friend5",
+                        username = "David Ng",
+                        type = "TRIP",
+                        content = "骑行 3.5 公里，获得了 175 积分",
+                        timestamp = now - 18000000, // 5小时前
+                        likes = 6
+                    ),
+                    com.ecogo.data.FeedItem(
+                        id = "f6",
+                        userId = "friend1",
+                        username = "Alex Chen",
+                        type = "ACHIEVEMENT",
+                        content = "累计减少 5kg CO₂ 排放！",
+                        timestamp = now - 86400000, // 1天前
+                        likes = 42
+                    )
+                )
+                Result.success(mockFeed)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    
+    /**
+     * 发布动态
+     */
+    suspend fun postFeedItem(item: com.ecogo.data.FeedItem): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            try {
+                // TODO: 实际应调用真实API
+                // val response = api.postFeedItem(item)
+                // if (response.success) {
+                //     Result.success(Unit)
+                // } else {
+                //     Result.failure(Exception(response.message))
+                // }
+                
+                Result.success(Unit)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    
+    // ==================== 挑战系统相关 ====================
+    
+    /**
+     * 获取所有挑战
+     */
+    suspend fun getChallenges(): Result<List<com.ecogo.data.Challenge>> =
+        withContext(Dispatchers.IO) {
+            try {
+                // TODO: 实际应调用真实API
+                Result.success(MockData.CHALLENGES)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    
+    /**
+     * 根据ID获取挑战详情
+     */
+    suspend fun getChallengeById(id: String): Result<com.ecogo.data.Challenge> =
+        withContext(Dispatchers.IO) {
+            try {
+                // TODO: 实际应调用真实API
+                val challenge = MockData.CHALLENGES.find { it.id == id }
+                if (challenge != null) {
+                    Result.success(challenge)
+                } else {
+                    Result.failure(Exception("Challenge not found"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    
+    /**
+     * 接受挑战
+     */
+    suspend fun acceptChallenge(challengeId: String, userId: String): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            try {
+                // TODO: 实际应调用真实API
+                Result.success(Unit)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    
+    /**
+     * 更新挑战进度
+     */
+    suspend fun updateChallengeProgress(challengeId: String, progress: Int): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            try {
+                // TODO: 实际应调用真实API
+                Result.success(Unit)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    
+    // ==================== 绿色点位相关 ====================
+    
+    /**
+     * 获取所有绿色点位
+     */
+    suspend fun getGreenSpots(): Result<List<com.ecogo.data.GreenSpot>> =
+        withContext(Dispatchers.IO) {
+            try {
+                // TODO: 实际应调用真实API
+                Result.success(MockData.GREEN_SPOTS)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    
+    /**
+     * 收集绿色点位
+     */
+    suspend fun collectSpot(spotId: String, userId: String): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            try {
+                // TODO: 实际应调用真实API
+                Result.success(Unit)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
 }
