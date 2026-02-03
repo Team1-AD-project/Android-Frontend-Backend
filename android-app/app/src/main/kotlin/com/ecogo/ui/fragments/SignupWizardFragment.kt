@@ -1,26 +1,37 @@
 package com.ecogo.ui.fragments
 
 import android.animation.ValueAnimator
+import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.widget.ViewPager2
 import com.ecogo.R
 import com.ecogo.data.FacultyData
 import com.ecogo.data.MockData
 import com.ecogo.databinding.FragmentSignupWizardBinding
-import com.ecogo.ui.adapters.FacultyAdapter
+import com.ecogo.ui.adapters.FacultySwipeAdapter
+import kotlin.math.abs
 
 /**
  * SignupWizardFragment - 注册向导
  * 
- * 两步流程:
- * Step 0: 学院选择
- * Step 1: 小狮子换装展示
+ * 六步流程:
+ * Step 0: 个人信息填写（用户名、邮箱、NUSNET ID）
+ * Step 1: 学院选择（滑动卡片）
+ * Step 2: 交通偏好（公交/步行/骑行/拼车）
+ * Step 3: 常用地点（宿舍/教学楼/学习地点）
+ * Step 4: 兴趣目标（兴趣、目标、通知偏好）
+ * Step 5: 小狮子换装展示
  */
 class SignupWizardFragment : Fragment() {
     
@@ -30,46 +41,361 @@ class SignupWizardFragment : Fragment() {
     private var currentStep = 0
     private var selectedFaculty: FacultyData? = null
     
+    // Step 0: Personal info
+    private var username: String = ""
+    private var email: String = ""
+    private var nusnetId: String = ""
+    private var password: String = ""
+    
+    // Step 2: Transport Preferences
+    private val transportPrefs = mutableSetOf<String>()
+    
+    // Step 3: Common Locations
+    private var dormitory: String? = null
+    private var teachingBuilding: String? = null
+    private var studySpot: String? = null
+    private val otherLocations = mutableSetOf<String>()
+    
+    // Step 4: Interests & Goals
+    private val interests = mutableSetOf<String>()
+    private var weeklyGoal: Int = 5
+    private var notifyChallenges: Boolean = true
+    private var notifyReminders: Boolean = true
+    private var notifyFriends: Boolean = false
+    
+    // Animation references
+    private var buttonAnimator: ValueAnimator? = null
+    private var mascotScaleAnimator: ValueAnimator? = null
+    private var mascotRotateAnimator: ValueAnimator? = null
+    
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSignupWizardBinding.inflate(inflater, container, false)
-        return binding.root
+        return try {
+            Log.d("DEBUG_SIGNUP", "SignupWizardFragment onCreateView")
+            Toast.makeText(context, "📝 SignupWizard 正在加载...", Toast.LENGTH_SHORT).show()
+            _binding = FragmentSignupWizardBinding.inflate(inflater, container, false)
+            Log.d("DEBUG_SIGNUP", "SignupWizardFragment binding inflated")
+            Toast.makeText(context, "✅ SignupWizard 加载成功！", Toast.LENGTH_SHORT).show()
+            binding.root
+        } catch (e: Exception) {
+            Log.e("DEBUG_SIGNUP", "SignupWizardFragment onCreateView FAILED: ${e.message}", e)
+            Toast.makeText(context, "❌ SignupWizard 创建失败: ${e.message}", Toast.LENGTH_LONG).show()
+            throw e
+        }
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showFacultySelection()
+        try {
+            Log.d("DEBUG_SIGNUP", "SignupWizardFragment onViewCreated")
+            showPersonalInfo()
+            Log.d("DEBUG_SIGNUP", "SignupWizardFragment personal info shown")
+        } catch (e: Exception) {
+            Log.e("DEBUG_SIGNUP", "SignupWizardFragment onViewCreated FAILED: ${e.message}", e)
+            Toast.makeText(requireContext(), "SignupWizard 初始化失败: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+    
+    private fun showPersonalInfo() {
+        currentStep = 0
+        
+        // 显示个人信息界面
+        binding.layoutPersonalInfo.visibility = View.VISIBLE
+        binding.layoutFacultySelection.visibility = View.GONE
+        binding.layoutTransportPreference.root.visibility = View.GONE
+        binding.layoutCommonLocations.root.visibility = View.GONE
+        binding.layoutInterestsGoals.root.visibility = View.GONE
+        binding.layoutMascotReveal.visibility = View.GONE
+        
+        // 输入验证
+        val textWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                validatePersonalInfo()
+            }
+        }
+        
+        binding.inputUsername.addTextChangedListener(textWatcher)
+        binding.inputEmail.addTextChangedListener(textWatcher)
+        binding.inputNusnet.addTextChangedListener(textWatcher)
+        binding.inputPassword.addTextChangedListener(textWatcher)
+        binding.inputConfirmPassword.addTextChangedListener(textWatcher)
+        
+        // Next 按钮
+        binding.btnNextToFaculty.isEnabled = false
+        binding.btnNextToFaculty.alpha = 0.5f
+        binding.btnNextToFaculty.setOnClickListener {
+            username = binding.inputUsername.text.toString()
+            email = binding.inputEmail.text.toString()
+            nusnetId = binding.inputNusnet.text.toString()
+            password = binding.inputPassword.text.toString()
+            showFacultySelection()
+        }
+    }
+    
+    private fun validatePersonalInfo() {
+        val usernameText = binding.inputUsername.text.toString()
+        val emailText = binding.inputEmail.text.toString()
+        val nusnetText = binding.inputNusnet.text.toString()
+        val passwordText = binding.inputPassword.text.toString()
+        val confirmPasswordText = binding.inputConfirmPassword.text.toString()
+        
+        // 基本验证
+        val isUsernameValid = usernameText.length >= 3
+        val isEmailValid = emailText.contains("@") && emailText.contains(".")
+        val isNusnetValid = nusnetText.startsWith("e", ignoreCase = true) && nusnetText.length >= 7
+        val isPasswordValid = passwordText.length >= 6
+        val isPasswordMatch = passwordText == confirmPasswordText && passwordText.isNotEmpty()
+        
+        val isValid = isUsernameValid && isEmailValid && isNusnetValid && isPasswordValid && isPasswordMatch
+        
+        binding.btnNextToFaculty.isEnabled = isValid
+        binding.btnNextToFaculty.alpha = if (isValid) 1f else 0.5f
+        
+        // 错误提示
+        if (usernameText.isNotEmpty() && !isUsernameValid) {
+            binding.inputLayoutUsername.error = "Username must be at least 3 characters"
+        } else {
+            binding.inputLayoutUsername.error = null
+        }
+        
+        if (emailText.isNotEmpty() && !isEmailValid) {
+            binding.inputLayoutEmail.error = "Invalid email format"
+        } else {
+            binding.inputLayoutEmail.error = null
+        }
+        
+        if (nusnetText.isNotEmpty() && !isNusnetValid) {
+            binding.inputLayoutNusnet.error = "Must start with 'e' and be at least 7 characters"
+        } else {
+            binding.inputLayoutNusnet.error = null
+        }
+        
+        if (passwordText.isNotEmpty() && !isPasswordValid) {
+            binding.inputLayoutPassword.error = "Password must be at least 6 characters"
+        } else {
+            binding.inputLayoutPassword.error = null
+        }
+        
+        if (confirmPasswordText.isNotEmpty() && !isPasswordMatch) {
+            binding.inputLayoutConfirmPassword.error = "Passwords do not match"
+        } else {
+            binding.inputLayoutConfirmPassword.error = null
+        }
     }
     
     private fun showFacultySelection() {
-        currentStep = 0
+        currentStep = 1
         
-        // 显示学院选择界面
+        // 切换界面
+        binding.layoutPersonalInfo.visibility = View.GONE
         binding.layoutFacultySelection.visibility = View.VISIBLE
+        binding.layoutTransportPreference.root.visibility = View.GONE
+        binding.layoutCommonLocations.root.visibility = View.GONE
+        binding.layoutInterestsGoals.root.visibility = View.GONE
         binding.layoutMascotReveal.visibility = View.GONE
         
-        binding.textTitle.text = "Choose Faculty"
-        binding.textSubtitle.text = "This determines your starter outfit!"
-        
-        // 设置学院列表
-        val adapter = FacultyAdapter(MockData.FACULTY_DATA) { faculty ->
+        // 设置ViewPager2适配器
+        val adapter = FacultySwipeAdapter(MockData.FACULTY_DATA) { faculty ->
+            // 选择后跳转到交通偏好
             selectedFaculty = faculty
-            binding.btnContinue.isEnabled = true
-            binding.btnContinue.alpha = 1f
+            android.util.Log.d("DEBUG_SIGNUP", "Faculty selected: ${faculty.name}")
+            
+            // 短暂延迟后自动跳转
+            binding.viewpagerFaculties.postDelayed({
+                showTransportPreference()
+            }, 300)
         }
         
-        binding.recyclerFaculties.apply {
-            layoutManager = LinearLayoutManager(context)
-            this.adapter = adapter
+        binding.viewpagerFaculties.adapter = adapter
+        
+        // 设置ViewPager2的页面切换监听
+        binding.viewpagerFaculties.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                // 更新页面指示器
+                binding.textPageIndicator.text = "${position + 1} / ${MockData.FACULTY_DATA.size}"
+            }
+        })
+        
+        // 初始化页面指示器
+        binding.textPageIndicator.text = "1 / ${MockData.FACULTY_DATA.size}"
+        
+        // 配置ViewPager2的页面转换效果
+        setupPageTransformer()
+    }
+    
+    private fun setupPageTransformer() {
+        binding.viewpagerFaculties.apply {
+            // 设置页面间距
+            offscreenPageLimit = 1
+            
+            // 添加页面间距
+            val pageMarginPx = resources.getDimensionPixelOffset(R.dimen.pageMargin)
+            val offsetPx = resources.getDimensionPixelOffset(R.dimen.offset)
+            
+            setPageTransformer { page, position ->
+                val absPosition = abs(position)
+                
+                // 缩放效果
+                page.scaleY = 0.85f + (1 - absPosition) * 0.15f
+                page.scaleX = 0.85f + (1 - absPosition) * 0.15f
+                
+                // 透明度效果
+                page.alpha = 0.5f + (1 - absPosition) * 0.5f
+                
+                // 轻微旋转效果
+                page.rotationY = position * -15f
+            }
+        }
+    }
+    
+    private fun showTransportPreference() {
+        currentStep = 2
+        
+        // 切换界面
+        binding.layoutPersonalInfo.visibility = View.GONE
+        binding.layoutFacultySelection.visibility = View.GONE
+        binding.layoutTransportPreference.root.visibility = View.VISIBLE
+        binding.layoutCommonLocations.root.visibility = View.GONE
+        binding.layoutInterestsGoals.root.visibility = View.GONE
+        binding.layoutMascotReveal.visibility = View.GONE
+        
+        Log.d("DEBUG_SIGNUP", "Showing transport preference")
+        
+        // 设置交通卡片点击监听
+        val cards = mapOf(
+            binding.layoutTransportPreference.cardBus to Pair("bus", binding.layoutTransportPreference.checkBus),
+            binding.layoutTransportPreference.cardWalking to Pair("walking", binding.layoutTransportPreference.checkWalking),
+            binding.layoutTransportPreference.cardCycling to Pair("cycling", binding.layoutTransportPreference.checkCycling),
+            binding.layoutTransportPreference.cardCarpool to Pair("carpool", binding.layoutTransportPreference.checkCarpool)
+        )
+        
+        cards.forEach { (card, typeAndCheck) ->
+            val (type, checkView) = typeAndCheck
+            card.setOnClickListener {
+                if (transportPrefs.contains(type)) {
+                    transportPrefs.remove(type)
+                    card.strokeColor = ContextCompat.getColor(requireContext(), R.color.border)
+                    checkView.visibility = View.GONE
+                } else {
+                    transportPrefs.add(type)
+                    card.strokeColor = ContextCompat.getColor(requireContext(), R.color.primary)
+                    checkView.visibility = View.VISIBLE
+                }
+                
+                // 至少选择一个才能继续
+                binding.layoutTransportPreference.btnContinueTransport.isEnabled = transportPrefs.isNotEmpty()
+                binding.layoutTransportPreference.btnContinueTransport.alpha = if (transportPrefs.isNotEmpty()) 1f else 0.5f
+            }
         }
         
-        // Continue 按钮
-        binding.btnContinue.isEnabled = false
-        binding.btnContinue.alpha = 0.5f
-        binding.btnContinue.setOnClickListener {
+        // Continue按钮
+        binding.layoutTransportPreference.btnContinueTransport.isEnabled = false
+        binding.layoutTransportPreference.btnContinueTransport.alpha = 0.5f
+        binding.layoutTransportPreference.btnContinueTransport.setOnClickListener {
+            Log.d("DEBUG_SIGNUP", "Transport prefs selected: ${transportPrefs.joinToString(", ")}")
+            showCommonLocations()
+        }
+    }
+    
+    private fun showCommonLocations() {
+        currentStep = 3
+        
+        // 切换界面
+        binding.layoutPersonalInfo.visibility = View.GONE
+        binding.layoutFacultySelection.visibility = View.GONE
+        binding.layoutTransportPreference.root.visibility = View.GONE
+        binding.layoutCommonLocations.root.visibility = View.VISIBLE
+        binding.layoutInterestsGoals.root.visibility = View.GONE
+        binding.layoutMascotReveal.visibility = View.GONE
+        
+        Log.d("DEBUG_SIGNUP", "Showing common locations")
+        
+        // Chip监听
+        binding.layoutCommonLocations.chipGym.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) otherLocations.add("gym") else otherLocations.remove("gym")
+        }
+        binding.layoutCommonLocations.chipCanteen.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) otherLocations.add("canteen") else otherLocations.remove("canteen")
+        }
+        binding.layoutCommonLocations.chipLab.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) otherLocations.add("lab") else otherLocations.remove("lab")
+        }
+        binding.layoutCommonLocations.chipSports.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) otherLocations.add("sports") else otherLocations.remove("sports")
+        }
+        
+        // Skip按钮
+        binding.layoutCommonLocations.btnSkipLocations.setOnClickListener {
+            Log.d("DEBUG_SIGNUP", "Locations skipped")
+            showInterestsGoals()
+        }
+        
+        // Continue按钮
+        binding.layoutCommonLocations.btnContinueLocations.setOnClickListener {
+            dormitory = binding.layoutCommonLocations.inputDorm.text.toString()
+            teachingBuilding = binding.layoutCommonLocations.inputBuilding.text.toString()
+            studySpot = binding.layoutCommonLocations.inputLibrary.text.toString()
+            Log.d("DEBUG_SIGNUP", "Locations: dorm=$dormitory, building=$teachingBuilding, spot=$studySpot")
+            showInterestsGoals()
+        }
+    }
+    
+    private fun showInterestsGoals() {
+        currentStep = 4
+        
+        // 切换界面
+        binding.layoutPersonalInfo.visibility = View.GONE
+        binding.layoutFacultySelection.visibility = View.GONE
+        binding.layoutTransportPreference.root.visibility = View.GONE
+        binding.layoutCommonLocations.root.visibility = View.GONE
+        binding.layoutInterestsGoals.root.visibility = View.VISIBLE
+        binding.layoutMascotReveal.visibility = View.GONE
+        
+        Log.d("DEBUG_SIGNUP", "Showing interests and goals")
+        
+        // 兴趣Chips监听
+        binding.layoutInterestsGoals.chipSustainability.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) interests.add("sustainability") else interests.remove("sustainability")
+        }
+        binding.layoutInterestsGoals.chipChallenges.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) interests.add("challenges") else interests.remove("challenges")
+        }
+        binding.layoutInterestsGoals.chipCommunity.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) interests.add("community") else interests.remove("community")
+        }
+        binding.layoutInterestsGoals.chipRewards.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) interests.add("rewards") else interests.remove("rewards")
+        }
+        binding.layoutInterestsGoals.chipLeaderboard.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) interests.add("leaderboard") else interests.remove("leaderboard")
+        }
+        
+        // 每周目标Slider
+        binding.layoutInterestsGoals.sliderWeeklyGoal.addOnChangeListener { _, value, _ ->
+            weeklyGoal = value.toInt()
+            binding.layoutInterestsGoals.textGoalValue.text = weeklyGoal.toString()
+        }
+        
+        // 通知开关
+        binding.layoutInterestsGoals.switchChallenges.setOnCheckedChangeListener { _, isChecked ->
+            notifyChallenges = isChecked
+        }
+        binding.layoutInterestsGoals.switchReminders.setOnCheckedChangeListener { _, isChecked ->
+            notifyReminders = isChecked
+        }
+        binding.layoutInterestsGoals.switchFriends.setOnCheckedChangeListener { _, isChecked ->
+            notifyFriends = isChecked
+        }
+        
+        // Finish按钮
+        binding.layoutInterestsGoals.btnFinishSignup.setOnClickListener {
+            Log.d("DEBUG_SIGNUP", "Interests: ${interests.joinToString(", ")}, Goal: $weeklyGoal")
             selectedFaculty?.let { faculty ->
                 showMascotReveal(faculty)
             }
@@ -77,20 +403,24 @@ class SignupWizardFragment : Fragment() {
     }
     
     private fun showMascotReveal(faculty: FacultyData) {
-        currentStep = 1
+        currentStep = 5
         
         // 切换到小狮子展示界面
+        binding.layoutPersonalInfo.visibility = View.GONE
         binding.layoutFacultySelection.visibility = View.GONE
+        binding.layoutTransportPreference.root.visibility = View.GONE
+        binding.layoutCommonLocations.root.visibility = View.GONE
+        binding.layoutInterestsGoals.root.visibility = View.GONE
         binding.layoutMascotReveal.visibility = View.VISIBLE
         
-        binding.textRevealTitle.text = "You're all set!"
+        binding.textRevealTitle.text = "Welcome, $username!"
         binding.textRevealSubtitle.text = "Meet your new buddy."
         
         // 设置小狮子装备
         binding.mascotReveal.outfit = faculty.outfit
         
         // 入场动画
-        val scaleAnimator = ValueAnimator.ofFloat(0.5f, 1f).apply {
+        mascotScaleAnimator = ValueAnimator.ofFloat(0.5f, 1f).apply {
             duration = 600
             interpolator = AccelerateDecelerateInterpolator()
             addUpdateListener { animation ->
@@ -99,10 +429,10 @@ class SignupWizardFragment : Fragment() {
                 binding.mascotReveal.scaleY = scale
             }
         }
-        scaleAnimator.start()
+        mascotScaleAnimator?.start()
         
         // 轻微旋转动画
-        val rotateAnimator = ValueAnimator.ofFloat(-5f, 5f).apply {
+        mascotRotateAnimator = ValueAnimator.ofFloat(-5f, 5f).apply {
             duration = 2000
             repeatMode = ValueAnimator.REVERSE
             repeatCount = ValueAnimator.INFINITE
@@ -111,7 +441,7 @@ class SignupWizardFragment : Fragment() {
                 binding.mascotReveal.rotation = animation.animatedValue as Float
             }
         }
-        rotateAnimator.start()
+        mascotRotateAnimator?.start()
         
         // 学院信息
         binding.textFacultyName.text = faculty.name
@@ -132,7 +462,7 @@ class SignupWizardFragment : Fragment() {
         binding.textOutfitItems.text = "Starter Outfit: ${outfitItems.joinToString(", ")}"
         
         // Let's Go! 按钮动画
-        val buttonAnimator = ValueAnimator.ofFloat(1f, 1.05f).apply {
+        buttonAnimator = ValueAnimator.ofFloat(1f, 1.05f).apply {
             duration = 1000
             repeatMode = ValueAnimator.REVERSE
             repeatCount = ValueAnimator.INFINITE
@@ -143,19 +473,91 @@ class SignupWizardFragment : Fragment() {
                 binding.btnLetsGo.scaleY = scale
             }
         }
-        buttonAnimator.start()
+        buttonAnimator?.start()
         
         binding.btnLetsGo.setOnClickListener {
+            Log.d("DEBUG_SIGNUP", "Let's Go button clicked!")
+            Toast.makeText(requireContext(), "🎯 Let's Go 按钮已点击", Toast.LENGTH_SHORT).show()
+            
+            // 停止所有动画
+            buttonAnimator?.cancel()
+            mascotScaleAnimator?.cancel()
+            mascotRotateAnimator?.cancel()
+            
+            // 重置按钮缩放
+            binding.btnLetsGo.scaleX = 1f
+            binding.btnLetsGo.scaleY = 1f
+            
             completeSignup(faculty)
         }
     }
     
     private fun completeSignup(faculty: FacultyData) {
-        // TODO: 将学院服装添加到用户 inventory
-        // TODO: 保存用户数据到后端
+        Log.d("DEBUG_SIGNUP", "=== Complete Registration Data ===")
+        Log.d("DEBUG_SIGNUP", "Username: $username")
+        Log.d("DEBUG_SIGNUP", "Email: $email")
+        Log.d("DEBUG_SIGNUP", "NUSNET: $nusnetId")
+        Log.d("DEBUG_SIGNUP", "Password saved: ${password.isNotEmpty()}")
+        Log.d("DEBUG_SIGNUP", "Faculty: ${faculty.name}")
+        Log.d("DEBUG_SIGNUP", "Transport: ${transportPrefs.joinToString(", ")}")
+        Log.d("DEBUG_SIGNUP", "Dorm: $dormitory")
+        Log.d("DEBUG_SIGNUP", "Building: $teachingBuilding")
+        Log.d("DEBUG_SIGNUP", "Study Spot: $studySpot")
+        Log.d("DEBUG_SIGNUP", "Other Locations: ${otherLocations.joinToString(", ")}")
+        Log.d("DEBUG_SIGNUP", "Interests: ${interests.joinToString(", ")}")
+        Log.d("DEBUG_SIGNUP", "Weekly Goal: $weeklyGoal")
+        Log.d("DEBUG_SIGNUP", "Notifications: challenges=$notifyChallenges, reminders=$notifyReminders, friends=$notifyFriends")
         
-        // 导航到主界面
-        findNavController().navigate(R.id.action_signup_to_home)
+        // 保存注册数据
+        saveRegistrationData()
+        
+        // 标记为首次登录（用于触发功能引导）
+        saveFirstLoginStatus(true)
+        
+        Toast.makeText(requireContext(), "Registration successful! Please login with your credentials 🎉", Toast.LENGTH_LONG).show()
+        
+        // 延迟一下，让Toast消息能显示，然后跳转到登录页面
+        binding.root.postDelayed({
+            try {
+                Log.d("DEBUG_SIGNUP", "Attempting navigate to login")
+                // 跳转到登录页面，清除back stack
+                findNavController().navigate(R.id.loginFragment)
+                Log.d("DEBUG_SIGNUP", "Navigate to login completed")
+            } catch (e: Exception) {
+                Log.e("DEBUG_SIGNUP", "Navigation failed: ${e.message}", e)
+                Toast.makeText(requireContext(), "❌ 导航失败: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+        }, 1000)
+    }
+    
+    private fun saveRegistrationData() {
+        val prefs = requireContext().getSharedPreferences("EcoGoPrefs", Context.MODE_PRIVATE)
+        prefs.edit().apply {
+            putString("username", username)
+            putString("email", email)
+            putString("nusnet_id", nusnetId)
+            putString("password", password)  // 注意：实际应用中应该加密存储
+            putString("faculty", selectedFaculty?.name)
+            putStringSet("transport_prefs", transportPrefs)
+            putString("dormitory", dormitory)
+            putString("teaching_building", teachingBuilding)
+            putString("study_spot", studySpot)
+            putStringSet("other_locations", otherLocations)
+            putStringSet("interests", interests)
+            putInt("weekly_goal", weeklyGoal)
+            putBoolean("notify_challenges", notifyChallenges)
+            putBoolean("notify_reminders", notifyReminders)
+            putBoolean("notify_friends", notifyFriends)
+            putBoolean("is_registered", true)  // 标记已注册
+            apply()
+        }
+        Log.d("DEBUG_SIGNUP", "Registration data saved to SharedPreferences")
+    }
+    
+    private fun saveFirstLoginStatus(isFirstLogin: Boolean) {
+        val prefs = requireContext().getSharedPreferences("EcoGoPrefs", Context.MODE_PRIVATE)
+        prefs.edit().putBoolean("is_first_login", isFirstLogin).apply()
+        Log.d("DEBUG_SIGNUP", "First login status set to: $isFirstLogin")
     }
     
     private fun getItemName(itemId: String): String {
@@ -176,6 +578,11 @@ class SignupWizardFragment : Fragment() {
     }
     
     override fun onDestroyView() {
+        // 清理动画
+        buttonAnimator?.cancel()
+        mascotScaleAnimator?.cancel()
+        mascotRotateAnimator?.cancel()
+        
         super.onDestroyView()
         _binding = null
     }

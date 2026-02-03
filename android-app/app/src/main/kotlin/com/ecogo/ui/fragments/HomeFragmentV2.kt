@@ -43,12 +43,16 @@ class HomeFragmentV2 : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        android.util.Log.d("DEBUG_HOME_V2", "HomeFragmentV2 onCreateView - inflating binding")
         _binding = FragmentHomeV2Binding.inflate(inflater, container, false)
+        android.util.Log.d("DEBUG_HOME_V2", "HomeFragmentV2 binding inflated successfully")
         return binding.root
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        android.util.Log.d("DEBUG_HOME_V2", "HomeFragmentV2 onViewCreated - starting setup")
         
         setupBanner()
         setupUI()
@@ -56,6 +60,8 @@ class HomeFragmentV2 : Fragment() {
         setupAnimations()
         setupActions()
         loadData()
+        
+        android.util.Log.d("DEBUG_HOME_V2", "HomeFragmentV2 onViewCreated completed")
     }
     
     private fun setupBanner() {

@@ -11,9 +11,11 @@ import com.ecogo.R
 class OnboardingAdapter : RecyclerView.Adapter<OnboardingAdapter.OnboardingViewHolder>() {
     
     private val pages = listOf(
-        OnboardingPage(R.drawable.app_icon, "Choose Your Faculty", "Select your faculty to personalize your experience"),
-        OnboardingPage(R.drawable.app_icon, "Track Your Routes", "Get real-time bus updates and plan your journey"),
-        OnboardingPage(R.drawable.app_icon, "Earn Rewards", "Collect points and redeem exciting vouchers")
+        OnboardingPage(R.drawable.app_icon, "Welcome to EcoGo! 🎉", "Transform your daily commute\ninto environmental impact"),
+        OnboardingPage(R.drawable.app_icon, "Track Green Trips 🚌", "Earn points for every\neco-friendly journey"),
+        OnboardingPage(R.drawable.app_icon, "Join Challenges 🏆", "Compete with friends and\nyour faculty for rewards"),
+        OnboardingPage(R.drawable.app_icon, "Customize Mascot 🎨", "Unlock outfits and accessories\nas you progress"),
+        OnboardingPage(R.drawable.app_icon, "Ready to Start? 🌱", "Begin your first\ngreen trip today!")
     )
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OnboardingViewHolder {

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="route_card_radius">16dp</dimen>
+    <dimen name="pageMargin">16dp</dimen>
+    <dimen name="offset">32dp</dimen>
 </resources>

@@ -1,10 +1,12 @@
 package com.ecogo.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -34,36 +36,99 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        return binding.root
+        return try {
+            Log.d("DEBUG_HOME", "HomeFragment onCreateView - inflating binding")
+            Toast.makeText(context, "🏠 HomeFragment 正在加载...", Toast.LENGTH_SHORT).show()
+            _binding = FragmentHomeBinding.inflate(inflater, container, false)
+            Log.d("DEBUG_HOME", "HomeFragment binding inflated successfully")
+            Toast.makeText(context, "✅ HomeFragment 加载成功！", Toast.LENGTH_SHORT).show()
+            binding.root
+        } catch (e: Exception) {
+            Log.e("DEBUG_HOME", "HomeFragment onCreateView FAILED: ${e.message}", e)
+            Toast.makeText(context, "❌ HomeFragment 创建失败: ${e.message}", Toast.LENGTH_LONG).show()
+            throw e
+        }
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        setupUI()
-        setupRecyclerView()
-        setupAnimations()
-        setupActions()
-        loadData()
+        try {
+            Log.d("DEBUG_HOME", "HomeFragment onViewCreated - starting setup")
+            
+            try {
+                setupUI()
+                Log.d("DEBUG_HOME", "setupUI completed")
+            } catch (e: Exception) {
+                Log.e("DEBUG_HOME", "setupUI FAILED: ${e.message}", e)
+                Toast.makeText(requireContext(), "setupUI 失败: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+            
+            try {
+                setupRecyclerView()
+                Log.d("DEBUG_HOME", "setupRecyclerView completed")
+            } catch (e: Exception) {
+                Log.e("DEBUG_HOME", "setupRecyclerView FAILED: ${e.message}", e)
+            }
+            
+            try {
+                setupAnimations()
+                Log.d("DEBUG_HOME", "setupAnimations completed")
+            } catch (e: Exception) {
+                Log.e("DEBUG_HOME", "setupAnimations FAILED: ${e.message}", e)
+            }
+            
+            try {
+                setupActions()
+                Log.d("DEBUG_HOME", "setupActions completed")
+            } catch (e: Exception) {
+                Log.e("DEBUG_HOME", "setupActions FAILED: ${e.message}", e)
+            }
+            
+            try {
+                loadData()
+            } catch (e: Exception) {
+                Log.e("DEBUG_HOME", "loadData FAILED: ${e.message}", e)
+            }
+            
+            Log.d("DEBUG_HOME", "HomeFragment onViewCreated completed")
+        } catch (e: Exception) {
+            Log.e("DEBUG_HOME", "HomeFragment onViewCreated FAILED: ${e.message}", e)
+            Toast.makeText(requireContext(), "HomeFragment 初始化失败: ${e.message}", Toast.LENGTH_LONG).show()
+        }
     }
     
     private fun setupUI() {
-        binding.textBusNumber.text = "D1"
-        binding.textBusTime.text = "2 min"
-        binding.textBusRoute.text = "to UTown"
-        binding.textMonthlyPoints.text = "880"
-        binding.textPointsChange.text = "+150 this week"
-        binding.textSocScore.text = "5,530"
-        binding.textSocRank.text = "Rank #1"
-        binding.textLocation.text = getString(com.ecogo.R.string.home_location)
-        
-        // 设置小狮子头像
-        binding.mascotAvatar.apply {
-            mascotSize = MascotSize.MEDIUM
-            outfit = currentOutfit
-            // 进入时播放挥手动画
-            waveAnimation()
+        try {
+            binding.textBusNumber.text = "D1"
+            binding.textBusTime.text = "2 min"
+            binding.textBusRoute.text = "to UTown"
+            binding.textMonthlyPoints.text = "880"
+            binding.textPointsChange.text = "+150 this week"
+            binding.textSocScore.text = "5,530"
+            binding.textSocRank.text = "Rank #1"
+            binding.textLocation.text = getString(com.ecogo.R.string.home_location)
+            
+            Log.d("DEBUG_HOME", "Basic UI setup completed, setting up mascot")
+            
+            // 设置小狮子头像
+            try {
+                binding.mascotAvatar.apply {
+                    mascotSize = MascotSize.MEDIUM
+                    outfit = currentOutfit
+                    Log.d("DEBUG_HOME", "Mascot configured, starting wave animation")
+                    // 进入时播放挥手动画
+                    waveAnimation()
+                }
+                Log.d("DEBUG_HOME", "Mascot setup completed")
+            } catch (e: Exception) {
+                Log.e("DEBUG_HOME", "Mascot setup FAILED: ${e.message}", e)
+                Toast.makeText(requireContext(), "小狮子初始化失败: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Log.e("DEBUG_HOME", "setupUI FAILED: ${e.message}", e)
+            Toast.makeText(requireContext(), "UI初始化失败: ${e.message}", Toast.LENGTH_SHORT).show()
+            throw e
         }
     }
     
