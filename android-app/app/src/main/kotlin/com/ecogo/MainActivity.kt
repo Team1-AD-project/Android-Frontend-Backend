@@ -38,6 +38,26 @@ class MainActivity : AppCompatActivity() {
             setContentView(binding.root)
             
             setupNavigation()
+
+            // Check for direct navigation from SplashActivity
+            if (intent.getBooleanExtra("NAV_TO_HOME", false)) {
+                Log.d("DEBUG_MAIN", "NAV_TO_HOME detected, navigating to Home")
+                try {
+                    val homeDest = getHomeDestination()
+                    // Pop LoginFragment off the stack (inclusive=true would pop LoginFragment)
+                    // We assume LoginFragment is the start destination.
+                    val navOptions = androidx.navigation.NavOptions.Builder()
+                        .setPopUpTo(R.id.loginFragment, true)
+                        .setEnterAnim(androidx.navigation.ui.R.anim.nav_default_enter_anim)
+                        .setExitAnim(androidx.navigation.ui.R.anim.nav_default_exit_anim)
+                        .build()
+
+                    navController.navigate(homeDest, null, navOptions)
+                } catch (e: Exception) {
+                    Log.e("DEBUG_MAIN", "Failed to navigate to Home from Splash: ${e.message}", e)
+                }
+            }
+
             setupVersionToggle()
             checkAndShowOnboarding()
             Log.d("DEBUG_MAIN", "MainActivity onCreate completed")
