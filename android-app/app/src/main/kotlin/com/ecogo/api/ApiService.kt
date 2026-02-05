@@ -488,7 +488,17 @@ interface ApiService {
 
 
     @POST("api/v1/mobile/users/register")
-    suspend fun register(@Body request: MobileLoginRequest): ApiResponse<MobileLoginResponse>
+    suspend fun register(@Body request: MobileRegisterRequest): ApiResponse<MobileRegisterData>
+
+    /**
+     * 更新用户资料 (Internal API - No Token)
+     * PUT /api/v1/internal/users/{userid}/profile
+     */
+    @PUT("api/v1/internal/users/{userid}/profile")
+    suspend fun updateProfile(
+        @Path("userid") userId: String,
+        @Body request: UpdateProfileRequest
+    ): ApiResponse<Any>
 }
 
 // ==================== DTO 数据类 ====================
@@ -505,11 +515,9 @@ data class MobileLoginRequest(
 /**
  * 移动端登录响应
  */
-
 data class MobileLoginResponse(
     val token: String,
     @SerializedName("user_info") val userInfo: UserInfo
-    // expire_at is also available if needed
 )
 
 data class UserInfo(
@@ -525,6 +533,7 @@ data class VipInfo(
     val plan: String?,
     val expiryDate: String?
 )
+
 /**
  * 移动端注册请求
  */
@@ -539,14 +548,32 @@ data class MobileRegisterRequest(
 /**
  * 移动端注册响应
  */
-
 data class MobileRegisterData(
     val id: String,
     val userid: String,
     val nickname: String,
-    @SerializedName("created_at") val createdAt: String // 下划线转驼峰命名
+    @SerializedName("created_at") val createdAt: String
 )
-typealias MobileRegisterResponse = ApiResponse<MobileRegisterData>
+
+/**
+ * 更新个人资料请求 (支持部分更新)
+ */
+data class UpdateProfileRequest(
+    val faculty: String? = null,
+    val preferences: TransportPreferencesWrapper? = null,
+    val dormitoryOrResidence: String? = null,
+    val mainTeachingBuilding: String? = null,
+    val favoriteStudySpot: String? = null,
+    val interests: List<String>? = null,
+    val weeklyGoals: Int? = null,
+    val newChallenges: Boolean? = null,
+    val activityReminders: Boolean? = null,
+    val friendActivity: Boolean? = null
+)
+
+data class TransportPreferencesWrapper(
+    val preferredTransport: List<String>
+)
 
 
 /**
