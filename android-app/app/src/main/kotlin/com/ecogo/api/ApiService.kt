@@ -22,6 +22,7 @@ import com.ecogo.data.Voucher
 import com.ecogo.data.VoucherRedeemRequest
 import com.ecogo.data.WalkingRoute
 import com.ecogo.data.Weather
+import com.google.gson.annotations.SerializedName
 import retrofit2.http.*
 
 /**
@@ -484,18 +485,17 @@ interface ApiService {
 /**
  * 移动端登录请求
  */
+/**
+ * 移动端登录请求
+ */
 data class MobileLoginRequest(
     val userid: String,
-    val password: Any // Can be String or Int based on user input, but better to be specific if known. The user JSON showed int `123456`, but typical APIs use strings. I will use Any to match the user's loose description or standard String if I can. Let's stick strictly to the user's JSON which implies possibility of int. However, `Any` in Retrofit might complicate serialization without custom adapter unless Gson handles it. Standard practice is String. I'll use String for password as it's safer, but I'll make sure the input handles it. Wait, the user JSON explicitly had `password: 123456` (number). Let's use `Any` or `String` and rely on Gson. Actually, let's use `Any` to be safe given the prompt's explicit JSON, or better yet, just `String` and assume the client sends string. If the server strictly expects a number, `Int` or `Long`. The prompt said: `"password":123456`. This is a number. Attempting `Int`.
-    // Wait, typical login passwords are strings. If I send an Int 123456 it will be JSON number. If I send String "123456" it is JSON string. I will assume String is fine, but if the legacy backend IS strict, I might need to be careful. Let's use `String` first as it's standard, and if it fails I'll change it.
-    // Actually, looking at the user prompt again: `"password":123456`.
-    // I will use String for the DTO property, but the JSON serialization will make it a string. If the server expects a number, I should use Int.
-    // Let's defer to String for now as passwords should be strings.
+    val password: Any 
 )
 
-import com.google.gson.annotations.SerializedName
-
 /**
+ * 移动端登录响应
+ */
  * 移动端登录响应
  */
 data class MobileLoginResponse(
