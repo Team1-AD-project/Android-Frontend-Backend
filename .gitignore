@@ -108,3 +108,31 @@ Thumbs.db
 dist/
 build/
 
+# Documentation and notes (exclude from repo)
+*_分支对比报告*.md
+*_分析报告*.md
+*_详细清单表格*.md
+*_连接修复完成报告*.md
+*修复总结*.md
+*修复摘要*.md
+下一步*.md
+测试验证指南.md
+CONFIG_BACKUP_INFO.md
+MERGE_TEST_GUIDE.md
+MONGODB_ATLAS_SETUP_GUIDE.md
+MONTHLY_HIGHLIGHTS_IMPLEMENTATION.md
+MONTHLY_HIGHLIGHTS_QUICK_REFERENCE.md
+NEXT_STEPS.md
+POINTS_MANAGER_FIX.md
+QUICK_CONFIG_STEPS.md
+QUICK_TEST.md
+SEQUENCE_DIAGRAMS_*.puml
+SEQUENCE_DIAGRAMS_*.md
+SHOP_UI_IMPROVEMENTS.md
+USECASES_AND_SEQUENCE_DIAGRAMS.md
+USECASE_SEQUENCE_DIAGRAM_TABLE.md
+VOUCHER_UI_IMPROVEMENTS.md
+*.backup
+*.ps1
+config-template.txt
+

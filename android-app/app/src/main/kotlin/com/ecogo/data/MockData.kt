@@ -271,10 +271,12 @@ object MockData {
     ) }
     
     val SHOP_ITEMS by lazy { listOf(
-        // Head items (4 items)
+        // === LiNUS Avatar Items ===
+        
+        // Head Items (帽子/头饰) - 10 items
         ShopItem(
             id = "hat_grad",
-            name = "Grad Cap",
+            name = "Graduation Cap 🎓",
             type = "head",
             cost = 500,
             owned = true,
@@ -282,7 +284,7 @@ object MockData {
         ),
         ShopItem(
             id = "hat_cap",
-            name = "Orange Cap",
+            name = "Orange Cap 🧢",
             type = "head",
             cost = 200,
             owned = false,
@@ -290,7 +292,7 @@ object MockData {
         ),
         ShopItem(
             id = "hat_helmet",
-            name = "Safety Helmet",
+            name = "Safety Helmet ⛑️",
             type = "head",
             cost = 300,
             owned = false,
@@ -298,16 +300,65 @@ object MockData {
         ),
         ShopItem(
             id = "hat_beret",
-            name = "Artist Beret",
+            name = "Artist Beret 🎨",
             type = "head",
             cost = 300,
             owned = false,
             equipped = false
         ),
-        // Face items (2 items)
+        ShopItem(
+            id = "hat_crown",
+            name = "Golden Crown 👑",
+            type = "head",
+            cost = 800,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "hat_party",
+            name = "Party Hat 🎉",
+            type = "head",
+            cost = 250,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "hat_beanie",
+            name = "Winter Beanie ❄️",
+            type = "head",
+            cost = 350,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "hat_cowboy",
+            name = "Cowboy Hat 🤠",
+            type = "head",
+            cost = 400,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "hat_chef",
+            name = "Chef Hat 👨‍🍳",
+            type = "head",
+            cost = 450,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "hat_wizard",
+            name = "Wizard Hat 🧙",
+            type = "head",
+            cost = 700,
+            owned = false,
+            equipped = false
+        ),
+        
+        // Face Items (眼镜/配饰) - 8 items
         ShopItem(
             id = "glasses_sun",
-            name = "Shades",
+            name = "Cool Shades 😎",
             type = "face",
             cost = 300,
             owned = false,
@@ -315,16 +366,65 @@ object MockData {
         ),
         ShopItem(
             id = "face_goggles",
-            name = "Safety Goggles",
+            name = "Safety Goggles 🥽",
             type = "face",
             cost = 250,
             owned = false,
             equipped = false
         ),
-        // Body items (5 items)
+        ShopItem(
+            id = "glasses_nerd",
+            name = "Nerd Glasses 🤓",
+            type = "face",
+            cost = 280,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "glasses_3d",
+            name = "3D Glasses 🎬",
+            type = "face",
+            cost = 220,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "face_mask",
+            name = "Superhero Mask 🦸",
+            type = "face",
+            cost = 450,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "face_monocle",
+            name = "Fancy Monocle 🧐",
+            type = "face",
+            cost = 380,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "face_scarf",
+            name = "Winter Scarf 🧣",
+            type = "face",
+            cost = 320,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "face_vr",
+            name = "VR Headset 🥽",
+            type = "face",
+            cost = 600,
+            owned = false,
+            equipped = false
+        ),
+        
+        // Body Items (服装) - 12 items
         ShopItem(
             id = "shirt_nus",
-            name = "NUS Tee",
+            name = "NUS Tee 🎓",
             type = "body",
             cost = 400,
             owned = true,
@@ -332,7 +432,7 @@ object MockData {
         ),
         ShopItem(
             id = "shirt_hoodie",
-            name = "Blue Hoodie",
+            name = "Blue Hoodie 🧥",
             type = "body",
             cost = 600,
             owned = false,
@@ -340,7 +440,7 @@ object MockData {
         ),
         ShopItem(
             id = "body_plaid",
-            name = "Engin Plaid",
+            name = "Engineering Plaid 👔",
             type = "body",
             cost = 400,
             owned = false,
@@ -348,7 +448,7 @@ object MockData {
         ),
         ShopItem(
             id = "body_suit",
-            name = "Biz Suit",
+            name = "Business Suit 🤵",
             type = "body",
             cost = 500,
             owned = false,
@@ -356,41 +456,351 @@ object MockData {
         ),
         ShopItem(
             id = "body_coat",
-            name = "Lab Coat",
+            name = "Lab Coat 🥼",
             type = "body",
             cost = 450,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "body_sports",
+            name = "Sports Jersey ⚽",
+            type = "body",
+            cost = 550,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "body_kimono",
+            name = "Traditional Kimono 👘",
+            type = "body",
+            cost = 650,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "body_tux",
+            name = "Fancy Tuxedo 🎩",
+            type = "body",
+            cost = 800,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "body_superhero",
+            name = "Superhero Cape 🦸",
+            type = "body",
+            cost = 700,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "body_doctor",
+            name = "Doctor's Coat 👨‍⚕️",
+            type = "body",
+            cost = 480,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "body_pilot",
+            name = "Pilot Uniform ✈️",
+            type = "body",
+            cost = 620,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "body_ninja",
+            name = "Ninja Outfit 🥷",
+            type = "body",
+            cost = 750,
+            owned = false,
+            equipped = false
+        ),
+        
+        // Badge Items (徽章/成就) - 10 items
+        ShopItem(
+            id = "badge_eco_warrior",
+            name = "Eco Warrior Badge 🌿",
+            type = "badge",
+            cost = 1000,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "badge_walker",
+            name = "10K Steps Master 🚶",
+            type = "badge",
+            cost = 800,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "badge_cyclist",
+            name = "Cycling Champion 🚴",
+            type = "badge",
+            cost = 850,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "badge_green",
+            name = "Green Hero 🌱",
+            type = "badge",
+            cost = 600,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "badge_pioneer",
+            name = "EcoGo Pioneer 🏆",
+            type = "badge",
+            cost = 1200,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "badge_streak",
+            name = "30-Day Streak 🔥",
+            type = "badge",
+            cost = 900,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "badge_social",
+            name = "Social Butterfly 🦋",
+            type = "badge",
+            cost = 700,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "badge_explorer",
+            name = "Campus Explorer 🗺️",
+            type = "badge",
+            cost = 650,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "badge_recycler",
+            name = "Recycling Pro ♻️",
+            type = "badge",
+            cost = 550,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "badge_legend",
+            name = "EcoGo Legend ⭐",
+            type = "badge",
+            cost = 1500,
             owned = false,
             equipped = false
         )
     ) }
     
     val VOUCHERS by lazy { listOf(
+        // Food & Beverage Vouchers
         Voucher(
             id = "v1",
             name = "Starbucks $5 Off",
             cost = 500,
-            description = "Get $5 off your next purchase at Starbucks",
+            description = "Get $5 off your next purchase at Starbucks. Valid at all outlets.",
             available = true
         ),
         Voucher(
             id = "v2",
-            name = "Grab $10 Voucher",
-            cost = 800,
-            description = "$10 credit for Grab rides",
+            name = "KFC $8 Discount",
+            cost = 600,
+            description = "$8 off on any order above $15. Dine-in or takeaway.",
             available = true
         ),
         Voucher(
             id = "v3",
-            name = "Foodpanda $8 Off",
-            cost = 650,
-            description = "Save $8 on food delivery",
-            available = false
+            name = "Subway Free Cookie",
+            cost = 300,
+            description = "Free cookie with any 6-inch or footlong sub purchase.",
+            available = true
         ),
         Voucher(
             id = "v4",
+            name = "McDonald's McCombo",
+            cost = 450,
+            description = "Get a free McFlurry with any Extra Value Meal.",
+            available = true
+        ),
+        Voucher(
+            id = "v5",
+            name = "Bubble Tea 50% Off",
+            cost = 350,
+            description = "50% discount on any bubble tea drink at Gong Cha or LiHO.",
+            available = true
+        ),
+        Voucher(
+            id = "v6",
+            name = "Pizza Hut Buy 1 Get 1",
+            cost = 900,
+            description = "Buy 1 Large Pizza, Get 1 FREE (equal or lesser value).",
+            available = true
+        ),
+        Voucher(
+            id = "v7",
+            name = "Campus Canteen $3 Off",
+            cost = 250,
+            description = "$3 off on meals at any NUS canteen. Valid weekdays only.",
+            available = true
+        ),
+        Voucher(
+            id = "v8",
+            name = "Foodpanda $8 Off",
+            cost = 650,
+            description = "Save $8 on food delivery. Minimum order $20.",
+            available = false
+        ),
+        
+        // Transportation Vouchers
+        Voucher(
+            id = "v9",
+            name = "Grab $10 Voucher",
+            cost = 800,
+            description = "$10 credit for Grab rides. Valid for 30 days.",
+            available = true
+        ),
+        Voucher(
+            id = "v10",
+            name = "Grab $5 Voucher",
+            cost = 400,
+            description = "$5 credit for Grab rides or GrabFood orders.",
+            available = true
+        ),
+        Voucher(
+            id = "v11",
+            name = "TransitLink $10 Top-up",
+            cost = 850,
+            description = "$10 top-up credit for your EZ-Link or NETS FlashPay card.",
+            available = true
+        ),
+        Voucher(
+            id = "v12",
+            name = "Gojek $8 Voucher",
+            cost = 650,
+            description = "$8 off your next GoRide or GoCar trip.",
+            available = true
+        ),
+        
+        // Retail & Shopping Vouchers
+        Voucher(
+            id = "v13",
             name = "NUS Bookstore 15% Off",
             cost = 450,
-            description = "15% discount on books and stationery",
+            description = "15% discount on books and stationery. Excludes textbooks.",
+            available = true
+        ),
+        Voucher(
+            id = "v14",
+            name = "FairPrice $5 Voucher",
+            cost = 400,
+            description = "$5 off at any FairPrice supermarket. Minimum spend $30.",
+            available = true
+        ),
+        Voucher(
+            id = "v15",
+            name = "Uniqlo $10 Off",
+            cost = 750,
+            description = "$10 discount on purchases above $50.",
+            available = true
+        ),
+        Voucher(
+            id = "v16",
+            name = "Popular Bookstore $8 Off",
+            cost = 550,
+            description = "$8 off stationery, books, or gadgets at Popular.",
+            available = false
+        ),
+        Voucher(
+            id = "v17",
+            name = "Decathlon 20% Off",
+            cost = 800,
+            description = "20% off on sports equipment and activewear.",
+            available = true
+        ),
+        
+        // Entertainment & Lifestyle
+        Voucher(
+            id = "v18",
+            name = "GV Cinema Ticket",
+            cost = 950,
+            description = "1 complimentary movie ticket at Golden Village cinemas.",
+            available = true
+        ),
+        Voucher(
+            id = "v19",
+            name = "Shaw Theatre $5 Off",
+            cost = 400,
+            description = "$5 off any movie ticket at Shaw Theatres.",
+            available = true
+        ),
+        Voucher(
+            id = "v20",
+            name = "ActiveSG $10 Credit",
+            cost = 600,
+            description = "$10 credit for ActiveSG sports facilities and classes.",
+            available = true
+        ),
+        Voucher(
+            id = "v21",
+            name = "Kinokuniya $15 Off",
+            cost = 700,
+            description = "$15 off books purchase above $50.",
+            available = false
+        ),
+        
+        // Health & Wellness
+        Voucher(
+            id = "v22",
+            name = "Guardian $5 Voucher",
+            cost = 400,
+            description = "$5 off health and beauty products. Min spend $25.",
+            available = true
+        ),
+        Voucher(
+            id = "v23",
+            name = "Watson's $8 Off",
+            cost = 550,
+            description = "$8 discount on personal care items.",
+            available = true
+        ),
+        Voucher(
+            id = "v24",
+            name = "Spa 30% Discount",
+            cost = 1200,
+            description = "30% off any spa treatment at Yunomori Onsen.",
+            available = false
+        ),
+        
+        // Special Limited Edition
+        Voucher(
+            id = "v25",
+            name = "🎁 Mystery Voucher Box",
+            cost = 1500,
+            description = "Random voucher worth $20-$50. Limited quantity!",
+            available = true
+        ),
+        Voucher(
+            id = "v26",
+            name = "🌟 Premium Combo Pack",
+            cost = 2000,
+            description = "5x $5 vouchers (Food, Transport, Retail). Best value!",
+            available = true
+        ),
+        Voucher(
+            id = "v27",
+            name = "🔥 Flash Sale - Grab $15",
+            cost = 999,
+            description = "$15 Grab credit. Limited time offer! Hurry!",
             available = true
         )
     ) }

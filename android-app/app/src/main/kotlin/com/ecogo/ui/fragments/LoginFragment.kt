@@ -42,6 +42,26 @@ class LoginFragment : Fragment() {
                 return@setOnClickListener
             }
             
+            // 测试账号：用户名123，密码123
+            if (inputNusnetId == "123" && inputPassword == "123") {
+                Log.d("DEBUG_LOGIN", "Test account login successful")
+                
+                val prefs = requireContext().getSharedPreferences("EcoGoPrefs", Context.MODE_PRIVATE)
+                // 标记用户已登录
+                prefs.edit().putBoolean("is_logged_in", true).apply()
+                
+                Toast.makeText(requireContext(), "Test Account Login Successful! 🎉", Toast.LENGTH_SHORT).show()
+                
+                try {
+                    Log.d("DEBUG_LOGIN", "Test account, going to home")
+                    findNavController().navigate(R.id.action_login_to_home)
+                } catch (e: Exception) {
+                    Log.e("DEBUG_LOGIN", "Navigation FAILED: ${e.message}", e)
+                    Toast.makeText(requireContext(), "❌ Navigation error: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+                return@setOnClickListener
+            }
+            
             // 验证用户凭证
             val prefs = requireContext().getSharedPreferences("EcoGoPrefs", Context.MODE_PRIVATE)
             val savedNusnetId = prefs.getString("nusnet_id", "")
@@ -56,15 +76,18 @@ class LoginFragment : Fragment() {
             // 验证输入的凭证
             if (inputNusnetId == savedNusnetId && inputPassword == savedPassword) {
                 Log.d("DEBUG_LOGIN", "Login successful")
-                
+                Log.d("DEBUG_LOGIN", "Saved credentials - nusnetId: $savedNusnetId")
+                Log.d("DEBUG_LOGIN", "Input credentials - nusnetId: $inputNusnetId")
+
                 // 标记用户已登录
                 prefs.edit().putBoolean("is_logged_in", true).apply()
-                
+
                 // 检查是否首次登录
                 val isFirstLogin = prefs.getBoolean("is_first_login", false)
-                
+                Log.d("DEBUG_LOGIN", "isFirstLogin flag: $isFirstLogin")
+
                 Toast.makeText(requireContext(), "Welcome back! 🎉", Toast.LENGTH_SHORT).show()
-                
+
                 try {
                     if (isFirstLogin) {
                         // 首次登录，显示引导
@@ -73,7 +96,9 @@ class LoginFragment : Fragment() {
                     } else {
                         // 不是首次登录，直接进入首页
                         Log.d("DEBUG_LOGIN", "Not first login, going to home")
+                        Log.d("DEBUG_LOGIN", "Attempting navigation to homeFragment")
                         findNavController().navigate(R.id.action_login_to_home)
+                        Log.d("DEBUG_LOGIN", "Navigation command executed")
                     }
                 } catch (e: Exception) {
                     Log.e("DEBUG_LOGIN", "Navigation FAILED: ${e.message}", e)
@@ -81,6 +106,8 @@ class LoginFragment : Fragment() {
                 }
             } else {
                 Log.d("DEBUG_LOGIN", "Login failed - incorrect credentials")
+                Log.d("DEBUG_LOGIN", "Expected nusnetId: '$savedNusnetId', got: '$inputNusnetId'")
+                Log.d("DEBUG_LOGIN", "Password match: ${inputPassword == savedPassword}")
                 Toast.makeText(requireContext(), "Incorrect NUSNET ID or password", Toast.LENGTH_SHORT).show()
             }
         }

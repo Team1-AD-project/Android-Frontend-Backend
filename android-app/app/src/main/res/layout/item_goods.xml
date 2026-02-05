@@ -3,23 +3,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
     android:layout_marginBottom="12dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="2dp">
+    app:cardCornerRadius="20dp"
+    app:cardElevation="4dp"
+    app:strokeColor="#E5E7EB"
+    app:strokeWidth="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- 商品图标/图片 -->
+        <!-- 商品图标 -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_image"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            app:cardBackgroundColor="#F5F5F5"
-            app:cardCornerRadius="12dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            app:cardBackgroundColor="#F0FDF4"
+            app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
+            app:strokeColor="#BBF7D0"
+            app:strokeWidth="1dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -28,119 +34,119 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="🍔"
+                android:text="🎓"
                 android:textSize="40sp" />
         </com.google.android.material.card.MaterialCardView>
+
+        <!-- 商品标签（左上角） -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_stock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="false"
+            android:text="✅ Owned"
+            android:textColor="#059669"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:chipBackgroundColor="#D1FAE5"
+            app:chipMinHeight="24dp"
+            app:chipStartPadding="8dp"
+            app:chipEndPadding="8dp"
+            app:layout_constraintStart_toStartOf="@id/card_image"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- 商品信息 -->
         <LinearLayout
             android:id="@+id/layout_info"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="12dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="@id/card_image"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/layout_price"
             app:layout_constraintStart_toEndOf="@id/card_image"
             app:layout_constraintTop_toTopOf="@id/card_image">
 
             <!-- 商品名称 -->
             <TextView
                 android:id="@+id/text_goods_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="1"
+                android:text="Graduation Cap 🎓"
+                android:textColor="@color/text_primary"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <!-- 分类标签 -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
-                android:maxLines="2"
-                android:text="Starbucks $10 Voucher"
-                android:textColor="@color/text_primary"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_marginTop="4dp"
+                android:checkable="false"
+                android:text="Headwear"
+                android:textSize="11sp"
+                app:chipBackgroundColor="#EFF6FF"
+                app:chipMinHeight="22dp"
+                app:chipStartPadding="6dp"
+                app:chipEndPadding="6dp" />
 
             <!-- 商品描述 -->
             <TextView
                 android:id="@+id/text_goods_description"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:ellipsize="end"
+                android:lineSpacingExtra="2dp"
                 android:maxLines="2"
-                android:text="Valid at all Starbucks locations on campus"
+                android:text="Head accessory for LiNUS avatar"
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp" />
+        </LinearLayout>
 
-            <!-- 商品标签 -->
+        <!-- 价格和按钮 -->
+        <LinearLayout
+            android:id="@+id/layout_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@id/card_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/card_image">
+
+            <!-- 价格显示 -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:orientation="horizontal">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_category"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="false"
-                    android:text="Beverage"
-                    android:textSize="10sp"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                    app:chipMinHeight="20dp" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_stock"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:checkable="false"
-                    android:text="In Stock"
-                    android:textSize="10sp"
-                    android:visibility="gone"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                    app:chipMinHeight="20dp" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- 价格和兑换按钮 -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/card_image">
-
-            <!-- 价格信息 -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal">
+                android:background="@drawable/bg_points_badge"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="⭐"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/text_goods_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="2dp"
                     android:fontFamily="sans-serif-medium"
                     android:text="500"
                     android:textColor="@color/primary"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="2dp"
-                    android:text="pts"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="14sp" />
             </LinearLayout>
 
             <!-- 兑换按钮 -->
@@ -148,12 +154,17 @@
                 android:id="@+id/btn_redeem_goods"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
+                android:layout_marginTop="6dp"
                 android:fontFamily="sans-serif-medium"
+                android:minWidth="88dp"
+                android:paddingHorizontal="16dp"
                 android:text="Redeem"
                 android:textAllCaps="false"
                 android:textSize="14sp"
+                android:textStyle="bold"
                 app:backgroundTint="@color/primary"
-                app:cornerRadius="20dp" />
+                app:cornerRadius="20dp"
+                app:elevation="2dp" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

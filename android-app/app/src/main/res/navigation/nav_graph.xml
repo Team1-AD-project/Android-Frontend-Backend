@@ -71,6 +71,9 @@
         <action
             android:id="@+id/action_home_to_checkInCalendar"
             app:destination="@id/checkInCalendarFragment" />
+        <action
+            android:id="@+id/action_home_to_monthlyHighlights"
+            app:destination="@id/monthlyHighlightsFragment" />
     </fragment>
 
     <!-- Home V2 Fragment (with Banner feature) -->
@@ -358,5 +361,15 @@
         android:name="com.ecogo.ui.fragments.CheckInCalendarFragment"
         android:label="每日签到"
         tools:layout="@layout/fragment_check_in_calendar" />
+
+    <fragment
+        android:id="@+id/monthlyHighlightsFragment"
+        android:name="com.ecogo.ui.fragments.MonthlyHighlightsFragment"
+        android:label="Monthly Highlights"
+        tools:layout="@layout/fragment_monthly_highlights">
+        <action
+            android:id="@+id/action_monthlyHighlights_to_activityDetail"
+            app:destination="@id/activityDetailFragment" />
+    </fragment>
 
 </navigation>

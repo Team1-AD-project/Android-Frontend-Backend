@@ -98,18 +98,17 @@ class MainActivity : AppCompatActivity() {
         try {
             val prefs = getSharedPreferences("EcoGoPrefs", Context.MODE_PRIVATE)
             val isFirstLogin = prefs.getBoolean("is_first_login", false)
-            
+
             if (isFirstLogin) {
                 Log.d("DEBUG_MAIN", "First login detected, will show onboarding after home loads")
-                // 注意：这里不直接导航，因为还在登录流程中
-                // 当用户完成注册并到达home时，可以在HomeFragment中检测并导航到onboarding
-                // 或者在navigation listener中处理
-                
+
+                var hasNavigatedToOnboarding = false
                 navController.addOnDestinationChangedListener { _, destination, _ ->
-                    if (destination.id == R.id.homeFragment && isFirstLogin) {
-                        // 到达首页后显示引导
+                    if (destination.id == R.id.homeFragment && isFirstLogin && !hasNavigatedToOnboarding) {
+                        // 到达首页后显示引导（仅一次）
+                        hasNavigatedToOnboarding = true
                         prefs.edit().putBoolean("is_first_login", false).apply()
-                        Log.d("DEBUG_MAIN", "Navigating to onboarding from home")
+                        Log.d("DEBUG_MAIN", "Navigating to onboarding from home (once only)")
                         try {
                             navController.navigate(R.id.onboardingFragment)
                         } catch (e: Exception) {

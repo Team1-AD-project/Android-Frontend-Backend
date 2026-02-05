@@ -136,7 +136,9 @@ class HomeFragment : Fragment() {
         binding.recyclerHighlights.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = HighlightAdapter(emptyList()) { activity ->
-                findNavController().navigate(com.ecogo.R.id.activitiesFragment)
+                // 跳转到活动详情页，传递活动ID
+                val action = HomeFragmentDirections.actionHomeToActivityDetail(activity.id ?: "")
+                findNavController().navigate(action)
             }
         }
         binding.recyclerWalkingRoutes.apply {
@@ -185,7 +187,9 @@ class HomeFragment : Fragment() {
     private suspend fun loadActivities() {
         val activitiesResult = repository.getAllActivities().getOrElse { MockData.ACTIVITIES }
         binding.recyclerHighlights.adapter = HighlightAdapter(activitiesResult.take(3)) { activity ->
-            findNavController().navigate(com.ecogo.R.id.activitiesFragment)
+            // 跳转到活动详情页，传递活动ID
+            val action = HomeFragmentDirections.actionHomeToActivityDetail(activity.id ?: "")
+            findNavController().navigate(action)
         }
     }
     
@@ -214,7 +218,8 @@ class HomeFragment : Fragment() {
             android.widget.Toast.makeText(requireContext(), "地图功能正在开发中", android.widget.Toast.LENGTH_SHORT).show()
         }
         binding.textViewAll.setOnClickListener {
-            findNavController().navigate(com.ecogo.R.id.activitiesFragment)
+            // 跳转到月度亮点页面
+            findNavController().navigate(R.id.action_home_to_monthlyHighlights)
         }
         
         // 点击小狮子跳转到 Profile
