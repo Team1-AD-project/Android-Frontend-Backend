@@ -14,12 +14,14 @@ object TokenManager {
     private const val KEY_USERNAME = "username"
     
     private lateinit var prefs: SharedPreferences
+    private var applicationContext: Context? = null
     
     /**
      * 初始化 TokenManager
      * 应在 Application 类中调用
      */
     fun init(context: Context) {
+        applicationContext = context.applicationContext
         prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     }
     
@@ -57,9 +59,26 @@ object TokenManager {
     
     /**
      * 清除 Token（登出）
+     * 并跳转到登录页面
      */
-    fun clearToken() {
+    fun logout() {
         prefs.edit().clear().apply()
+        
+        applicationContext?.let { context ->
+            // Use reflection or hardcoded class name to avoid circular dependency if needed, 
+            // but com.ecogo.MainActivity is in the same module.
+            try {
+                // Assuming MainActivity is the host for the navigation graph
+                val packageName = context.packageName
+                val intent = android.content.Intent(context, Class.forName("$packageName.MainActivity"))
+                intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                // Pass a generic "Force Login" extra if we want to handle it specifically, 
+                // but clearing task naturally resets to start destination (LoginFragment)
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
     
     /**

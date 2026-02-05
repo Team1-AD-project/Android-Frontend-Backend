@@ -18,10 +18,14 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Initialize TokenManager here as well if needed (safeguard)
+        com.ecogo.auth.TokenManager.init(applicationContext)
+
         // VIP Check
         val prefs = getSharedPreferences("EcoGoPrefs", Context.MODE_PRIVATE)
         val isVip = prefs.getBoolean("is_vip", false)
-        val isLoggedIn = prefs.getBoolean("is_logged_in", false)
+        // Use TokenManager to check login status
+        val isLoggedIn = com.ecogo.auth.TokenManager.isLoggedIn()
 
         Log.d(TAG, "onCreate: isVip=$isVip, isLoggedIn=$isLoggedIn")
 

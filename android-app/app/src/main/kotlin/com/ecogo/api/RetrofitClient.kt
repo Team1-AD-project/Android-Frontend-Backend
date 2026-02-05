@@ -23,9 +23,34 @@ object RetrofitClient {
         
         // 添加日志拦截器（开发环境）
         val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BASIC
+            level = HttpLoggingInterceptor.Level.BODY // Changed to BODY to see full response/request details for debugging
         }
         builder.addInterceptor(loggingInterceptor)
+
+        // 添加认证拦截器
+        builder.addInterceptor { chain ->
+            val original = chain.request()
+            val requestBuilder = original.newBuilder()
+            
+            // 自动注入 Token
+            val token = com.ecogo.auth.TokenManager.getToken()
+            if (!token.isNullOrEmpty()) {
+                requestBuilder.header("Authorization", "Bearer $token")
+            }
+            
+            
+            // Execute request
+            val response = chain.proceed(request)
+            
+            // Check for 401 Unauthorized
+            if (response.code == 401) {
+                // Token is invalid/expired
+                // Clear token and logout
+                com.ecogo.auth.TokenManager.logout()
+            }
+            
+            response
+        }
         
         builder.build()
     }

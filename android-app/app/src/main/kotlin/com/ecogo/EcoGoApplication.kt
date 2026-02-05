@@ -20,6 +20,9 @@ class EcoGoApplication : Application() {
         
         // 初始化 Repository 单例
         repository = EcoGoRepository()
+
+        // Initialize TokenManager globally
+        com.ecogo.auth.TokenManager.init(this)
         
         // 预加载关键数据（可选，在后台线程执行）
         // Thread {
