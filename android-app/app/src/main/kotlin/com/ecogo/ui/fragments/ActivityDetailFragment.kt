@@ -131,8 +131,7 @@ class ActivityDetailFragment : Fragment() {
                 }
                 
                 // 检查用户是否已参与
-                val currentUserId = com.ecogo.auth.TokenManager.getUserId() ?: ""
-                isJoined = activity.participantIds.contains(currentUserId)
+                isJoined = activity.participantIds.contains("user123") // 应该从实际用户会话获取
                 updateJoinButton()
                 
                 // 参与人员列表（简化版，显示前几个）
@@ -188,9 +187,8 @@ class ActivityDetailFragment : Fragment() {
     }
     
     private fun joinActivity() {
-        val userId = com.ecogo.auth.TokenManager.getUserId() ?: return
         viewLifecycleOwner.lifecycleScope.launch {
-            val result = repository.joinActivity(activityId, userId)
+            val result = repository.joinActivity(activityId, "user123")
             result.onSuccess {
                 isJoined = true
                 updateJoinButton()
@@ -217,9 +215,8 @@ class ActivityDetailFragment : Fragment() {
     }
     
     private fun leaveActivity() {
-        val userId = com.ecogo.auth.TokenManager.getUserId() ?: return
         viewLifecycleOwner.lifecycleScope.launch {
-            val result = repository.leaveActivity(activityId, userId)
+            val result = repository.leaveActivity(activityId, "user123")
             result.onSuccess {
                 isJoined = false
                 updateJoinButton()

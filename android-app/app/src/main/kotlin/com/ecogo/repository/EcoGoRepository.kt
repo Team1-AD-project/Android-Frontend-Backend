@@ -562,124 +562,19 @@ class EcoGoRepository {
     // ==================== 新功能 API 方法 ====================
     
     /**
-     * 获取用户资料 (Internal API)
-     */
-    suspend fun getUserProfile(userId: String): Result<UserInfo> =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = api.getUserProfile(userId)
-                if (response.success && response.data != null) {
-                    Result.success(response.data)
-                } else {
-                    Result.failure(Exception(response.message))
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-
-    /**
-     * 更新用户资料
-     * PUT /api/v1/internal/users/{userid}/profile
-     */
-    suspend fun updateUserProfile(userId: String, request: com.ecogo.api.UpdateProfileRequest): Result<Any> =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = api.updateProfile(userId, request)
-                if (response.success) {
-                    Result.success(response.data ?: Unit)
-                } else {
-                    Result.failure(Exception(response.message))
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-
-    /**
-     * 获取移动端用户详细资料 (Authenticated)
-     */
-    suspend fun getMobileUserProfile(userId: String): Result<MobileProfileResponse> =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = api.getMobileUserProfile(userId)
-                if (response.success && response.data != null) {
-                    Result.success(response.data)
-                } else {
-                    Result.failure(Exception(response.message))
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-
-    suspend fun getMobilePointsHistory(): Result<List<com.ecogo.api.PointHistoryItem>> =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = api.getMobilePointsHistory()
-                if (response.success && response.data != null) {
-                    Result.success(response.data)
-                } else {
-                    Result.failure(Exception(response.message))
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-
-    /**
-     * 获取当前积分
-     */
-    suspend fun getCurrentPoints(): Result<com.ecogo.api.CurrentPointsResponse> =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = api.getCurrentPoints()
-                if (response.success && response.data != null) {
-                    Result.success(response.data)
-                } else {
-                    Result.failure(Exception(response.message))
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-
-    /**
-     * 获取用户已加入的活动数量
-     * 遍历所有活动，筛选包含当前用户ID的活动
-     */
-    suspend fun getJoinedActivitiesCount(userId: String): Result<Int> =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = api.getAllActivities()
-                if (response.success && response.data != null) {
-                    val joinedCount = response.data.count { activity ->
-                        activity.participantIds.contains(userId)
-                    }
-                    Result.success(joinedCount)
-                } else {
-                    Result.failure(Exception(response.message))
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-    
-    /**
      * 每日签到
-     * POST /api/v1/checkin?userId={userId}
-     * Note: Previous checkIn was mock, now using real endpoint if available or keeping logic consistent.
-     * The ApiService defines performCheckIn. Updating repository to use it.
      */
     suspend fun checkIn(userId: String): Result<CheckInResponse> =
         withContext(Dispatchers.IO) {
             try {
-                val response = api.performCheckIn(userId)
-                if (response.success && response.data != null) {
-                    Result.success(response.data)
-                } else {
-                    Result.failure(Exception(response.message))
-                }
+                // 模拟API调用，实际应调用真实API
+                val response = CheckInResponse(
+                    success = true,
+                    pointsEarned = 10,
+                    consecutiveDays = MockData.CHECK_IN_STATUS.consecutiveDays + 1,
+                    message = "签到成功！"
+                )
+                Result.success(response)
             } catch (e: Exception) {
                 Result.failure(e)
             }
@@ -691,12 +586,7 @@ class EcoGoRepository {
     suspend fun getCheckInStatus(userId: String): Result<CheckInStatus> =
         withContext(Dispatchers.IO) {
             try {
-                val response = api.getCheckInStatus(userId)
-                if (response.success && response.data != null) {
-                    Result.success(response.data)
-                } else {
-                    Result.failure(Exception(response.message))
-                }
+                Result.success(MockData.CHECK_IN_STATUS)
             } catch (e: Exception) {
                 Result.failure(e)
             }
@@ -708,12 +598,7 @@ class EcoGoRepository {
     suspend fun getCheckInHistory(userId: String): Result<List<CheckIn>> =
         withContext(Dispatchers.IO) {
             try {
-                val response = api.getCheckInHistory(userId)
-                if (response.success && response.data != null) {
-                    Result.success(response.data)
-                } else {
-                    Result.failure(Exception(response.message))
-                }
+                Result.success(MockData.CHECK_IN_HISTORY)
             } catch (e: Exception) {
                 Result.failure(e)
             }
@@ -725,12 +610,7 @@ class EcoGoRepository {
     suspend fun getDailyGoal(userId: String): Result<DailyGoal> =
         withContext(Dispatchers.IO) {
             try {
-                val response = api.getDailyGoal(userId)
-                if (response.success && response.data != null) {
-                    Result.success(response.data)
-                } else {
-                    Result.failure(Exception(response.message))
-                }
+                Result.success(MockData.DAILY_GOAL)
             } catch (e: Exception) {
                 Result.failure(e)
             }
@@ -739,15 +619,10 @@ class EcoGoRepository {
     /**
      * 获取天气和空气质量
      */
-    suspend fun getWeather(): Result<Weather> =
+    suspend fun getWeather(location: String = "NUS"): Result<Weather> =
         withContext(Dispatchers.IO) {
             try {
-                val response = api.getWeather()
-                if (response.success && response.data != null) {
-                    Result.success(response.data)
-                } else {
-                    Result.failure(Exception(response.message))
-                }
+                Result.success(MockData.WEATHER)
             } catch (e: Exception) {
                 Result.failure(e)
             }
@@ -759,12 +634,7 @@ class EcoGoRepository {
     suspend fun getNotifications(userId: String): Result<List<Notification>> =
         withContext(Dispatchers.IO) {
             try {
-                val response = api.getNotifications(userId)
-                if (response.success && response.data != null) {
-                    Result.success(response.data)
-                } else {
-                    Result.failure(Exception(response.message))
-                }
+                Result.success(MockData.NOTIFICATIONS.filter { !it.isRead })
             } catch (e: Exception) {
                 Result.failure(e)
             }
@@ -776,12 +646,7 @@ class EcoGoRepository {
     suspend fun markNotificationAsRead(notificationId: String): Result<Boolean> =
         withContext(Dispatchers.IO) {
             try {
-                val response = api.markNotificationAsRead(notificationId)
-                if (response.success) {
-                    Result.success(true)
-                } else {
-                    Result.failure(Exception(response.message))
-                }
+                Result.success(true)
             } catch (e: Exception) {
                 Result.failure(e)
             }
@@ -793,12 +658,7 @@ class EcoGoRepository {
     suspend fun getCarbonFootprint(userId: String, period: String = "monthly"): Result<CarbonFootprint> =
         withContext(Dispatchers.IO) {
             try {
-                val response = api.getCarbonFootprint(userId, period)
-                if (response.success && response.data != null) {
-                    Result.success(response.data)
-                } else {
-                    Result.failure(Exception(response.message))
-                }
+                Result.success(MockData.CARBON_FOOTPRINT)
             } catch (e: Exception) {
                 Result.failure(e)
             }
@@ -810,12 +670,7 @@ class EcoGoRepository {
     suspend fun getFriends(userId: String): Result<List<Friend>> =
         withContext(Dispatchers.IO) {
             try {
-                val response = api.getFriends(userId)
-                if (response.success && response.data != null) {
-                    Result.success(response.data)
-                } else {
-                    Result.failure(Exception(response.message))
-                }
+                Result.success(MockData.FRIENDS)
             } catch (e: Exception) {
                 Result.failure(e)
             }
@@ -827,12 +682,7 @@ class EcoGoRepository {
     suspend fun getFriendActivities(userId: String): Result<List<FriendActivity>> =
         withContext(Dispatchers.IO) {
             try {
-                val response = api.getFriendActivities(userId)
-                if (response.success && response.data != null) {
-                    Result.success(response.data)
-                } else {
-                    Result.failure(Exception(response.message))
-                }
+                Result.success(MockData.FRIEND_ACTIVITIES)
             } catch (e: Exception) {
                 Result.failure(e)
             }
@@ -1038,87 +888,59 @@ class EcoGoRepository {
         }
     
     // ==================== 挑战系统相关 ====================
-
+    
     /**
-     * 获取所有挑战（从后端API）
+     * 获取所有挑战
      */
     suspend fun getChallenges(): Result<List<com.ecogo.data.Challenge>> =
         withContext(Dispatchers.IO) {
             try {
-                val response = api.getAllChallenges()
-                if (response.success && response.data != null) {
-                    Result.success(response.data)
-                } else {
-                    Result.failure(Exception(response.message))
-                }
+                // TODO: 实际应调用真实API
+                Result.success(MockData.CHALLENGES)
             } catch (e: Exception) {
                 Result.failure(e)
             }
         }
-
+    
     /**
-     * 根据ID获取挑战详情（从后端API）
+     * 根据ID获取挑战详情
      */
     suspend fun getChallengeById(id: String): Result<com.ecogo.data.Challenge> =
         withContext(Dispatchers.IO) {
             try {
-                val response = api.getChallengeById(id)
-                if (response.success && response.data != null) {
-                    Result.success(response.data)
+                // TODO: 实际应调用真实API
+                val challenge = MockData.CHALLENGES.find { it.id == id }
+                if (challenge != null) {
+                    Result.success(challenge)
                 } else {
-                    Result.failure(Exception(response.message ?: "Challenge not found"))
+                    Result.failure(Exception("Challenge not found"))
                 }
             } catch (e: Exception) {
                 Result.failure(e)
             }
         }
-
+    
     /**
-     * 参加挑战（调用后端API）
+     * 接受挑战
      */
-    suspend fun acceptChallenge(challengeId: String, userId: String): Result<com.ecogo.data.UserChallengeProgress> =
+    suspend fun acceptChallenge(challengeId: String, userId: String): Result<Unit> =
         withContext(Dispatchers.IO) {
             try {
-                val response = api.joinChallenge(challengeId, userId)
-                if (response.success && response.data != null) {
-                    Result.success(response.data)
-                } else {
-                    Result.failure(Exception(response.message))
-                }
+                // TODO: 实际应调用真实API
+                Result.success(Unit)
             } catch (e: Exception) {
                 Result.failure(e)
             }
         }
-
+    
     /**
-     * 获取用户在某挑战的进度（从后端API）
+     * 更新挑战进度
      */
-    suspend fun getChallengeProgress(challengeId: String, userId: String): Result<com.ecogo.data.UserChallengeProgress> =
+    suspend fun updateChallengeProgress(challengeId: String, progress: Int): Result<Unit> =
         withContext(Dispatchers.IO) {
             try {
-                val response = api.getChallengeProgress(challengeId, userId)
-                if (response.success && response.data != null) {
-                    Result.success(response.data)
-                } else {
-                    Result.failure(Exception(response.message))
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-
-    /**
-     * 退出挑战（调用后端API）
-     */
-    suspend fun leaveChallenge(challengeId: String, userId: String): Result<Unit> =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = api.leaveChallenge(challengeId, userId)
-                if (response.success) {
-                    Result.success(Unit)
-                } else {
-                    Result.failure(Exception(response.message))
-                }
+                // TODO: 实际应调用真实API
+                Result.success(Unit)
             } catch (e: Exception) {
                 Result.failure(e)
             }

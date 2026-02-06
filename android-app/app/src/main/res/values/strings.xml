@@ -152,37 +152,6 @@
     <string name="total_carbon_saved">Total CO₂ Saved</string>
     <string name="total_points_earned">Points Earned</string>
     
-    <!-- Edit Profile -->
-    <string name="edit_profile_title">Edit Profile</string>
-    <string name="edit_profile_save">Save</string>
-    <string name="edit_profile_save_changes">Save Changes</string>
-    <string name="edit_profile_saving">Saving…</string>
-    <string name="edit_profile_save_success">Profile updated successfully</string>
-    <string name="edit_profile_save_error">Failed to update profile</string>
-    <string name="edit_profile_error_nickname">Nickname is required</string>
-    <string name="edit_profile_section_basic">BASIC INFO</string>
-    <string name="edit_profile_section_campus">CAMPUS</string>
-    <string name="edit_profile_section_transport">PREFERRED TRANSPORT</string>
-    <string name="edit_profile_section_goals">GOALS</string>
-    <string name="edit_profile_section_notifications">NOTIFICATIONS</string>
-    <string name="edit_profile_nickname">Nickname</string>
-    <string name="edit_profile_faculty">Faculty</string>
-    <string name="edit_profile_dormitory">Dormitory / Residence</string>
-    <string name="edit_profile_teaching_building">Main Teaching Building</string>
-    <string name="edit_profile_study_spot">Favorite Study Spot</string>
-    <string name="edit_profile_preferred_transport">Select your preferred transport modes</string>
-    <string name="edit_profile_transport_bus">Bus</string>
-    <string name="edit_profile_transport_mrt">MRT</string>
-    <string name="edit_profile_transport_bicycle">Bicycle</string>
-    <string name="edit_profile_transport_walk">Walk</string>
-    <string name="edit_profile_weekly_goals">Weekly Step Goal</string>
-    <string name="edit_profile_new_challenges">New Challenges</string>
-    <string name="edit_profile_new_challenges_desc">Get notified about new challenges</string>
-    <string name="edit_profile_activity_reminders">Activity Reminders</string>
-    <string name="edit_profile_activity_reminders_desc">Reminders for joined activities</string>
-    <string name="edit_profile_friend_activity">Friend Activity</string>
-    <string name="edit_profile_friend_activity_desc">See when friends complete activities</string>
-
     <!-- Common -->
     <string name="common_loading">Loading...</string>
     <string name="common_error">An error occurred</string>

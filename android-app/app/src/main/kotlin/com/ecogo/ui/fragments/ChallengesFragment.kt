@@ -1,37 +1,29 @@
 package com.ecogo.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ecogo.R
-import com.ecogo.api.RetrofitClient
-import com.ecogo.data.Challenge
+import com.ecogo.data.MockData
 import com.ecogo.databinding.FragmentChallengesBinding
 import com.ecogo.ui.adapters.ChallengeAdapter
 import com.google.android.material.tabs.TabLayout
-import kotlinx.coroutines.launch
 
 /**
  * Challenges List Page
  * Display all available challenge tasks
- * 从后端API获取挑战数据
  */
 class ChallengesFragment : Fragment() {
 
     private var _binding: FragmentChallengesBinding? = null
     private val binding get() = _binding!!
-
+    
     private lateinit var challengeAdapter: ChallengeAdapter
-    private var allChallenges: List<Challenge> = emptyList()
-    private var currentFilter: String = "ALL"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,29 +36,27 @@ class ChallengesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        
         setupTabs()
         setupRecyclerView()
         setupAnimations()
-        fetchChallengesFromApi()
+        loadChallenges()
     }
-
+    
     private fun setupTabs() {
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                currentFilter = when (tab?.position) {
-                    0 -> "ALL"
-                    1 -> "ACTIVE"
-                    2 -> "COMPLETED"
-                    else -> "ALL"
+                when (tab?.position) {
+                    0 -> loadChallenges("ALL")
+                    1 -> loadChallenges("ACTIVE")
+                    2 -> loadChallenges("COMPLETED")
                 }
-                filterAndDisplayChallenges()
             }
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
     }
-
+    
     private fun setupRecyclerView() {
         challengeAdapter = ChallengeAdapter(emptyList()) { challenge ->
             // 点击挑战导航到详情页
@@ -74,50 +64,24 @@ class ChallengesFragment : Fragment() {
                 .actionChallengesToChallengeDetail(challengeId = challenge.id)
             findNavController().navigate(action)
         }
-
+        
         binding.recyclerChallenges.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = challengeAdapter
         }
     }
-
-    /**
-     * 从后端API获取挑战数据
-     */
-    private fun fetchChallengesFromApi() {
-        showLoading(true)
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                val response = RetrofitClient.apiService.getAllChallenges()
-                if (response.code == 200 && response.data != null) {
-                    allChallenges = response.data
-                    filterAndDisplayChallenges()
-                    Log.d("ChallengesFragment", "Loaded ${allChallenges.size} challenges from API")
-                } else {
-                    showError("Failed to load challenges: ${response.message}")
-                }
-            } catch (e: Exception) {
-                Log.e("ChallengesFragment", "Error loading challenges", e)
-                showError("Network error: ${e.message}")
-            } finally {
-                showLoading(false)
-            }
+    
+    private fun loadChallenges(filter: String = "ALL") {
+        val challenges = MockData.CHALLENGES
+        
+        val filtered = when (filter) {
+            "ACTIVE" -> challenges.filter { it.status == "ACTIVE" }
+            "COMPLETED" -> challenges.filter { it.status == "COMPLETED" }
+            else -> challenges
         }
-    }
-
-    /**
-     * 根据当前筛选条件显示挑战
-     */
-    private fun filterAndDisplayChallenges() {
-        val filtered = when (currentFilter) {
-            "ACTIVE" -> allChallenges.filter { it.status == "ACTIVE" }
-            "COMPLETED" -> allChallenges.filter { it.status == "COMPLETED" || it.status == "EXPIRED" }
-            else -> allChallenges
-        }
-
+        
         challengeAdapter.updateChallenges(filtered)
-
+        
         // Show empty state
         if (filtered.isEmpty()) {
             binding.emptyState.visibility = View.VISIBLE
@@ -127,20 +91,7 @@ class ChallengesFragment : Fragment() {
             binding.recyclerChallenges.visibility = View.VISIBLE
         }
     }
-
-    private fun showLoading(show: Boolean) {
-        // 如果有loading指示器可以在这里显示/隐藏
-        if (show) {
-            binding.recyclerChallenges.visibility = View.GONE
-        }
-    }
-
-    private fun showError(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-        binding.emptyState.visibility = View.VISIBLE
-        binding.recyclerChallenges.visibility = View.GONE
-    }
-
+    
     private fun setupAnimations() {
         val slideUp = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up)
         binding.recyclerChallenges.startAnimation(slideUp)

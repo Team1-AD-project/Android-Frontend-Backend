@@ -71,11 +71,9 @@ class MonthlyHighlightsFragment : Fragment() {
             android.widget.Toast.makeText(requireContext(), "下个月即将推出", android.widget.Toast.LENGTH_SHORT).show()
         }
         
-        // 查看全部已加入的活动
+        // 查看完整活动列表
         binding.btnViewAllActivities.setOnClickListener {
-            val action = MonthlyHighlightsFragmentDirections
-                .actionMonthlyHighlightsToJoinedActivities(showJoinedOnly = true)
-            findNavController().navigate(action)
+            findNavController().navigate(R.id.activitiesFragment)
         }
         
         // 查看完整排行榜
@@ -154,49 +152,22 @@ class MonthlyHighlightsFragment : Fragment() {
     }
     
     private suspend fun loadMonthlyStats() {
-        val userId = com.ecogo.auth.TokenManager.getUserId() ?: "user123"
+        // 获取用户本月统计数据
+        val carbon = repository.getCarbonFootprint("user123", "monthly").getOrNull()
+        val dailyGoal = repository.getDailyGoal("user123").getOrNull()
+        
         val stats = mutableListOf<MonthStat>()
-
-        // 1. 获取真实积分数据
-        val pointsResult = repository.getCurrentPoints().getOrNull()
-        val userProfile = repository.getMobileUserProfile(userId).getOrNull()
-
-        val currentPoints = pointsResult?.currentPoints
-            ?: userProfile?.userInfo?.currentPoints?.toLong()
-            ?: 0L
-
+        
+        // 总积分
         stats.add(MonthStat(
             icon = "⭐",
             title = "Total Points",
-            value = "$currentPoints",
-            subtitle = "current balance",
+            value = "880",
+            subtitle = "+150 this week",
             color = "#FCD34D"
         ))
-
-        // 2. 获取用户已加入的活动数量
-        val joinedActivitiesCount = repository.getJoinedActivitiesCount(userId).getOrNull() ?: 0
-
-        stats.add(MonthStat(
-            icon = "🎯",
-            title = "Activities",
-            value = "$joinedActivitiesCount",
-            subtitle = "joined this month",
-            color = "#A78BFA"
-        ))
-
-        // 3. 获取用户已加入的挑战数量 (Mock data for now)
-        val joinedChallengesCount = 3 // TODO: Replace with real API call when challenges table is ready
-
-        stats.add(MonthStat(
-            icon = "🏆",
-            title = "Challenges",
-            value = "$joinedChallengesCount",
-            subtitle = "joined this month",
-            color = "#F97316"
-        ))
-
-        // 4. CO2减排 (尝试从API获取，失败则使用mock)
-        val carbon = repository.getCarbonFootprint(userId, "monthly").getOrNull()
+        
+        // CO2减排
         if (carbon != null) {
             stats.add(MonthStat(
                 icon = "🌱",
@@ -205,8 +176,10 @@ class MonthlyHighlightsFragment : Fragment() {
                 subtitle = "${carbon.equivalentTrees} trees equivalent",
                 color = "#34D399"
             ))
-
-            // 环保出行次数
+        }
+        
+        // 环保出行次数
+        if (carbon != null) {
             val totalTrips = carbon.tripsByBus + carbon.tripsByWalking + carbon.tripsByBicycle
             stats.add(MonthStat(
                 icon = "🚌",
@@ -216,9 +189,9 @@ class MonthlyHighlightsFragment : Fragment() {
                 color = "#60A5FA"
             ))
         }
-
-        // 5. 连续签到天数 (尝试从API获取)
-        val checkInStatus = repository.getCheckInStatus(userId).getOrNull()
+        
+        // 连续签到天数
+        val checkInStatus = repository.getCheckInStatus("user123").getOrNull()
         if (checkInStatus != null) {
             stats.add(MonthStat(
                 icon = "🔥",
@@ -228,33 +201,32 @@ class MonthlyHighlightsFragment : Fragment() {
                 color = "#F87171"
             ))
         }
-
+        
+        // 活动参与数
+        stats.add(MonthStat(
+            icon = "🎯",
+            title = "Activities",
+            value = "12",
+            subtitle = "joined this month",
+            color = "#A78BFA"
+        ))
+        
         (binding.recyclerMonthStats.adapter as? MonthStatAdapter)?.updateData(stats)
     }
     
     private suspend fun loadFeaturedActivities() {
-        val userId = com.ecogo.auth.TokenManager.getUserId() ?: "user123"
         val activitiesResult = repository.getAllActivities().getOrElse { emptyList() }
-
-        // 筛选用户已加入的活动
-        val joinedActivities = activitiesResult
-            .filter { it.participantIds.contains(userId) }
+        
+        // 筛选本月活动并按推荐度排序
+        val featuredActivities = activitiesResult
+            .filter { it.status == "PUBLISHED" || it.status == "ONGOING" }
             .sortedByDescending { it.rewardCredits }
-
-        // 外面最多显示2个
-        val displayActivities = joinedActivities.take(2)
-
-        if (joinedActivities.isEmpty()) {
-            // 没有加入任何活动，隐藏RecyclerView，显示空状态
-            binding.recyclerFeaturedActivities.visibility = View.GONE
-            binding.textNoJoinedActivities.visibility = View.VISIBLE
-            binding.textActivityCount.text = "0 Joined Activities"
-        } else {
-            binding.recyclerFeaturedActivities.visibility = View.VISIBLE
-            binding.textNoJoinedActivities.visibility = View.GONE
-            (binding.recyclerFeaturedActivities.adapter as? MonthlyActivityAdapter)?.updateData(displayActivities)
-            binding.textActivityCount.text = "${joinedActivities.size} Joined Activities"
-        }
+            .take(6)
+        
+        (binding.recyclerFeaturedActivities.adapter as? MonthlyActivityAdapter)?.updateData(featuredActivities)
+        
+        // 更新活动计数
+        binding.textActivityCount.text = "${featuredActivities.size} Featured Activities"
     }
     
     private suspend fun loadMonthlyAchievements() {

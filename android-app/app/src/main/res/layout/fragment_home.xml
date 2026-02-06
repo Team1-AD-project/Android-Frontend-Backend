@@ -779,15 +779,15 @@
                         android:id="@+id/image_weather_icon"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/ic_sun"/>
-
+                        android:src="@drawable/ic_sun"
+                        app:tint="#F59E0B" />
 
                     <TextView
                         android:id="@+id/text_temperature"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-
+                        android:text="28°C"
                         android:textColor="@color/text_primary"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -859,7 +859,15 @@
                             android:textSize="11sp" />
                     </LinearLayout>
 
-
+                    <TextView
+                        android:id="@+id/text_weather_recommendation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="Perfect day for walking or cycling!"
+                        android:textColor="@color/primary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -1139,39 +1147,18 @@
             android:layout_marginTop="10dp"
             android:nestedScrollingEnabled="false" />
 
-        <!-- Activities Section -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Scenic Walks -->
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Activities"
-                android:textColor="@color/text_primary"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <TextView
-                android:id="@+id/text_view_all_activities"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/home_view_all"
-                android:textColor="@color/primary"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+            android:text="@string/home_scenic_walks"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_activities"
+            android:id="@+id/recycler_walking_routes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"

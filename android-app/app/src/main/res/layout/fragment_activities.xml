@@ -27,18 +27,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_title" />
 
-    <!-- Empty state -->
-    <TextView
-        android:id="@+id/text_empty_state"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="No activities joined yet"
-        android:textColor="@color/text_secondary"
-        android:textSize="16sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_title" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

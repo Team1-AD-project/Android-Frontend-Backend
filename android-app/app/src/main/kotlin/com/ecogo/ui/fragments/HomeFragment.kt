@@ -18,8 +18,7 @@ import com.ecogo.data.Outfit
 import com.ecogo.data.RecommendationRequest
 import com.ecogo.databinding.FragmentHomeBinding
 import com.ecogo.ui.adapters.HighlightAdapter
-import com.ecogo.ui.adapters.HomeStatAdapter
-import com.ecogo.ui.adapters.HomeStat
+import com.ecogo.ui.adapters.WalkingRouteAdapter
 import com.ecogo.repository.EcoGoRepository
 import kotlinx.coroutines.launch
 
@@ -134,21 +133,18 @@ class HomeFragment : Fragment() {
     }
     
     private fun setupRecyclerView() {
-        // Monthly Highlights显示统计数据
         binding.recyclerHighlights.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = HomeStatAdapter(emptyList()) { stat ->
-                // 点击统计卡片跳转到月度亮点页面
-                findNavController().navigate(R.id.action_home_to_monthlyHighlights)
-            }
-        }
-        // Activities显示活动列表
-        binding.recyclerActivities.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = HighlightAdapter(emptyList()) { activity ->
                 // 跳转到活动详情页，传递活动ID
                 val action = HomeFragmentDirections.actionHomeToActivityDetail(activity.id ?: "")
                 findNavController().navigate(action)
+            }
+        }
+        binding.recyclerWalkingRoutes.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = WalkingRouteAdapter(emptyList()) { route ->
+                findNavController().navigate(com.ecogo.R.id.routesFragment)
             }
         }
     }
@@ -165,10 +161,8 @@ class HomeFragment : Fragment() {
             loadBusInfo()
             
             // 第二优先级：并发加载次要数据
-            launch { loadMonthlyHighlightsStats() }
-            launch { loadHomeActivities() }
-            launch { loadUserProfile() }
-            launch { loadMonthlyPoints() }
+            launch { loadActivities() }
+            launch { loadWalkingRoutes() }
             
             // 第三优先级：延迟加载非关键数据（200ms后）
             kotlinx.coroutines.delay(200)
@@ -180,49 +174,6 @@ class HomeFragment : Fragment() {
         }
     }
     
-    private suspend fun loadUserProfile() {
-        val userId = com.ecogo.auth.TokenManager.getUserId() ?: return
-        val result = repository.getMobileUserProfile(userId)
-        val profile = result.getOrNull()
-        if (profile != null) {
-            val userInfo = profile.userInfo
-            // Update UI with real data on Main thread
-            
-            // Dynamic Greeting
-            binding.textWelcome.text = "Hello, ${userInfo.nickname}"
-
-            // binding.textMonthlyPoints.text = userInfo.currentPoints.toString() // Moved to loadMonthlyPoints logic
-            binding.textSocScore.text = userInfo.totalPoints.toString() // Using total points as SocScore
-            
-             // Update Rank
-            profile.stats?.let { stats ->
-                binding.textSocRank.text = "Rank #${stats.monthlyRank}"
-            }
-        }
-    }
-    
-    private suspend fun loadMonthlyPoints() {
-        val historyResult = repository.getMobilePointsHistory().getOrElse { emptyList() }
-        val now = java.time.LocalDate.now()
-        val currentMonth = now.month
-        val currentYear = now.year
-        
-        val monthlyPoints = historyResult.filter { item ->
-            // Filter by source "trip"
-            if (item.source != "trip") return@filter false
-            
-            try {
-                // Format: "2026-01-30T06:16:29.699"
-                val date = java.time.LocalDateTime.parse(item.createdAt)
-                date.month == currentMonth && date.year == currentYear
-            } catch (e: Exception) {
-                false
-            }
-        }.sumOf { it.points }
-        
-        binding.textMonthlyPoints.text = monthlyPoints.toString()
-    }
-
     private suspend fun loadBusInfo() {
         val routesResult = repository.getBusRoutes().getOrElse { MockData.ROUTES }
         val firstRoute = routesResult.firstOrNull()
@@ -233,54 +184,19 @@ class HomeFragment : Fragment() {
         }
     }
     
-    private suspend fun loadMonthlyHighlightsStats() {
-        val userId = com.ecogo.auth.TokenManager.getUserId() ?: "user123"
-        val stats = mutableListOf<HomeStat>()
-
-        // 1. 获取积分数据
-        val pointsResult = repository.getCurrentPoints().getOrNull()
-        val userProfile = repository.getMobileUserProfile(userId).getOrNull()
-        val currentPoints = pointsResult?.currentPoints
-            ?: userProfile?.userInfo?.currentPoints?.toLong()
-            ?: 0L
-
-        stats.add(HomeStat(
-            icon = "⭐",
-            title = "Total Points",
-            value = "$currentPoints",
-            subtitle = "current balance",
-            color = "#FCD34D"
-        ))
-
-        // 2. 获取用户已加入的活动数量
-        val joinedActivitiesCount = repository.getJoinedActivitiesCount(userId).getOrNull() ?: 0
-        stats.add(HomeStat(
-            icon = "🎯",
-            title = "Activities",
-            value = "$joinedActivitiesCount",
-            subtitle = "joined this month",
-            color = "#A78BFA"
-        ))
-
-        // 3. 获取用户已加入的挑战数量 (Mock data)
-        val joinedChallengesCount = 3 // TODO: Replace with real API
-        stats.add(HomeStat(
-            icon = "🏆",
-            title = "Challenges",
-            value = "$joinedChallengesCount",
-            subtitle = "joined this month",
-            color = "#F97316"
-        ))
-
-        (binding.recyclerHighlights.adapter as? HomeStatAdapter)?.updateData(stats)
-    }
-    
-    private suspend fun loadHomeActivities() {
+    private suspend fun loadActivities() {
         val activitiesResult = repository.getAllActivities().getOrElse { MockData.ACTIVITIES }
-        // 显示最多5个活动在首页，使用横向滑动小卡片样式
-        binding.recyclerActivities.adapter = HighlightAdapter(activitiesResult.take(5)) { activity ->
+        binding.recyclerHighlights.adapter = HighlightAdapter(activitiesResult.take(3)) { activity ->
+            // 跳转到活动详情页，传递活动ID
             val action = HomeFragmentDirections.actionHomeToActivityDetail(activity.id ?: "")
             findNavController().navigate(action)
+        }
+    }
+    
+    private suspend fun loadWalkingRoutes() {
+        val walkingRoutes = repository.getWalkingRoutes().getOrElse { MockData.WALKING_ROUTES }
+        binding.recyclerWalkingRoutes.adapter = WalkingRouteAdapter(walkingRoutes) { route ->
+            findNavController().navigate(com.ecogo.R.id.routesFragment)
         }
     }
 
@@ -304,11 +220,6 @@ class HomeFragment : Fragment() {
         binding.textViewAll.setOnClickListener {
             // 跳转到月度亮点页面
             findNavController().navigate(R.id.action_home_to_monthlyHighlights)
-        }
-
-        binding.textViewAllActivities.setOnClickListener {
-            // 跳转到活动列表页面
-            findNavController().navigate(R.id.action_home_to_activities)
         }
         
         // 点击小狮子跳转到 Profile
@@ -472,71 +383,23 @@ class HomeFragment : Fragment() {
             }
         }
     }
-
+    
     private fun loadWeather() {
         viewLifecycleOwner.lifecycleScope.launch {
-            // 1. 获取 Result
-            val result = repository.getWeather()
-
-            // 2. 判断成功还是失败
-            if (result.isSuccess) {
-                val weather = result.getOrNull()
-                if (weather != null) {
-                    // --- 成功：更新文字 ---
-                    binding.textTemperature.text = "${weather.temperature}°C"
-                    binding.textWeatherCondition.text = weather.description
-                    binding.textAqiValue.text = "AQI ${weather.airQuality}"
-
-                    // 👇👇👇【新增的核心代码】设置图标 👇👇👇
-                    // 1. 调用刚才写的函数拿到图片 ID
-                    val iconResId = getWeatherIcon(weather.description)
-
-                    // 2. 将图片设置到 ImageView 上
-                    // (请确保你的 XML 布局里有个 ImageView 叫 imageWeatherIcon)
-                    binding.imageWeatherIcon.setImageResource(iconResId)
-
-                    android.util.Log.d("HomeFragment", "天气获取成功: ${weather.description}")
-                }
-            } else {
-                // --- 失败：打印错误 ---
-                val error = result.exceptionOrNull()
-                android.util.Log.e("HomeFragment", "天气获取失败", error)
+            val weather = repository.getWeather("NUS").getOrNull()
+            if (weather != null) {
+                binding.textTemperature.text = "${weather.temperature}°C"
+                binding.textWeatherCondition.text = weather.condition
+                binding.textAqiValue.text = "AQI ${weather.aqi}"
+                binding.textHumidity.text = "Humidity ${weather.humidity}%"
+                binding.textWeatherRecommendation.text = weather.recommendation
+                
+                // 根据天气条件更新图标 (可选)
+                // binding.imageWeatherIcon.setImageResource(...)
             }
         }
     }
-    // 根据描述返回对应的图标 ID
-    private fun getWeatherIcon(description: String): Int {
-        val desc = description.lowercase() // 转小写，方便匹配
-
-        return when {
-            // --- 1. 雨天类 (只要包含 rain, thunder, storm 等词) ---
-            desc.contains("rain") ||
-                    desc.contains("shower") ||
-                    desc.contains("drizzle") ||
-                    desc.contains("thunder") ||
-                    desc.contains("storm") -> {
-                R.drawable.ic_weather_rain // ☔ 你的雨天图标文件名
-            }
-
-            // --- 2. 多云类 (只要包含 cloud, fog, mist 等词) ---
-            desc.contains("cloud") ||
-                    desc.contains("overcast") ||
-                    desc.contains("fog") ||
-                    desc.contains("mist") ||
-                    desc.contains("haze") -> {
-                R.drawable.ic_weather_cloudy // ☁️ 你的多云图标文件名
-            }
-
-            // --- 3. 晴天类 (只要包含 sun, clear) ---
-            desc.contains("sun") ||
-                    desc.contains("clear") -> {
-                R.drawable.ic_weather_sunny // ☀️ 你的晴天图标文件名
-            }
-
-            // --- 4. 默认/未知情况 ---
-            else -> R.drawable.ic_weather_cloudy
-        }
-    }
+    
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

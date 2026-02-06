@@ -336,30 +336,6 @@ public class UserServiceImpl implements UserInterface {
             user.setAvatar(request.avatar);
         if (request.preferences != null)
             user.setPreferences(request.preferences);
-        if (request.mascotOutfit != null)
-            user.setMascotOutfit(request.mascotOutfit);
-        if (request.inventory != null)
-            user.setInventory(request.inventory);
-
-        // Edit Profile fields
-        if (request.faculty != null)
-            user.setFaculty(request.faculty);
-        if (request.dormitoryOrResidence != null)
-            user.setDormitoryOrResidence(request.dormitoryOrResidence);
-        if (request.mainTeachingBuilding != null)
-            user.setMainTeachingBuilding(request.mainTeachingBuilding);
-        if (request.favoriteStudySpot != null)
-            user.setFavoriteStudySpot(request.favoriteStudySpot);
-        if (request.interests != null)
-            user.setInterests(request.interests);
-        if (request.weeklyGoals != null)
-            user.setWeeklyGoals(request.weeklyGoals);
-        if (request.newChallenges != null)
-            user.setNewChallenges(request.newChallenges);
-        if (request.activityReminders != null)
-            user.setActivityReminders(request.activityReminders);
-        if (request.friendActivity != null)
-            user.setFriendActivity(request.friendActivity);
 
         user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);

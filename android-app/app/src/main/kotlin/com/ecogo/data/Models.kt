@@ -255,11 +255,10 @@ data class DailyGoal(
 // Weather & Air Quality
 data class Weather(
     val location: String = "NUS",
-    val temperature: Double, // Celsius
-    val description: String, // Sunny, Rainy, Cloudy, etc.
-    val icon: String, // Icon identifier from API
-    val humidity: String, // percentage
-    val airQuality: Int, // Air Quality Index
+    val temperature: Int, // Celsius
+    val condition: String, // Sunny, Rainy, Cloudy, etc.
+    val humidity: Int, // percentage
+    val aqi: Int, // Air Quality Index
     val aqiLevel: String, // Good, Moderate, Unhealthy, etc.
     val recommendation: String // Travel recommendation
 )
@@ -296,7 +295,6 @@ data class Friend(
     val faculty: String? = null
 )
 
-// Friend Activity
 data class FriendActivity(
     val friendId: String,
     val friendName: String,
@@ -390,40 +388,22 @@ data class RedeemResponse(
     val remainingPoints: Int?
 )
 
-// Challenge - Challenge data model (matches backend Challenge.java)
+// Challenge - Challenge data model
 data class Challenge(
     val id: String,
     val title: String,
     val description: String,
-    val type: String, // GREEN_TRIPS_DISTANCE, CARBON_SAVED, GREEN_TRIPS_COUNT
-    val target: Double,  // 目标值
-    val reward: Int,  // 奖励积分
-    val badge: String? = null, // 徽章ID
-    val icon: String = "🏆",
-    val status: String = "ACTIVE", // ACTIVE, EXPIRED
-    val participants: Int = 0, // 参与人数（从后端实时计算）
-    val startTime: String? = null,
-    val endTime: String? = null,
-    val createdAt: String? = null,
-    val updatedAt: String? = null
-)
-
-// 用户挑战进度DTO（从后端API获取，进度从Trip表实时计算）
-data class UserChallengeProgress(
-    val id: String,
-    val challengeId: String,
-    val userId: String,
-    val status: String, // IN_PROGRESS, COMPLETED
-    val current: Double, // 实时计算的进度值
-    val target: Double,
-    val progressPercent: Double,
-    val joinedAt: String,
-    val completedAt: String? = null,
-    val rewardClaimed: Boolean = false,
-    // 用户信息
-    val userNickname: String? = null,
-    val userEmail: String? = null,
-    val userAvatar: String? = null
+    val type: String, // INDIVIDUAL, TEAM, FACULTY
+    val target: Int,  // Target value (e.g. 10 trips)
+    val current: Int = 0, // Current progress
+    val reward: Int,  // Points reward
+    val badge: String? = null, // Badge ID
+    val startTime: String,
+    val endTime: String,
+    val participants: Int = 0,
+    val topUsers: List<User> = emptyList(),
+    val status: String = "ACTIVE", // ACTIVE, COMPLETED, EXPIRED
+    val icon: String = "🏆"
 )
 
 // User - Simplified user model (for challenge leaderboard)

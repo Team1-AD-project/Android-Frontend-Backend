@@ -1187,11 +1187,10 @@ object MockData {
     // Weather Mock Data
     val WEATHER by lazy { Weather(
         location = "NUS",
-        temperature = 21.0,
-        description = "Sunny",
-        icon = "01d",
-        humidity = "75",
-        airQuality = 45,
+        temperature = 21,
+        condition = "Sunny",
+        humidity = 75,
+        aqi = 45,
         aqiLevel = "Good",
         recommendation = "Perfect day for walking or cycling!"
     ) }
@@ -1432,64 +1431,79 @@ object MockData {
         )
     )
     
-    // Challenges Mock Data (匹配后端数据结构，用于离线/备用)
-    // 注意：正式数据从后端API获取，这里仅作为备用
+    // Challenges Mock Data
     val CHALLENGES = listOf(
         Challenge(
             id = "ch1",
             title = "Weekly Green Transport Challenge",
             description = "Complete 10 green trips this week and top the eco leaderboard!",
-            type = "GREEN_TRIPS_COUNT",
-            target = 10.0,
+            type = "INDIVIDUAL",
+            target = 10,
+            current = 6,
             reward = 500,
             badge = "a6",
-            icon = "🚶",
-            status = "ACTIVE",
-            participants = 342,
             startTime = "2026-02-03T00:00:00",
-            endTime = "2026-02-09T23:59:59"
+            endTime = "2026-02-09T23:59:59",
+            participants = 342,
+            topUsers = listOf(
+                User(id = "u1", username = "Alex Chen", points = 9),
+                User(id = "u2", username = "Sarah Tan", points = 8),
+                User(id = "u3", username = "Kevin Wong", points = 7)
+            ),
+            status = "ACTIVE",
+            icon = "🚶"
         ),
         Challenge(
             id = "ch2",
             title = "Faculty Championship",
             description = "Represent your faculty and compete for the champion trophy!",
-            type = "GREEN_TRIPS_DISTANCE",
-            target = 50000.0, // 50km in meters
+            type = "FACULTY",
+            target = 5000,
+            current = 3250,
             reward = 1000,
             badge = null,
-            icon = "🏆",
-            status = "ACTIVE",
-            participants = 1520,
             startTime = "2026-02-01T00:00:00",
-            endTime = "2026-02-29T23:59:59"
+            endTime = "2026-02-29T23:59:59",
+            participants = 1520,
+            topUsers = listOf(
+                User(id = "soc", username = "School of Computing", points = 3250),
+                User(id = "eng", username = "Engineering", points = 3100),
+                User(id = "sci", username = "Science", points = 2890)
+            ),
+            status = "ACTIVE",
+            icon = "🏆"
         ),
         Challenge(
             id = "ch3",
             title = "Carbon Footprint Master",
             description = "Reduce 500g CO₂ emissions this month",
-            type = "CARBON_SAVED",
-            target = 500.0, // grams
+            type = "INDIVIDUAL",
+            target = 500,
+            current = 325,
             reward = 300,
             badge = "a5",
-            icon = "🌱",
-            status = "ACTIVE",
-            participants = 567,
             startTime = "2026-02-01T00:00:00",
-            endTime = "2026-02-28T23:59:59"
+            endTime = "2026-02-28T23:59:59",
+            participants = 567,
+            topUsers = emptyList(),
+            status = "ACTIVE",
+            icon = "🌱"
         ),
         Challenge(
             id = "ch4",
             title = "Weekend Hiking Group",
-            description = "Complete 5 walking trips on weekends",
-            type = "GREEN_TRIPS_COUNT",
-            target = 5.0,
+            description = "Team up to complete a 5km hiking trail",
+            type = "TEAM",
+            target = 5,
+            current = 5,
             reward = 250,
             badge = "a4",
-            icon = "🥾",
-            status = "EXPIRED",
-            participants = 45,
             startTime = "2026-01-25T00:00:00",
-            endTime = "2026-01-31T23:59:59"
+            endTime = "2026-01-31T23:59:59",
+            participants = 45,
+            topUsers = emptyList(),
+            status = "COMPLETED",
+            icon = "🥾"
         )
     )
     

@@ -12,19 +12,6 @@ public class UserProfileDto {
         public String avatar;
         public String phone;
         public User.Preferences preferences;
-        public User.MascotOutfit mascotOutfit;
-        public List<String> inventory;
-
-        // Edit Profile fields
-        public String faculty;
-        public String dormitoryOrResidence;
-        public String mainTeachingBuilding;
-        public String favoriteStudySpot;
-        public List<String> interests;
-        public Integer weeklyGoals;
-        public Boolean newChallenges;
-        public Boolean activityReminders;
-        public Boolean friendActivity;
     }
 
     public static class AdminManageUserRequest {

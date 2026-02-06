@@ -32,10 +32,10 @@ class SettingsFragment : Fragment() {
     }
     
     private fun setupActions() {
-        // Navigate to Edit Profile screen
+        // 点击编辑个人资料跳转到个人资料页面
         binding.cardEditProfile.setOnClickListener {
             findNavController()
-                .navigate(com.ecogo.R.id.action_settings_to_editProfile)
+                .navigate(com.ecogo.R.id.action_settings_to_profile)
         }
         
         // Logout button
