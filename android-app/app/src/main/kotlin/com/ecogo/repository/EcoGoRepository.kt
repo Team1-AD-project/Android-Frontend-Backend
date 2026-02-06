@@ -951,59 +951,87 @@ class EcoGoRepository {
         }
     
     // ==================== 挑战系统相关 ====================
-    
+
     /**
-     * 获取所有挑战
+     * 获取所有挑战（从后端API）
      */
     suspend fun getChallenges(): Result<List<com.ecogo.data.Challenge>> =
         withContext(Dispatchers.IO) {
             try {
-                // TODO: 实际应调用真实API
-                Result.success(MockData.CHALLENGES)
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-    
-    /**
-     * 根据ID获取挑战详情
-     */
-    suspend fun getChallengeById(id: String): Result<com.ecogo.data.Challenge> =
-        withContext(Dispatchers.IO) {
-            try {
-                // TODO: 实际应调用真实API
-                val challenge = MockData.CHALLENGES.find { it.id == id }
-                if (challenge != null) {
-                    Result.success(challenge)
+                val response = api.getAllChallenges()
+                if (response.success && response.data != null) {
+                    Result.success(response.data)
                 } else {
-                    Result.failure(Exception("Challenge not found"))
+                    Result.failure(Exception(response.message))
                 }
             } catch (e: Exception) {
                 Result.failure(e)
             }
         }
-    
+
     /**
-     * 接受挑战
+     * 根据ID获取挑战详情（从后端API）
      */
-    suspend fun acceptChallenge(challengeId: String, userId: String): Result<Unit> =
+    suspend fun getChallengeById(id: String): Result<com.ecogo.data.Challenge> =
         withContext(Dispatchers.IO) {
             try {
-                // TODO: 实际应调用真实API
-                Result.success(Unit)
+                val response = api.getChallengeById(id)
+                if (response.success && response.data != null) {
+                    Result.success(response.data)
+                } else {
+                    Result.failure(Exception(response.message ?: "Challenge not found"))
+                }
             } catch (e: Exception) {
                 Result.failure(e)
             }
         }
-    
+
     /**
-     * 更新挑战进度
+     * 参加挑战（调用后端API）
      */
-    suspend fun updateChallengeProgress(challengeId: String, progress: Int): Result<Unit> =
+    suspend fun acceptChallenge(challengeId: String, userId: String): Result<com.ecogo.data.UserChallengeProgress> =
         withContext(Dispatchers.IO) {
             try {
-                // TODO: 实际应调用真实API
-                Result.success(Unit)
+                val response = api.joinChallenge(challengeId, userId)
+                if (response.success && response.data != null) {
+                    Result.success(response.data)
+                } else {
+                    Result.failure(Exception(response.message))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+
+    /**
+     * 获取用户在某挑战的进度（从后端API）
+     */
+    suspend fun getChallengeProgress(challengeId: String, userId: String): Result<com.ecogo.data.UserChallengeProgress> =
+        withContext(Dispatchers.IO) {
+            try {
+                val response = api.getChallengeProgress(challengeId, userId)
+                if (response.success && response.data != null) {
+                    Result.success(response.data)
+                } else {
+                    Result.failure(Exception(response.message))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+
+    /**
+     * 退出挑战（调用后端API）
+     */
+    suspend fun leaveChallenge(challengeId: String, userId: String): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            try {
+                val response = api.leaveChallenge(challengeId, userId)
+                if (response.success) {
+                    Result.success(Unit)
+                } else {
+                    Result.failure(Exception(response.message))
+                }
             } catch (e: Exception) {
                 Result.failure(e)
             }

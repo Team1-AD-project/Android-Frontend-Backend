@@ -3,6 +3,7 @@ package com.ecogo.api
 import com.ecogo.data.Activity
 import com.ecogo.data.BusRoute
 import com.ecogo.data.CarbonFootprint
+import com.ecogo.data.Challenge
 import com.ecogo.data.ChatRequest
 import com.ecogo.data.ChatResponse
 import com.ecogo.data.CheckIn
@@ -20,6 +21,7 @@ import com.ecogo.data.RecommendationRequest
 import com.ecogo.data.RecommendationResponse
 import com.ecogo.data.RedeemRequest
 import com.ecogo.data.RedeemResponse
+import com.ecogo.data.UserChallengeProgress
 import com.ecogo.data.Voucher
 import com.ecogo.data.VoucherRedeemRequest
 import com.ecogo.data.WalkingRoute
@@ -33,8 +35,75 @@ import retrofit2.http.*
  */
 interface ApiService {
     
+    // ==================== 挑战相关 ====================
+
+    /**
+     * 获取所有挑战 (Mobile)
+     * GET /api/v1/mobile/challenges
+     */
+    @GET("api/v1/mobile/challenges")
+    suspend fun getAllChallenges(): ApiResponse<List<Challenge>>
+
+    /**
+     * 根据ID获取挑战 (Mobile)
+     * GET /api/v1/mobile/challenges/{id}
+     */
+    @GET("api/v1/mobile/challenges/{id}")
+    suspend fun getChallengeById(@Path("id") id: String): ApiResponse<Challenge>
+
+    /**
+     * 根据状态获取挑战 (Mobile)
+     * GET /api/v1/mobile/challenges/status/{status}
+     */
+    @GET("api/v1/mobile/challenges/status/{status}")
+    suspend fun getChallengesByStatus(@Path("status") status: String): ApiResponse<List<Challenge>>
+
+    /**
+     * 根据类型获取挑战 (Mobile)
+     * GET /api/v1/mobile/challenges/type/{type}
+     */
+    @GET("api/v1/mobile/challenges/type/{type}")
+    suspend fun getChallengesByType(@Path("type") type: String): ApiResponse<List<Challenge>>
+
+    /**
+     * 获取用户参加的挑战 (Mobile)
+     * GET /api/v1/mobile/challenges/user/{userId}
+     */
+    @GET("api/v1/mobile/challenges/user/{userId}")
+    suspend fun getUserChallenges(@Path("userId") userId: String): ApiResponse<List<Challenge>>
+
+    /**
+     * 参加挑战 (Mobile)
+     * POST /api/v1/mobile/challenges/{id}/join?userId={userId}
+     */
+    @POST("api/v1/mobile/challenges/{id}/join")
+    suspend fun joinChallenge(
+        @Path("id") challengeId: String,
+        @Query("userId") userId: String
+    ): ApiResponse<UserChallengeProgress>
+
+    /**
+     * 退出挑战 (Mobile)
+     * POST /api/v1/mobile/challenges/{id}/leave?userId={userId}
+     */
+    @POST("api/v1/mobile/challenges/{id}/leave")
+    suspend fun leaveChallenge(
+        @Path("id") challengeId: String,
+        @Query("userId") userId: String
+    ): ApiResponse<Unit>
+
+    /**
+     * 获取用户在某挑战的进度（从Trip表实时计算）
+     * GET /api/v1/mobile/challenges/{id}/progress?userId={userId}
+     */
+    @GET("api/v1/mobile/challenges/{id}/progress")
+    suspend fun getChallengeProgress(
+        @Path("id") challengeId: String,
+        @Query("userId") userId: String
+    ): ApiResponse<UserChallengeProgress>
+
     // ==================== 活动相关 ====================
-    
+
     /**
      * 获取所有活动 (Mobile)
      * GET /api/v1/mobile/activities
