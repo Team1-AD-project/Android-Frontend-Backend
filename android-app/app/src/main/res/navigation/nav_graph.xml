@@ -206,18 +206,50 @@
         <action
             android:id="@+id/action_voucher_to_itemDetail"
             app:destination="@id/itemDetailFragment" />
+        <action
+            android:id="@+id/action_voucher_to_shopGoodsDetail"
+            app:destination="@id/shopGoodsDetailFragment" />
+        <action
+            android:id="@+id/action_voucherFragment_to_orderHistoryFragment"
+            app:destination="@id/orderHistoryFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/orderHistoryFragment"
+        android:name="com.ecogo.ui.fragments.OrderHistoryFragment"
+        android:label="Order History"
+        tools:layout="@layout/fragment_order_history" />
+
 
     <fragment
         android:id="@+id/voucherDetailFragment"
         android:name="com.ecogo.ui.fragments.VoucherDetailFragment"
-        android:label="兑换券详情"
-        tools:layout="@layout/fragment_voucher_detail">
+        android:label="VoucherDetailFragment">
+
         <argument
-            android:name="voucherId"
-            android:defaultValue=""
+            android:name="goodsId"
+            app:argType="string" />
+
+        <argument
+            android:name="userVoucherId"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/shopGoodsDetailFragment"
+        android:name="com.ecogo.ui.fragments.ShopGoodsDetailFragment"
+        android:label="ShopGoodsDetail"
+        tools:layout="@layout/fragment_voucher_detail">
+
+        <argument
+            android:name="goodsId"
             app:argType="string" />
     </fragment>
+
+
+
 
     <fragment
         android:id="@+id/activitiesFragment"

@@ -1,6 +1,8 @@
 package com.ecogo.ui.fragments
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,113 +11,89 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ecogo.R
-import com.ecogo.data.MockData
-import com.ecogo.data.ShopItem
+import com.ecogo.auth.TokenManager
 import com.ecogo.databinding.FragmentVoucherGoodsBinding
 import com.ecogo.repository.EcoGoRepository
-import com.ecogo.ui.adapters.GoodsAdapter
+import com.ecogo.ui.adapters.ShopGoodsAdapterV2
 import kotlinx.coroutines.launch
 
 class VoucherGoodsFragment : Fragment() {
-    
+
     private var _binding: FragmentVoucherGoodsBinding? = null
     private val binding get() = _binding!!
-    private val repository = EcoGoRepository()
-    private lateinit var goodsAdapter: GoodsAdapter
-    private var allGoods: List<ShopItem> = emptyList()
-    
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+
+    private val repo = EcoGoRepository()
+    private lateinit var adapter: ShopGoodsAdapterV2
+
+    private fun setVipActiveLocalTrue() {
+        val prefs = requireContext().getSharedPreferences("EcoGoPrefs", Context.MODE_PRIVATE)
+        prefs.edit().putBoolean("is_vip", true).apply()
+    }
+
+    private fun readVipActive(): Boolean {
+        val prefs = requireContext().getSharedPreferences("EcoGoPrefs", Context.MODE_PRIVATE)
+        Log.d("SHOP", "prefs is_vip=${prefs.getBoolean("is_vip", false)}")
+        return prefs.getBoolean("is_vip", false)
+    }
+
+
+
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentVoucherGoodsBinding.inflate(inflater, container, false)
         return binding.root
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
-        setupRecyclerView()
-        setupCategoryFilters()
-        loadGoods()
-    }
-    
-    private fun setupRecyclerView() {
-        goodsAdapter = GoodsAdapter { shopItem ->
-            // Navigate to item detail page on click
-            try {
-                val bundle = Bundle().apply {
-                    putString("itemId", shopItem.id)
-                }
-                findNavController().navigate(com.ecogo.R.id.action_voucher_to_itemDetail, bundle)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+
+        adapter = ShopGoodsAdapterV2 { g ->
+            val bundle = Bundle().apply { putString("goodsId", g.id) }
+            findNavController().navigate(R.id.action_voucher_to_shopGoodsDetail, bundle)
         }
-        
-        binding.recyclerGoods.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = goodsAdapter
-        }
-    }
-    
-    private fun setupCategoryFilters() {
-        binding.chipGroupCategories.setOnCheckedStateChangeListener { group, checkedIds ->
-            if (checkedIds.isEmpty()) return@setOnCheckedStateChangeListener
-            
-            val selectedCategory = when (checkedIds.first()) {
+
+        binding.recyclerGoods.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerGoods.adapter = adapter
+
+        binding.chipGroupCategories.setOnCheckedStateChangeListener { _, checkedIds ->
+            val category = when (checkedIds.firstOrNull()) {
                 binding.chipFood.id -> "food"
                 binding.chipBeverage.id -> "beverage"
                 binding.chipMerchandise.id -> "merchandise"
                 binding.chipService.id -> "service"
-                else -> "all"
+                binding.chipAll.id, null -> null
+                else -> null
             }
-            
-            filterGoods(selectedCategory)
+            loadGoods(category)
         }
+
+        loadGoods(category = null)
     }
-    
-    private fun loadGoods() {
+
+    private fun loadGoods(category: String?) {
         binding.progressLoading.visibility = View.VISIBLE
-        
         viewLifecycleOwner.lifecycleScope.launch {
+            val isVipActive = readVipActive()
             try {
-            // Load goods data from Repository
-            // Using MockData as example, should fetch from API in production
-                allGoods = MockData.SHOP_ITEMS.filter { !it.owned }
-                
-                goodsAdapter.updateGoods(allGoods)
+                val resp = repo.getAllGoods(
+                    page = 1,
+                    size = 100,
+                    category = category,
+                    keyword = null,
+                    isForRedemption = true,
+                    isVipActive = isVipActive
+                ).getOrThrow()
+
+                // 后端已过滤 voucher，这里再兜底过滤一次（如果未来有人改后端逻辑）
+                adapter.update(resp.items)
+            } catch (_: Exception) {
+                adapter.update(emptyList())
+            } finally {
                 binding.progressLoading.visibility = View.GONE
-            } catch (e: Exception) {
-                binding.progressLoading.visibility = View.GONE
-                e.printStackTrace()
             }
         }
     }
-    
-    private fun filterGoods(category: String) {
-        val filteredGoods = if (category == "all") {
-            allGoods
-        } else {
-            // Filter goods by category
-            allGoods.filter { 
-                when (category) {
-                    "food" -> it.name.contains("food", ignoreCase = true) || 
-                             it.name.contains("canteen", ignoreCase = true)
-                    "beverage" -> it.name.contains("coffee", ignoreCase = true) || 
-                                 it.name.contains("tea", ignoreCase = true) ||
-                                 it.name.contains("drink", ignoreCase = true)
-                    "merchandise" -> it.type == "badge"
-                    "service" -> false // No service items yet
-                    else -> true
-                }
-            }
-        }
-        
-        goodsAdapter.updateGoods(filteredGoods)
-    }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

@@ -1,5 +1,7 @@
 package com.ecogo.data
 
+import com.google.gson.annotations.SerializedName
+
 // Bus Route
 data class BusRoute(
     val id: String? = null,
@@ -44,14 +46,54 @@ data class ShopItem(
     val equipped: Boolean = false
 )
 
-// Voucher
+//ALL Voucher Related
+// Voucher (from backend goods/coupons)
 data class Voucher(
+    val id: String,                 // 继续保留：列表点击用的“主 id”
+    val name: String,
+    val description: String,
+    @SerializedName("redemptionPoints") val cost: Int = 0,
+    @SerializedName("isActive") val available: Boolean = true,
+    val imageUrl: String? = null,
+    val stock: Int? = null,
+
+    // ✅ 新增两个字段：Gson 不会报错，因为都有默认值
+    val goodsId: String? = null,         // marketplace: goodsId=id；owned: goodsId=uv.goodsId
+    val userVoucherId: String? = null,   // owned 才有
+    val status: String? = null           // ACTIVE/USED/EXPIRED（owned 才有）
+)
+
+
+// UserVoucher (from backend /api/v1/vouchers)
+// User Voucher (来自后端 user_vouchers 集合)
+data class UserVoucher(
+    val id: String,
+    val userId: String,
+    val goodsId: String,
+    val voucherName: String,
+    val imageUrl: String? = null,
+    val orderId: String? = null,
+    val status: String,          // ACTIVE / USED / EXPIRED
+    val issuedAt: String? = null,
+    val expiresAt: String? = null,
+    val usedAt: String? = null,
+    val code: String? = null
+)
+
+data class ShopGoods(
     val id: String,
     val name: String,
-    val cost: Int,
-    val description: String,
-    val available: Boolean = true
-)
+    val description: String = "",
+    val category: String = "other",     // food/beverage/merchandise/service/other
+    val pointsCost: Int = 0,            // redemptionPoints
+    val stock: Int = 0,
+    val imageUrl: String? = null,
+    val isActive: Boolean = true
+) {
+    val isRedeemable: Boolean get() = isActive && stock > 0
+}
+
+
 
 // Walking Route
 data class WalkingRoute(
@@ -294,6 +336,37 @@ data class RedeemRequest(
     val quantity: Int = 1
 )
 
+// points
+data class PointsCurrentData(
+    val userId: String? = null,
+    val currentPoints: Int = 0,
+    val totalPoints: Int = 0
+)
+
+
+data class OrderHistoryResponse(
+    val pagination: PaginationDto,
+    @SerializedName("orders") val orders: List<OrderSummaryDto>
+)
+
+data class PaginationDto(
+    val page: Int,
+    val size: Int,
+    val total: Int,
+    val totalPages: Int
+)
+
+data class OrderSummaryDto(
+    val id: String,
+    val orderNumber: String,
+    val status: String,
+    val finalAmount: Double,
+    val createdAt: String,
+    val itemCount: Int,
+    val isRedemption: Boolean,
+    val trackingNumber: String? = null,
+    val carrier: String? = null
+)
 // Order data
 data class OrderDto(
     val id: String,

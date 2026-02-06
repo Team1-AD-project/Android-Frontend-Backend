@@ -14,6 +14,7 @@ import com.ecogo.data.Faculty
 import com.ecogo.data.Friend
 import com.ecogo.data.FriendActivity
 import com.ecogo.data.HistoryItem
+import com.ecogo.data.MobileOrderHistoryData
 import com.ecogo.data.Notification
 import com.ecogo.data.Product
 import com.ecogo.data.Ranking
@@ -21,6 +22,7 @@ import com.ecogo.data.RecommendationRequest
 import com.ecogo.data.RecommendationResponse
 import com.ecogo.data.RedeemRequest
 import com.ecogo.data.RedeemResponse
+import com.ecogo.data.UserVoucher
 import com.ecogo.data.UserChallengeProgress
 import com.ecogo.data.Voucher
 import com.ecogo.data.VoucherRedeemRequest
@@ -28,6 +30,9 @@ import com.ecogo.data.WalkingRoute
 import com.ecogo.data.Weather
 import com.google.gson.annotations.SerializedName
 import retrofit2.http.*
+import retrofit2.http.GET
+import com.ecogo.api.ApiResponse
+import com.ecogo.data.PointsCurrentData
 
 /**
  * API 服务接口
@@ -186,7 +191,19 @@ interface ApiService {
     suspend fun getRankingsByPeriod(@Query("period") period: String): ApiResponse<List<Ranking>>
     
     // ==================== 商品相关 ====================
-    
+
+    @GET("/api/v1/mobile/points/current")
+    suspend fun getCurrentPoints(): ApiResponse<PointsCurrentData>
+
+    @GET("api/v1/orders/mobile/user/{userId}")
+    suspend fun getUserOrderHistoryMobile(
+        @Path("userId") userId: String,
+        @Query("status") status: String? = null,
+        @Query("page") page: Int = 1,
+        @Query("size") size: Int = 20
+    ): ApiResponse<MobileOrderHistoryData>
+
+
     /**
      * 获取所有商品
      * GET /api/v1/goods?page=1&size=20
@@ -197,9 +214,12 @@ interface ApiService {
         @Query("size") size: Int = 20,
         @Query("category") category: String? = null,
         @Query("keyword") keyword: String? = null,
-        @Query("isForRedemption") isForRedemption: Boolean? = null
+        @Query("isForRedemption") isForRedemption: Boolean? = null,
+        // ✅ 新增：对齐后端 GoodsController 的参数名
+        @Query("isVipActive") isVipActive: Boolean? = null
     ): ApiResponse<GoodsResponse>
-    
+
+
     /**
      * 获取商品详情
      * GET /api/v1/goods/{id}
@@ -213,7 +233,30 @@ interface ApiService {
      */
     @GET("api/v1/goods/mobile/redemption")
     suspend fun getRedemptionGoods(@Query("vipLevel") vipLevel: Int? = null): ApiResponse<List<GoodsDto>>
-    
+
+    // ==================== 代金券相关 ====================
+
+    /**
+     * 获取 Marketplace 中可见的 Coupon 列表
+     * 对应后端：GET /api/v1/goods/coupons
+     *
+     * @param isVipActive 是否为 VIP 用户（true = 可看到 VIP voucher）
+     */
+    @GET("api/v1/goods/coupons")
+    suspend fun getGoodsCoupons(
+        @Query("isVipActive") isVipActive: Boolean? = null
+    ): ApiResponse<List<Voucher>>
+
+    @GET("api/v1/vouchers")
+    suspend fun getUserVouchers(
+        @Query("userId") userId: String,
+        @Query("tab") tab: String
+    ): ApiResponse<List<UserVoucher>>
+
+    @GET("api/v1/vouchers/{id}")
+    suspend fun getUserVoucherById(@Path("id") id: String): ApiResponse<UserVoucher>
+
+
     // ==================== 订单相关 ====================
     
     /**
@@ -320,12 +363,7 @@ interface ApiService {
     @GET("api/v1/faculties")
     suspend fun getFaculties(): ApiResponse<List<Faculty>>
 
-    /**
-     * 获取兑换券列表
-     * GET /api/v1/vouchers
-     */
-    @GET("api/v1/vouchers")
-    suspend fun getVouchers(): ApiResponse<List<Voucher>>
+
 
     /**
      * 兑换券
@@ -576,13 +614,6 @@ interface ApiService {
 
 
     /**
-     * 获取当前积分
-     * GET /api/v1/mobile/points/current
-     */
-    @GET("api/v1/mobile/points/current")
-    suspend fun getCurrentPoints(): ApiResponse<CurrentPointsResponse>
-
-    /**
      * 获取用户积分历史
      * GET /api/v1/mobile/points/history
      */
@@ -775,7 +806,7 @@ data class MascotOutfitDto(
  * 商品响应（带分页）
  */
 data class GoodsResponse(
-    val data: List<GoodsDto>,
+    val items: List<GoodsDto>,
     val pagination: PaginationDto
 )
 

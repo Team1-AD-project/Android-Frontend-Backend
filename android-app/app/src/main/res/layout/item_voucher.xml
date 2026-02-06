@@ -26,14 +26,30 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/text_icon"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="☕"
-                android:textSize="40sp" />
+                android:layout_height="match_parent">
+
+                <!-- ✅ 真实图片 -->
+                <ImageView
+                    android:id="@+id/img_icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+
+                <!-- ✅ 兜底 emoji（图片失败/没 url 才显示） -->
+                <TextView
+                    android:id="@+id/text_icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="🎫"
+                    android:textSize="40sp" />
+            </FrameLayout>
+
         </com.google.android.material.card.MaterialCardView>
+
 
         <!-- 优惠券状态标签（可选） -->
         <com.google.android.material.chip.Chip
