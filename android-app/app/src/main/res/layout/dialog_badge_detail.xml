@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog_rounded"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <!-- 关闭按钮 -->
+    <ImageView
+        android:id="@+id/btn_close"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_gravity="end"
+        android:contentDescription="Close"
+        android:padding="4dp"
+        android:src="@drawable/ic_close"
+        app:tint="@color/text_secondary" />
+
+    <!-- 徽章图标 -->
+    <TextView
+        android:id="@+id/text_badge_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="🏅"
+        android:textSize="48sp" />
+
+    <!-- 徽章名称 -->
+    <TextView
+        android:id="@+id/text_badge_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="Badge Name"
+        android:textColor="@color/text_primary"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <!-- 状态标签 -->
+    <TextView
+        android:id="@+id/text_badge_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/badge_background"
+        android:paddingStart="12dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="4dp"
+        android:text="Unlocked"
+        android:textColor="@color/primary"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <!-- 描述 -->
+    <TextView
+        android:id="@+id/text_badge_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="Badge description"
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp" />
+
+    <!-- 解锁方式标题 -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="How to Unlock"
+        android:textColor="@color/text_primary"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <!-- 解锁方式描述 -->
+    <TextView
+        android:id="@+id/text_how_to_unlock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:lineSpacingExtra="4dp"
+        android:text="Complete the task to unlock this badge."
+        android:textColor="@color/text_secondary"
+        android:textSize="13sp" />
+
+    <!-- 佩戴/卸下按钮（仅已解锁的徽章可见） -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_equip"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="20dp"
+        android:text="Equip Badge"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        app:cornerRadius="14dp" />
+</LinearLayout>

@@ -10,28 +10,69 @@ import com.ecogo.R
 import com.ecogo.data.ShopItem
 import com.google.android.material.card.MaterialCardView
 
+/**
+ * RecyclerView 列表项：分组标题 或 商品卡片
+ */
+sealed class ShopListItem {
+    data class Header(val title: String) : ShopListItem()
+    data class Item(val shopItem: ShopItem) : ShopListItem()
+}
+
 class ShopItemAdapter(
-    private var items: List<ShopItem>,
+    private var items: List<ShopListItem>,
     private val onItemClick: (ShopItem) -> Unit
-) : RecyclerView.Adapter<ShopItemAdapter.ShopViewHolder>() {
-    
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_shop, parent, false)
-        return ShopViewHolder(view, onItemClick)
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    companion object {
+        private const val VIEW_TYPE_HEADER = 0
+        private const val VIEW_TYPE_ITEM = 1
     }
-    
-    override fun onBindViewHolder(holder: ShopViewHolder, position: Int) {
-        holder.bind(items[position])
+
+    override fun getItemViewType(position: Int): Int = when (items[position]) {
+        is ShopListItem.Header -> VIEW_TYPE_HEADER
+        is ShopListItem.Item -> VIEW_TYPE_ITEM
     }
-    
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == VIEW_TYPE_HEADER) {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_section_header, parent, false)
+            HeaderViewHolder(view)
+        } else {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_shop, parent, false)
+            ShopViewHolder(view, onItemClick)
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (val item = items[position]) {
+            is ShopListItem.Header -> (holder as HeaderViewHolder).bind(item.title)
+            is ShopListItem.Item -> (holder as ShopViewHolder).bind(item.shopItem)
+        }
+    }
+
     override fun getItemCount() = items.size
-    
-    fun updateItems(newItems: List<ShopItem>) {
+
+    /** 判断指定位置是否为分组标题（用于 SpanSizeLookup） */
+    fun isHeader(position: Int): Boolean = items.getOrNull(position) is ShopListItem.Header
+
+    fun updateItems(newItems: List<ShopListItem>) {
         items = newItems
         notifyDataSetChanged()
     }
-    
+
+    // ── Header ViewHolder ──────────────────────
+
+    class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val title: TextView = itemView.findViewById(R.id.text_section_title)
+        fun bind(text: String) {
+            title.text = text
+        }
+    }
+
+    // ── Item ViewHolder ────────────────────────
+
     class ShopViewHolder(
         itemView: View,
         private val onItemClick: (ShopItem) -> Unit
@@ -42,27 +83,62 @@ class ShopItemAdapter(
         private val cost: TextView = itemView.findViewById(R.id.text_cost)
         private val status: TextView = itemView.findViewById(R.id.text_status)
         private val check: View = itemView.findViewById(R.id.image_check)
-        
+
         fun bind(item: ShopItem) {
             name.text = item.name
             cost.text = "${item.cost} pts"
-            
-            // 图标映射（覆盖全部 11 种商品）
+
+            // 图标映射（覆盖全部物品）
             icon.text = when (item.id) {
+                // Head items (10)
                 "hat_grad" -> "🎓"
                 "hat_cap" -> "🧢"
                 "hat_helmet" -> "⛑️"
-                "hat_beret" -> "🎩"
+                "hat_beret" -> "🎨"
+                "hat_crown" -> "👑"
+                "hat_party" -> "🎉"
+                "hat_beanie" -> "❄️"
+                "hat_cowboy" -> "🤠"
+                "hat_chef" -> "👨‍🍳"
+                "hat_wizard" -> "🧙"
+                // Face items (8)
                 "glasses_sun" -> "🕶️"
                 "face_goggles" -> "🥽"
+                "glasses_nerd" -> "🤓"
+                "glasses_3d" -> "🎬"
+                "face_mask" -> "🦸"
+                "face_monocle" -> "🧐"
+                "face_scarf" -> "🧣"
+                "face_vr" -> "🥽"
+                // Body items (14)
                 "shirt_nus" -> "👕"
                 "shirt_hoodie" -> "🧥"
                 "body_plaid" -> "👔"
                 "body_suit" -> "🤵"
                 "body_coat" -> "🥼"
+                "body_sports" -> "⚽"
+                "body_kimono" -> "👘"
+                "body_tux" -> "🎩"
+                "body_superhero" -> "🦸"
+                "body_doctor" -> "👨‍⚕️"
+                "body_pilot" -> "✈️"
+                "body_ninja" -> "🥷"
+                "body_scrubs" -> "🏥"
+                "body_polo" -> "👩‍⚕️"
+                // Badge items (10)
+                "badge_eco_warrior" -> "🌿"
+                "badge_walker" -> "🚶"
+                "badge_cyclist" -> "🚴"
+                "badge_green" -> "🌱"
+                "badge_pioneer" -> "🏆"
+                "badge_streak" -> "🔥"
+                "badge_social" -> "🦋"
+                "badge_explorer" -> "🗺️"
+                "badge_recycler" -> "♻️"
+                "badge_legend" -> "⭐"
                 else -> "🎁"
             }
-            
+
             // 状态显示
             when {
                 item.equipped -> {
@@ -87,7 +163,7 @@ class ShopItemAdapter(
                     card.strokeWidth = 0
                 }
             }
-            
+
             itemView.setOnClickListener {
                 onItemClick(item)
             }

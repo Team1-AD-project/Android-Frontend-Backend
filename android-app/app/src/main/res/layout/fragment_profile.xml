@@ -111,7 +111,7 @@
                 android:background="@drawable/bg_points_gradient"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="20dp">
+                android:padding="24dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -122,10 +122,11 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:alpha="0.7"
-                        android:text="@string/profile_points"
-                        android:textColor="@color/text_white"
-                        android:textSize="12sp" />
+                        android:alpha="0.8"
+                        android:text="Green Points"
+                        android:textColor="#065F46"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/text_points"
@@ -134,177 +135,142 @@
                         android:layout_marginTop="4dp"
                         android:fontFamily="sans-serif-black"
                         android:text="1250"
-                        android:textColor="@color/text_white"
-                        android:textSize="28sp" />
+                        android:textColor="#047857"
+                        android:textSize="36sp" />
                 </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_redeem"
                     android:layout_width="wrap_content"
-                    android:layout_height="32dp"
-                    android:alpha="0.9"
+                    android:layout_height="48dp"
+                    android:minWidth="100dp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
                     android:text="Redeem"
                     android:textAllCaps="false"
-                    android:textSize="13sp"
-                    app:backgroundTint="#33FFFFFF"
-                    app:cornerRadius="12dp"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#047857"
+                    app:cornerRadius="16dp"
                     app:icon="@drawable/ic_chevron_right"
                     app:iconPadding="4dp"
-                    app:iconSize="16dp"
-                    app:iconTint="@color/text_primary" />
+                    app:iconSize="18dp"
+                    app:iconTint="@android:color/white" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Section: Closet / Badges / History -->
+        <!-- Section: My Items -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="@string/profile_shop_section"
+            android:text="My Items"
             android:textColor="@color/text_primary"
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <!-- Tabs -->
+        <!-- 两个并列的按钮卡片 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:orientation="horizontal"
-            android:paddingBottom="12dp">
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <!-- Closet 按钮 -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_closet"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/border"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <com.ecogo.ui.views.MascotLionView
+                        android:id="@+id/mascot_closet_preview"
+                        android:layout_width="52dp"
+                        android:layout_height="52dp" />
 
                     <TextView
-                        android:id="@+id/tab_closet"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingEnd="16dp"
-                        android:paddingBottom="8dp"
-                        android:text="@string/profile_shop"
-                        android:textColor="@color/primary"
-                        android:textSize="14sp"
+                        android:layout_marginTop="8dp"
+                        android:text="Closet"
+                        android:textColor="@color/text_primary"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
-                    <View
-                        android:id="@+id/tab_closet_indicator"
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@color/primary" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
                     <TextView
-                        android:id="@+id/tab_badges"
+                        android:id="@+id/text_closet_desc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingEnd="16dp"
-                        android:paddingBottom="8dp"
-                        android:text="@string/profile_achievements"
+                        android:layout_marginTop="2dp"
+                        android:gravity="center"
+                        android:text="Browse outfits"
                         android:textColor="@color/text_secondary"
-                        android:textSize="14sp" />
-
-                    <View
-                        android:id="@+id/tab_badges_indicator"
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@android:color/transparent" />
+                        android:textSize="12sp" />
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Badges 按钮 -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_badges"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/border"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <TextView
-                        android:id="@+id/tab_history"
+                        android:id="@+id/text_badge_preview"
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:gravity="center"
+                        android:text="🏆"
+                        android:textSize="32sp" />
+
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingEnd="16dp"
-                        android:paddingBottom="8dp"
-                        android:text="@string/profile_history"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="14sp" />
+                        android:layout_marginTop="8dp"
+                        android:text="My Badges"
+                        android:textColor="@color/text_primary"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
 
-                    <View
-                        android:id="@+id/tab_history_indicator"
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@android:color/transparent" />
+                    <TextView
+                        android:id="@+id/text_badge_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:gravity="center"
+                        android:text="3 / 20 unlocked"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
                 </LinearLayout>
-            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
-        <!-- 学院服装 -->
-        <TextView
-            android:id="@+id/text_faculty_outfits"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/profile_faculty_outfits"
-            android:textColor="@color/text_primary"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_faculty_outfits"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:minHeight="120dp"
-            android:nestedScrollingEnabled="false"
-            android:overScrollMode="never"
-            android:visibility="gone" />
 
-        <!-- 全部服装 -->
-        <TextView
-            android:id="@+id/text_all_outfits"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/profile_all_outfits"
-            android:textColor="@color/text_primary"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_shop"
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:layout_marginTop="12dp"
-            android:nestedScrollingEnabled="false"
-            android:overScrollMode="never" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_achievements"
-            android:layout_width="match_parent"
-            android:layout_height="280dp"
-            android:layout_marginTop="12dp"
-            android:nestedScrollingEnabled="false"
-            android:overScrollMode="never"
-            android:visibility="gone" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_history"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="12dp"
-            android:nestedScrollingEnabled="false"
-            android:overScrollMode="never"
-            android:visibility="gone" />
     </LinearLayout>
 </ScrollView>

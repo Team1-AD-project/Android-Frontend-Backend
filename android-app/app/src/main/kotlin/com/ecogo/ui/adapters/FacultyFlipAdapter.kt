@@ -138,17 +138,41 @@ class FacultyFlipAdapter(
         
         private fun getItemName(itemId: String): String {
             return when (itemId) {
+                // Head items
                 "hat_helmet" -> "Safety Helmet"
                 "hat_beret" -> "Artist Beret"
                 "hat_grad" -> "Grad Cap"
                 "hat_cap" -> "Orange Cap"
+                "hat_crown" -> "Golden Crown"
+                "hat_party" -> "Party Hat"
+                "hat_beanie" -> "Winter Beanie"
+                "hat_cowboy" -> "Cowboy Hat"
+                "hat_chef" -> "Chef Hat"
+                "hat_wizard" -> "Wizard Hat"
+                // Face items
                 "face_goggles" -> "Safety Goggles"
                 "glasses_sun" -> "Shades"
+                "glasses_nerd" -> "Nerd Glasses"
+                "glasses_3d" -> "3D Glasses"
+                "face_mask" -> "Superhero Mask"
+                "face_monocle" -> "Fancy Monocle"
+                "face_scarf" -> "Winter Scarf"
+                "face_vr" -> "VR Headset"
+                // Body items
                 "body_plaid" -> "Engin Plaid"
                 "body_suit" -> "Biz Suit"
                 "body_coat" -> "Lab Coat"
                 "shirt_nus" -> "NUS Tee"
                 "shirt_hoodie" -> "Blue Hoodie"
+                "body_sports" -> "Sports Jersey"
+                "body_kimono" -> "Traditional Kimono"
+                "body_tux" -> "Fancy Tuxedo"
+                "body_superhero" -> "Superhero Cape"
+                "body_doctor" -> "Doctor's Coat"
+                "body_pilot" -> "Pilot Uniform"
+                "body_ninja" -> "Ninja Outfit"
+                "body_scrubs" -> "Medical Scrubs"
+                "body_polo" -> "Nurse Polo"
                 else -> ""
             }
         }

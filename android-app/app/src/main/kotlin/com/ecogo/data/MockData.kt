@@ -259,19 +259,74 @@ object MockData {
             change = -45
         ),
         Community(
-            name = "Faculty of Arts & Social Sciences",
+            name = "Faculty of Arts and Social Sciences",
             points = 13890,
             change = 120
         ),
         Community(
-            name = "School of Business",
+            name = "Business School",
             points = 13450,
             change = -80
+        ),
+        Community(
+            name = "Faculty of Law",
+            points = 12980,
+            change = 95
+        ),
+        Community(
+            name = "Faculty of Dentistry",
+            points = 12540,
+            change = -30
+        ),
+        Community(
+            name = "Yong Loo Lin School of Medicine",
+            points = 12100,
+            change = 150
+        ),
+        Community(
+            name = "School of Design and Environment",
+            points = 11680,
+            change = 60
+        ),
+        Community(
+            name = "Yong Siew Toh Conservatory of Music",
+            points = 11250,
+            change = -15
+        ),
+        Community(
+            name = "Faculty of Nursing",
+            points = 10820,
+            change = 110
+        ),
+        Community(
+            name = "School of Public Health",
+            points = 10400,
+            change = 75
+        ),
+        Community(
+            name = "School of Continuing and Lifelong Education",
+            points = 9980,
+            change = -25
+        ),
+        Community(
+            name = "College of Humanities and Sciences",
+            points = 9560,
+            change = 40
         )
     ) }
     
     val SHOP_ITEMS by lazy { listOf(
         // === LiNUS Avatar Items ===
+        
+        // Face Items (眼镜/配饰) - 9 items (ISS glasses at front)
+        ShopItem(
+            id = "face_glasses_square",
+            name = "Square Glasses 👓",
+            type = "face",
+            cost = 300,
+            owned = false,
+            equipped = false
+        ),
         
         // Head Items (帽子/头饰) - 10 items
         ShopItem(
@@ -355,7 +410,7 @@ object MockData {
             equipped = false
         ),
         
-        // Face Items (眼镜/配饰) - 8 items
+        // More Face Items
         ShopItem(
             id = "glasses_sun",
             name = "Cool Shades 😎",
@@ -421,7 +476,15 @@ object MockData {
             equipped = false
         ),
         
-        // Body Items (服装) - 12 items
+        // Body Items (服装) - 15 items (ISS white shirt at front)
+        ShopItem(
+            id = "body_white_shirt",
+            name = "White Shirt 👔",
+            type = "body",
+            cost = 350,
+            owned = false,
+            equipped = false
+        ),
         ShopItem(
             id = "shirt_nus",
             name = "NUS Tee 🎓",
@@ -515,6 +578,22 @@ object MockData {
             name = "Ninja Outfit 🥷",
             type = "body",
             cost = 750,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "body_scrubs",
+            name = "Medical Scrubs 🏥",
+            type = "body",
+            cost = 450,
+            owned = false,
+            equipped = false
+        ),
+        ShopItem(
+            id = "body_polo",
+            name = "Nurse Polo 👩‍⚕️",
+            type = "body",
+            cost = 400,
             owned = false,
             equipped = false
         ),
@@ -887,41 +966,151 @@ object MockData {
     ) }
     
     val ACHIEVEMENTS by lazy { listOf(
+        // ── 新人入门 (Newcomer) ──────────────────
         Achievement(
             id = "a1",
             name = "First Ride",
             description = "Take your first eco-friendly trip",
-            unlocked = true
+            unlocked = true,
+            howToUnlock = "Complete your very first eco-friendly trip using public transport, cycling, or walking. Any single trip counts!"
         ),
         Achievement(
             id = "a2",
-            name = "Week Warrior",
-            description = "Use eco transport for 7 days straight",
-            unlocked = true
+            name = "First Check-in",
+            description = "Complete your first daily check-in",
+            unlocked = true,
+            howToUnlock = "Open the app and tap the daily check-in button for the very first time. Welcome aboard!"
         ),
         Achievement(
             id = "a3",
-            name = "Century Club",
-            description = "Earn 100 points",
-            unlocked = true
+            name = "First Activity",
+            description = "Join your first community event",
+            unlocked = true,
+            howToUnlock = "Sign up and participate in any community eco-activity or campus green event through the app."
         ),
         Achievement(
             id = "a4",
-            name = "Social Butterfly",
-            description = "Join 5 community activities",
-            unlocked = false
+            name = "Profile Complete",
+            description = "Fill in all profile details",
+            unlocked = true,
+            howToUnlock = "Complete your profile by setting a nickname, choosing a faculty, and customizing your mascot outfit."
         ),
+        // ── 连续打卡 (Streak) ────────────────────
         Achievement(
             id = "a5",
-            name = "Master Saver",
-            description = "Redeem 10 vouchers",
-            unlocked = false
+            name = "Week Warrior",
+            description = "7-day eco transport streak",
+            unlocked = true,
+            howToUnlock = "Log an eco-friendly trip every day for 7 consecutive days. Missing a day resets the streak."
         ),
         Achievement(
             id = "a6",
+            name = "Habit Builder",
+            description = "14-day consecutive check-in",
+            unlocked = false,
+            howToUnlock = "Check in to the app every day for 14 consecutive days. Build a habit and keep the streak going!"
+        ),
+        Achievement(
+            id = "a7",
+            name = "Month Master",
+            description = "30-day check-in streak",
+            unlocked = false,
+            howToUnlock = "Maintain a daily check-in streak for a full 30 days. Dedication pays off!"
+        ),
+        Achievement(
+            id = "a8",
+            name = "Iron Will",
+            description = "60-day eco trip streak",
+            unlocked = false,
+            howToUnlock = "Log at least one eco-friendly trip every single day for 60 consecutive days. True commitment!"
+        ),
+        // ── 积分里程碑 (Points Milestone) ─────────
+        Achievement(
+            id = "a9",
+            name = "Century Club",
+            description = "Earn 100 points",
+            unlocked = true,
+            howToUnlock = "Accumulate a total of 100 EcoGo points from trips, check-ins, and community activities."
+        ),
+        Achievement(
+            id = "a10",
+            name = "Points Pro",
+            description = "Earn 500 points",
+            unlocked = false,
+            howToUnlock = "Accumulate a total of 500 EcoGo points. Keep riding, walking, and checking in!"
+        ),
+        Achievement(
+            id = "a11",
+            name = "Points Legend",
+            description = "Earn 2000 points",
+            unlocked = false,
+            howToUnlock = "Reach a lifetime total of 2000 EcoGo points. You are a true eco legend!"
+        ),
+        // ── 出行方式 (Transport) ─────────────────
+        Achievement(
+            id = "a12",
+            name = "Cycling Champion",
+            description = "Complete 10 cycling trips",
+            unlocked = false,
+            howToUnlock = "Log 10 trips using a bicycle. Campus cycling, bike-share, or personal bikes all count."
+        ),
+        Achievement(
+            id = "a13",
+            name = "Walk the Talk",
+            description = "Walk 50,000 steps total",
+            unlocked = false,
+            howToUnlock = "Accumulate 50,000 walking steps tracked through the app. Every step counts towards a greener campus!"
+        ),
+        Achievement(
+            id = "a14",
+            name = "Bus Regular",
+            description = "Take 20 bus trips",
+            unlocked = false,
+            howToUnlock = "Log 20 trips using public buses. Campus shuttles and city buses both count."
+        ),
+        Achievement(
+            id = "a15",
+            name = "Carbon Cutter",
+            description = "Save 10kg CO₂ emissions",
+            unlocked = false,
+            howToUnlock = "By choosing eco-friendly transport, reduce your carbon footprint by a total of 10kg CO₂ compared to driving."
+        ),
+        // ── 社交社区 (Social) ────────────────────
+        Achievement(
+            id = "a16",
+            name = "Social Butterfly",
+            description = "Join 5 community activities",
+            unlocked = false,
+            howToUnlock = "Participate in 5 different community eco-activities or events organized through the EcoGo app."
+        ),
+        Achievement(
+            id = "a17",
+            name = "Team Player",
+            description = "Invite 3 friends to EcoGo",
+            unlocked = false,
+            howToUnlock = "Share your invite link and get 3 friends to sign up and complete their first trip on EcoGo."
+        ),
+        Achievement(
+            id = "a18",
+            name = "Community Leader",
+            description = "Organize a green event",
+            unlocked = false,
+            howToUnlock = "Create and host a community eco-event (e.g. campus cleanup, tree planting) through the app with at least 5 participants."
+        ),
+        // ── 特殊成就 (Special) ──────────────────
+        Achievement(
+            id = "a19",
+            name = "Master Saver",
+            description = "Redeem 10 vouchers",
+            unlocked = false,
+            howToUnlock = "Use your points to redeem 10 vouchers from the Rewards store. Each unique redemption counts."
+        ),
+        Achievement(
+            id = "a20",
             name = "Eco Champion",
-            description = "Reach top of leaderboard",
-            unlocked = false
+            description = "Reach #1 on leaderboard",
+            unlocked = false,
+            howToUnlock = "Climb to the #1 position on your faculty or community leaderboard during any weekly or monthly cycle."
         )
     ) }
     
@@ -983,7 +1172,7 @@ object MockData {
         ),
         Faculty(
             id = "fass",
-            name = "FASS",
+            name = "Faculty of Arts and Social Sciences",
             x = 0.4f,
             y = 0.7f,
             score = 13890,
@@ -991,50 +1180,192 @@ object MockData {
         ),
         Faculty(
             id = "biz",
-            name = "School of Business",
+            name = "Business School",
             x = 0.6f,
             y = 0.6f,
             score = 13450,
             rank = 5
+        ),
+        Faculty(
+            id = "law",
+            name = "Faculty of Law",
+            x = 0.2f,
+            y = 0.6f,
+            score = 12980,
+            rank = 6
+        ),
+        Faculty(
+            id = "dent",
+            name = "Faculty of Dentistry",
+            x = 0.8f,
+            y = 0.3f,
+            score = 12540,
+            rank = 7
+        ),
+        Faculty(
+            id = "med",
+            name = "Yong Loo Lin School of Medicine",
+            x = 0.3f,
+            y = 0.2f,
+            score = 12100,
+            rank = 8
+        ),
+        Faculty(
+            id = "sde",
+            name = "School of Design and Environment",
+            x = 0.7f,
+            y = 0.7f,
+            score = 11680,
+            rank = 9
+        ),
+        Faculty(
+            id = "music",
+            name = "Yong Siew Toh Conservatory of Music",
+            x = 0.5f,
+            y = 0.8f,
+            score = 11250,
+            rank = 10
+        ),
+        Faculty(
+            id = "nursing",
+            name = "Faculty of Nursing",
+            x = 0.2f,
+            y = 0.3f,
+            score = 10820,
+            rank = 11
+        ),
+        Faculty(
+            id = "sph",
+            name = "School of Public Health",
+            x = 0.8f,
+            y = 0.6f,
+            score = 10400,
+            rank = 12
+        ),
+        Faculty(
+            id = "cle",
+            name = "School of Continuing and Lifelong Education",
+            x = 0.6f,
+            y = 0.2f,
+            score = 9980,
+            rank = 13
+        ),
+        Faculty(
+            id = "chs",
+            name = "College of Humanities and Sciences",
+            x = 0.4f,
+            y = 0.5f,
+            score = 9560,
+            rank = 14
         )
     ) }
     
-    // Faculty data for signup with outfit configurations
+    // Faculty data for signup with outfit configurations (14 faculties)
     val FACULTY_DATA by lazy { listOf(
         FacultyData(
-            id = "eng",
-            name = "Engineering",
+            id = "iss",
+            name = "Institute of Systems Science",
+            color = "#6B7280",
+            slogan = "Systems for Tomorrow 🔬",
+            outfit = Outfit(head = "none", face = "face_glasses_square", body = "body_white_shirt")
+        ),
+        FacultyData(
+            id = "soc",
+            name = "School of Computing",
             color = "#3B82F6",
+            slogan = "Code the Future 💻",
+            outfit = Outfit(head = "hat_cap", face = "none", body = "shirt_hoodie")
+        ),
+        FacultyData(
+            id = "eng",
+            name = "Faculty of Engineering",
+            color = "#EF4444",
             slogan = "Building the Future 🛠️",
             outfit = Outfit(head = "hat_helmet", face = "none", body = "body_plaid")
+        ),
+        FacultyData(
+            id = "sci",
+            name = "Faculty of Science",
+            color = "#6366F1",
+            slogan = "Discovering Truth 🧪",
+            outfit = Outfit(head = "none", face = "face_goggles", body = "body_coat")
+        ),
+        FacultyData(
+            id = "fass",
+            name = "Faculty of Arts and Social Sciences",
+            color = "#F97316",
+            slogan = "Create & Inspire 🎨",
+            outfit = Outfit(head = "hat_beret", face = "none", body = "body_kimono")
         ),
         FacultyData(
             id = "biz",
             name = "Business School",
             color = "#EAB308",
             slogan = "Leading the Way 💼",
-            outfit = Outfit(head = "none", face = "none", body = "body_suit")
+            outfit = Outfit(head = "none", face = "face_monocle", body = "body_suit")
         ),
         FacultyData(
-            id = "arts",
-            name = "Arts & Social Sci",
-            color = "#F97316",
-            slogan = "Create & Inspire 🎨",
-            outfit = Outfit(head = "hat_beret", face = "none", body = "body_coat")
+            id = "law",
+            name = "Faculty of Law",
+            color = "#7C3AED",
+            slogan = "Justice for All ⚖️",
+            outfit = Outfit(head = "hat_grad", face = "none", body = "body_tux")
+        ),
+        FacultyData(
+            id = "dent",
+            name = "Faculty of Dentistry",
+            color = "#14B8A6",
+            slogan = "Smile with Confidence 🦷",
+            outfit = Outfit(head = "none", face = "face_mask", body = "body_doctor")
         ),
         FacultyData(
             id = "med",
-            name = "Medicine",
+            name = "Yong Loo Lin School of Medicine",
             color = "#10B981",
             slogan = "Saving Lives 🩺",
-            outfit = Outfit(head = "none", face = "none", body = "body_coat")
+            outfit = Outfit(head = "none", face = "none", body = "body_scrubs")
         ),
         FacultyData(
-            id = "sci",
-            name = "Science",
-            color = "#6366F1",
-            slogan = "Discovering Truth 🧪",
-            outfit = Outfit(head = "none", face = "face_goggles", body = "body_coat")
+            id = "sde",
+            name = "School of Design and Environment",
+            color = "#06B6D4",
+            slogan = "Design a Better World 🌍",
+            outfit = Outfit(head = "hat_beret", face = "none", body = "body_superhero")
+        ),
+        FacultyData(
+            id = "music",
+            name = "Yong Siew Toh Conservatory of Music",
+            color = "#EC4899",
+            slogan = "Harmony in Motion 🎵",
+            outfit = Outfit(head = "hat_party", face = "none", body = "shirt_nus")
+        ),
+        FacultyData(
+            id = "nursing",
+            name = "Faculty of Nursing",
+            color = "#F43F5E",
+            slogan = "Care with Heart 💉",
+            outfit = Outfit(head = "none", face = "face_scarf", body = "body_polo")
+        ),
+        FacultyData(
+            id = "sph",
+            name = "School of Public Health",
+            color = "#84CC16",
+            slogan = "Health for All 🏥",
+            outfit = Outfit(head = "hat_cap", face = "none", body = "body_sports")
+        ),
+        FacultyData(
+            id = "cle",
+            name = "School of Continuing and Lifelong Education",
+            color = "#A855F7",
+            slogan = "Never Stop Learning 📚",
+            outfit = Outfit(head = "hat_cowboy", face = "none", body = "body_pilot")
+        ),
+        FacultyData(
+            id = "chs",
+            name = "College of Humanities and Sciences",
+            color = "#0EA5E9",
+            slogan = "Explore the Unknown 🔮",
+            outfit = Outfit(head = "hat_wizard", face = "none", body = "body_ninja")
         )
     ) }
     
