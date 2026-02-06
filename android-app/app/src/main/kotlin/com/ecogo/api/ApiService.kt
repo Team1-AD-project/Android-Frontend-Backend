@@ -636,6 +636,7 @@ data class MobileRegisterData(
  * 更新个人资料请求 (支持部分更新)
  */
 data class UpdateProfileRequest(
+    val nickname: String? = null,
     val faculty: String? = null,
     val preferences: TransportPreferencesWrapper? = null,
     val dormitoryOrResidence: String? = null,

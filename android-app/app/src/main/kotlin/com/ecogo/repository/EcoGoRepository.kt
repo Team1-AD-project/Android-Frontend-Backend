@@ -492,6 +492,24 @@ class EcoGoRepository {
         }
 
     /**
+     * 更新用户资料
+     * PUT /api/v1/internal/users/{userid}/profile
+     */
+    suspend fun updateUserProfile(userId: String, request: com.ecogo.api.UpdateProfileRequest): Result<Any> =
+        withContext(Dispatchers.IO) {
+            try {
+                val response = api.updateProfile(userId, request)
+                if (response.success) {
+                    Result.success(response.data ?: Unit)
+                } else {
+                    Result.failure(Exception(response.message))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+
+    /**
      * 获取移动端用户详细资料 (Authenticated)
      */
     suspend fun getMobileUserProfile(): Result<MobileProfileResponse> =

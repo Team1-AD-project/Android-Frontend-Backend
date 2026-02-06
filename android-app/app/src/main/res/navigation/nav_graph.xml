@@ -184,7 +184,16 @@
         <action
             android:id="@+id/action_settings_to_profile"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_settings_to_editProfile"
+            app:destination="@id/editProfileFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.ecogo.ui.fragments.EditProfileFragment"
+        android:label="Edit Profile"
+        tools:layout="@layout/fragment_edit_profile" />
 
     <fragment
         android:id="@+id/voucherFragment"
