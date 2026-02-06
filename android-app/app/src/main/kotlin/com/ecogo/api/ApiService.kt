@@ -428,10 +428,10 @@ interface ApiService {
     
     /**
      * 获取天气数据
-     * GET /api/v1/weather?location={location}
+     * GET /api/v1/weather
      */
     @GET("api/v1/weather")
-    suspend fun getWeather(@Query("location") location: String = "NUS"): ApiResponse<Weather>
+    suspend fun getWeather(): ApiResponse<Weather>
     
     // ==================== 商店相关 ====================
     

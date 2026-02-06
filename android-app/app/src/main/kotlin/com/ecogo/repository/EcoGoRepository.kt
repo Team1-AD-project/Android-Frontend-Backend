@@ -634,10 +634,10 @@ class EcoGoRepository {
     /**
      * 获取天气和空气质量
      */
-    suspend fun getWeather(location: String = "NUS"): Result<Weather> =
+    suspend fun getWeather(): Result<Weather> =
         withContext(Dispatchers.IO) {
             try {
-                val response = api.getWeather(location)
+                val response = api.getWeather()
                 if (response.success && response.data != null) {
                     Result.success(response.data)
                 } else {

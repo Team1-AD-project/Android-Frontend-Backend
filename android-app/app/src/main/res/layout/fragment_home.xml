@@ -779,15 +779,15 @@
                         android:id="@+id/image_weather_icon"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/ic_sun"
-                        app:tint="#F59E0B" />
+                        android:src="@drawable/ic_sun"/>
+
 
                     <TextView
                         android:id="@+id/text_temperature"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="28°C"
+
                         android:textColor="@color/text_primary"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -859,15 +859,7 @@
                             android:textSize="11sp" />
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/text_weather_recommendation"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text="Perfect day for walking or cycling!"
-                        android:textColor="@color/primary"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
+
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

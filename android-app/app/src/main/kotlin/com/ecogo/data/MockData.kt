@@ -1187,10 +1187,11 @@ object MockData {
     // Weather Mock Data
     val WEATHER by lazy { Weather(
         location = "NUS",
-        temperature = 21,
-        condition = "Sunny",
-        humidity = 75,
-        aqi = 45,
+        temperature = 21.0,
+        description = "Sunny",
+        icon = "01d",
+        humidity = "75",
+        airQuality = 45,
         aqiLevel = "Good",
         recommendation = "Perfect day for walking or cycling!"
     ) }

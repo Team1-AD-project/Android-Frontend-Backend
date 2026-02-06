@@ -213,10 +213,11 @@ data class DailyGoal(
 // Weather & Air Quality
 data class Weather(
     val location: String = "NUS",
-    val temperature: Int, // Celsius
-    val condition: String, // Sunny, Rainy, Cloudy, etc.
-    val humidity: Int, // percentage
-    val aqi: Int, // Air Quality Index
+    val temperature: Double, // Celsius
+    val description: String, // Sunny, Rainy, Cloudy, etc.
+    val icon: String, // Icon identifier from API
+    val humidity: String, // percentage
+    val airQuality: Int, // Air Quality Index
     val aqiLevel: String, // Good, Moderate, Unhealthy, etc.
     val recommendation: String // Travel recommendation
 )
@@ -253,6 +254,7 @@ data class Friend(
     val faculty: String? = null
 )
 
+// Friend Activity
 data class FriendActivity(
     val friendId: String,
     val friendName: String,

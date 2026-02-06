@@ -427,23 +427,71 @@ class HomeFragment : Fragment() {
             }
         }
     }
-    
+
     private fun loadWeather() {
         viewLifecycleOwner.lifecycleScope.launch {
-            val weather = repository.getWeather("NUS").getOrNull()
-            if (weather != null) {
-                binding.textTemperature.text = "${weather.temperature}°C"
-                binding.textWeatherCondition.text = weather.condition
-                binding.textAqiValue.text = "AQI ${weather.aqi}"
-                binding.textHumidity.text = "Humidity ${weather.humidity}%"
-                binding.textWeatherRecommendation.text = weather.recommendation
-                
-                // 根据天气条件更新图标 (可选)
-                // binding.imageWeatherIcon.setImageResource(...)
+            // 1. 获取 Result
+            val result = repository.getWeather()
+
+            // 2. 判断成功还是失败
+            if (result.isSuccess) {
+                val weather = result.getOrNull()
+                if (weather != null) {
+                    // --- 成功：更新文字 ---
+                    binding.textTemperature.text = "${weather.temperature}°C"
+                    binding.textWeatherCondition.text = weather.description
+                    binding.textAqiValue.text = "AQI ${weather.airQuality}"
+
+                    // 👇👇👇【新增的核心代码】设置图标 👇👇👇
+                    // 1. 调用刚才写的函数拿到图片 ID
+                    val iconResId = getWeatherIcon(weather.description)
+
+                    // 2. 将图片设置到 ImageView 上
+                    // (请确保你的 XML 布局里有个 ImageView 叫 imageWeatherIcon)
+                    binding.imageWeatherIcon.setImageResource(iconResId)
+
+                    android.util.Log.d("HomeFragment", "天气获取成功: ${weather.description}")
+                }
+            } else {
+                // --- 失败：打印错误 ---
+                val error = result.exceptionOrNull()
+                android.util.Log.e("HomeFragment", "天气获取失败", error)
             }
         }
     }
-    
+    // 根据描述返回对应的图标 ID
+    private fun getWeatherIcon(description: String): Int {
+        val desc = description.lowercase() // 转小写，方便匹配
+
+        return when {
+            // --- 1. 雨天类 (只要包含 rain, thunder, storm 等词) ---
+            desc.contains("rain") ||
+                    desc.contains("shower") ||
+                    desc.contains("drizzle") ||
+                    desc.contains("thunder") ||
+                    desc.contains("storm") -> {
+                R.drawable.ic_weather_rain // ☔ 你的雨天图标文件名
+            }
+
+            // --- 2. 多云类 (只要包含 cloud, fog, mist 等词) ---
+            desc.contains("cloud") ||
+                    desc.contains("overcast") ||
+                    desc.contains("fog") ||
+                    desc.contains("mist") ||
+                    desc.contains("haze") -> {
+                R.drawable.ic_weather_cloudy // ☁️ 你的多云图标文件名
+            }
+
+            // --- 3. 晴天类 (只要包含 sun, clear) ---
+            desc.contains("sun") ||
+                    desc.contains("clear") -> {
+                R.drawable.ic_weather_sunny // ☀️ 你的晴天图标文件名
+            }
+
+            // --- 4. 默认/未知情况 ---
+            else -> R.drawable.ic_weather_cloudy
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
