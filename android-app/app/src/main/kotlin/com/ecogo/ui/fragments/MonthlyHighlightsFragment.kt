@@ -71,9 +71,11 @@ class MonthlyHighlightsFragment : Fragment() {
             android.widget.Toast.makeText(requireContext(), "下个月即将推出", android.widget.Toast.LENGTH_SHORT).show()
         }
         
-        // 查看完整活动列表
+        // 查看全部已加入的活动
         binding.btnViewAllActivities.setOnClickListener {
-            findNavController().navigate(R.id.activitiesFragment)
+            val action = MonthlyHighlightsFragmentDirections
+                .actionMonthlyHighlightsToJoinedActivities(showJoinedOnly = true)
+            findNavController().navigate(action)
         }
         
         // 查看完整排行榜
@@ -231,18 +233,28 @@ class MonthlyHighlightsFragment : Fragment() {
     }
     
     private suspend fun loadFeaturedActivities() {
+        val userId = com.ecogo.auth.TokenManager.getUserId() ?: "user123"
         val activitiesResult = repository.getAllActivities().getOrElse { emptyList() }
-        
-        // 筛选本月活动并按推荐度排序
-        val featuredActivities = activitiesResult
-            .filter { it.status == "PUBLISHED" || it.status == "ONGOING" }
+
+        // 筛选用户已加入的活动
+        val joinedActivities = activitiesResult
+            .filter { it.participantIds.contains(userId) }
             .sortedByDescending { it.rewardCredits }
-            .take(6)
-        
-        (binding.recyclerFeaturedActivities.adapter as? MonthlyActivityAdapter)?.updateData(featuredActivities)
-        
-        // 更新活动计数
-        binding.textActivityCount.text = "${featuredActivities.size} Featured Activities"
+
+        // 外面最多显示2个
+        val displayActivities = joinedActivities.take(2)
+
+        if (joinedActivities.isEmpty()) {
+            // 没有加入任何活动，隐藏RecyclerView，显示空状态
+            binding.recyclerFeaturedActivities.visibility = View.GONE
+            binding.textNoJoinedActivities.visibility = View.VISIBLE
+            binding.textActivityCount.text = "0 Joined Activities"
+        } else {
+            binding.recyclerFeaturedActivities.visibility = View.VISIBLE
+            binding.textNoJoinedActivities.visibility = View.GONE
+            (binding.recyclerFeaturedActivities.adapter as? MonthlyActivityAdapter)?.updateData(displayActivities)
+            binding.textActivityCount.text = "${joinedActivities.size} Joined Activities"
+        }
     }
     
     private suspend fun loadMonthlyAchievements() {

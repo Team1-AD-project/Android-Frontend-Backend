@@ -215,6 +215,10 @@
         android:name="com.ecogo.ui.fragments.ActivitiesFragment"
         android:label="Activities"
         tools:layout="@layout/fragment_activities">
+        <argument
+            android:name="showJoinedOnly"
+            android:defaultValue="false"
+            app:argType="boolean" />
         <action
             android:id="@+id/action_activities_to_activityDetail"
             app:destination="@id/activityDetailFragment" />
@@ -373,6 +377,9 @@
         <action
             android:id="@+id/action_monthlyHighlights_to_activityDetail"
             app:destination="@id/activityDetailFragment" />
+        <action
+            android:id="@+id/action_monthlyHighlights_to_joinedActivities"
+            app:destination="@id/activitiesFragment" />
     </fragment>
 
 </navigation>
