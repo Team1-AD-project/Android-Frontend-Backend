@@ -33,6 +33,21 @@ public class User {
 
     private ActivityMetrics activityMetrics;
 
+    // Mascot outfit & inventory
+    private MascotOutfit mascotOutfit;
+    private java.util.List<String> inventory;
+
+    // Profile / Edit Profile fields
+    private String faculty;
+    private String dormitoryOrResidence;
+    private String mainTeachingBuilding;
+    private String favoriteStudySpot;
+    private java.util.List<String> interests;
+    private int weeklyGoals;
+    private boolean newChallenges;
+    private boolean activityReminders;
+    private boolean friendActivity;
+
     // Getters and Setters
 
     public String getId() {
@@ -185,6 +200,94 @@ public class User {
 
     public void setActivityMetrics(ActivityMetrics activityMetrics) {
         this.activityMetrics = activityMetrics;
+    }
+
+    public MascotOutfit getMascotOutfit() {
+        return mascotOutfit;
+    }
+
+    public void setMascotOutfit(MascotOutfit mascotOutfit) {
+        this.mascotOutfit = mascotOutfit;
+    }
+
+    public java.util.List<String> getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(java.util.List<String> inventory) {
+        this.inventory = inventory;
+    }
+
+    public String getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(String faculty) {
+        this.faculty = faculty;
+    }
+
+    public String getDormitoryOrResidence() {
+        return dormitoryOrResidence;
+    }
+
+    public void setDormitoryOrResidence(String dormitoryOrResidence) {
+        this.dormitoryOrResidence = dormitoryOrResidence;
+    }
+
+    public String getMainTeachingBuilding() {
+        return mainTeachingBuilding;
+    }
+
+    public void setMainTeachingBuilding(String mainTeachingBuilding) {
+        this.mainTeachingBuilding = mainTeachingBuilding;
+    }
+
+    public String getFavoriteStudySpot() {
+        return favoriteStudySpot;
+    }
+
+    public void setFavoriteStudySpot(String favoriteStudySpot) {
+        this.favoriteStudySpot = favoriteStudySpot;
+    }
+
+    public java.util.List<String> getInterests() {
+        return interests;
+    }
+
+    public void setInterests(java.util.List<String> interests) {
+        this.interests = interests;
+    }
+
+    public int getWeeklyGoals() {
+        return weeklyGoals;
+    }
+
+    public void setWeeklyGoals(int weeklyGoals) {
+        this.weeklyGoals = weeklyGoals;
+    }
+
+    public boolean isNewChallenges() {
+        return newChallenges;
+    }
+
+    public void setNewChallenges(boolean newChallenges) {
+        this.newChallenges = newChallenges;
+    }
+
+    public boolean isActivityReminders() {
+        return activityReminders;
+    }
+
+    public void setActivityReminders(boolean activityReminders) {
+        this.activityReminders = activityReminders;
+    }
+
+    public boolean isFriendActivity() {
+        return friendActivity;
+    }
+
+    public void setFriendActivity(boolean friendActivity) {
+        this.friendActivity = friendActivity;
     }
 
     // Nested Classes (unchanged)
@@ -416,5 +519,37 @@ public class User {
         public void setLoginDates(java.util.List<java.time.LocalDate> loginDates) {
             this.loginDates = loginDates;
         }
+    }
+
+    /**
+     * Mascot outfit configuration.
+     * Stores the currently equipped outfit items for the user's mascot lion.
+     */
+    public static class MascotOutfit {
+        private String head = "none";
+        private String face = "none";
+        private String body = "none";
+        private String badge = "none";
+
+        public MascotOutfit() {}
+
+        public MascotOutfit(String head, String face, String body, String badge) {
+            this.head = head;
+            this.face = face;
+            this.body = body;
+            this.badge = badge;
+        }
+
+        public String getHead() { return head; }
+        public void setHead(String head) { this.head = head; }
+
+        public String getFace() { return face; }
+        public void setFace(String face) { this.face = face; }
+
+        public String getBody() { return body; }
+        public void setBody(String body) { this.body = body; }
+
+        public String getBadge() { return badge; }
+        public void setBadge(String badge) { this.badge = badge; }
     }
 }

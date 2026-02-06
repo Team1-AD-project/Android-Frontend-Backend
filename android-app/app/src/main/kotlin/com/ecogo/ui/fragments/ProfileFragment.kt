@@ -16,6 +16,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ecogo.R
+import com.ecogo.api.MascotOutfitDto
+import com.ecogo.api.UpdateProfileRequest
+import com.ecogo.auth.TokenManager
 import com.ecogo.data.Achievement
 import com.ecogo.data.FacultyData
 import com.ecogo.data.MockData
@@ -35,14 +38,14 @@ class ProfileFragment : Fragment() {
     private val binding get() = _binding!!
     private val repository = EcoGoRepository()
     
-    // 状态管理
-    private var currentPoints = 1250
-    private val inventory = mutableListOf("hat_grad", "shirt_nus")  // 已拥有的物品
+    // State management — loaded from API, persisted on changes
+    private var currentPoints = 0
+    private val inventory = mutableListOf<String>()
     private val currentOutfit = mutableMapOf(
         "head" to "none",
         "face" to "none",
-        "body" to "shirt_nus",  // 初始装备
-        "badge" to "none"  // 新增徽章槽位
+        "body" to "none",
+        "badge" to "none"
     )
     
     override fun onCreateView(
@@ -65,9 +68,130 @@ class ProfileFragment : Fragment() {
         setupTabs()
         setupAnimations()
         setupActions()
+        setupActions()
         loadHistory()
+        loadUserProfile()
         
         Log.d("ProfileFragment", "Profile screen initialized with ${inventory.size} owned items")
+    }
+    
+    private fun loadUserProfile() {
+        // First restore from local cache immediately (fast UI)
+        restoreFromLocalCache()
+
+        val userId = TokenManager.getUserId() ?: return
+        viewLifecycleOwner.lifecycleScope.launch {
+            val result = repository.getMobileUserProfile(userId)
+            val profile = result.getOrNull()
+            if (profile != null) {
+                val userInfo = profile.userInfo
+                
+                // Update points
+                currentPoints = userInfo.currentPoints
+                binding.textPoints.text = currentPoints.toString()
+                
+                // Update basic info
+                binding.textName.text = userInfo.nickname
+                
+                // Update faculty if available
+                userInfo.faculty?.let { faculty ->
+                     binding.textFaculty.text = "$faculty • Year 2"
+                }
+
+                // Restore mascot outfit from server
+                userInfo.mascotOutfit?.let { outfit ->
+                    currentOutfit["head"] = outfit.head
+                    currentOutfit["face"] = outfit.face
+                    currentOutfit["body"] = outfit.body
+                    currentOutfit["badge"] = outfit.badge
+                    updateMascotOutfit()
+                }
+
+                // Restore inventory from server
+                userInfo.inventory?.let { items ->
+                    inventory.clear()
+                    inventory.addAll(items)
+                    refreshShopAdapter()
+                }
+
+                // Sync local cache
+                saveToLocalCache()
+                
+                Log.d("ProfileFragment", "Loaded user profile: ${userInfo.nickname}, points: $currentPoints, inventory: ${inventory.size} items")
+            }
+        }
+    }
+
+    /**
+     * Persist current mascot outfit & inventory to backend.
+     * Called after any outfit/inventory change (equip, buy, badge toggle).
+     */
+    private fun persistMascotState() {
+        val userId = TokenManager.getUserId() ?: return
+
+        // Save to local cache immediately for next quick restore
+        saveToLocalCache()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val request = UpdateProfileRequest(
+                    mascotOutfit = MascotOutfitDto(
+                        head = currentOutfit["head"] ?: "none",
+                        face = currentOutfit["face"] ?: "none",
+                        body = currentOutfit["body"] ?: "none",
+                        badge = currentOutfit["badge"] ?: "none"
+                    ),
+                    inventory = inventory.toList()
+                )
+                val result = repository.updateUserProfile(userId, request)
+                if (result.isSuccess) {
+                    Log.d("ProfileFragment", "Mascot state persisted to server")
+                } else {
+                    Log.w("ProfileFragment", "Failed to persist mascot state: ${result.exceptionOrNull()?.message}")
+                }
+            } catch (e: Exception) {
+                Log.e("ProfileFragment", "Error persisting mascot state: ${e.message}", e)
+            }
+        }
+    }
+
+    private fun saveToLocalCache() {
+        try {
+            val prefs = requireContext().getSharedPreferences("ecogo_mascot", android.content.Context.MODE_PRIVATE)
+            prefs.edit()
+                .putString("outfit_head", currentOutfit["head"])
+                .putString("outfit_face", currentOutfit["face"])
+                .putString("outfit_body", currentOutfit["body"])
+                .putString("outfit_badge", currentOutfit["badge"])
+                .putStringSet("inventory", inventory.toSet())
+                .putInt("points", currentPoints)
+                .apply()
+        } catch (e: Exception) {
+            Log.e("ProfileFragment", "Failed to save local cache: ${e.message}")
+        }
+    }
+
+    private fun restoreFromLocalCache() {
+        try {
+            val prefs = requireContext().getSharedPreferences("ecogo_mascot", android.content.Context.MODE_PRIVATE)
+            currentOutfit["head"] = prefs.getString("outfit_head", "none") ?: "none"
+            currentOutfit["face"] = prefs.getString("outfit_face", "none") ?: "none"
+            currentOutfit["body"] = prefs.getString("outfit_body", "none") ?: "none"
+            currentOutfit["badge"] = prefs.getString("outfit_badge", "none") ?: "none"
+
+            val cachedInventory = prefs.getStringSet("inventory", emptySet()) ?: emptySet()
+            if (cachedInventory.isNotEmpty()) {
+                inventory.clear()
+                inventory.addAll(cachedInventory)
+            }
+
+            currentPoints = prefs.getInt("points", 0)
+
+            updateMascotOutfit()
+            binding.textPoints.text = currentPoints.toString()
+        } catch (e: Exception) {
+            Log.e("ProfileFragment", "Failed to restore local cache: ${e.message}")
+        }
     }
     
     private fun setupUI() {
@@ -95,6 +219,7 @@ class ProfileFragment : Fragment() {
         currentOutfit["badge"] = faculty.outfit.badge
         updateMascotOutfit()
         refreshShopAdapter()
+        persistMascotState()
         Log.d("ProfileFragment", "Equipped faculty outfit: ${faculty.name}")
     }
 
@@ -153,6 +278,7 @@ class ProfileFragment : Fragment() {
                 currentOutfit[item.type] = "none"
                 refreshShopAdapter()
                 updateMascotOutfit()
+                persistMascotState()
                 Log.d("ProfileFragment", "Unequipped ${item.name}")
             }
             // 已拥有 → 装备
@@ -160,6 +286,7 @@ class ProfileFragment : Fragment() {
                 currentOutfit[item.type] = item.id
                 refreshShopAdapter()
                 updateMascotOutfit()
+                persistMascotState()
                 Log.d("ProfileFragment", "Equipped ${item.name}")
             }
             // 未拥有 → 购买并装备
@@ -171,6 +298,7 @@ class ProfileFragment : Fragment() {
                     currentOutfit[item.type] = item.id
                     refreshShopAdapter()
                     updateMascotOutfit()
+                    persistMascotState()
                     showSuccessDialog("Bought & Equipped ${item.name}!", "-${item.cost} pts")
                     
                     // 动画反馈
@@ -261,6 +389,7 @@ class ProfileFragment : Fragment() {
             }
             
             updateMascotOutfit()
+            persistMascotState()
             Log.d("ProfileFragment", "Badge toggled: $badgeId")
         }
     }

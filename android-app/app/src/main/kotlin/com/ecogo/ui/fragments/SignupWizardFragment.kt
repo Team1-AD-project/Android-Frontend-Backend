@@ -13,8 +13,12 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import com.ecogo.R
 import com.ecogo.data.FacultyData
 import com.ecogo.data.MockData
@@ -133,7 +137,53 @@ class SignupWizardFragment : Fragment() {
             email = binding.inputEmail.text.toString()
             nusnetId = binding.inputNusnet.text.toString()
             password = binding.inputPassword.text.toString()
-            showFacultySelection()
+            
+            // Disable button and show loading state
+            binding.btnNextToFaculty.isEnabled = false
+            binding.btnNextToFaculty.text = "Creating Account..."
+            
+            val request = com.ecogo.api.MobileRegisterRequest(
+                userid = nusnetId,
+                password = password,
+                repassword = password,
+                nickname = username,
+                email = email
+            )
+            
+            // Call Register API
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                try {
+                    val apiService = com.ecogo.api.RetrofitClient.apiService
+                    val response = apiService.register(request)
+                    
+                    withContext(Dispatchers.Main) {
+                        binding.btnNextToFaculty.isEnabled = true
+                        binding.btnNextToFaculty.text = "Next: Choose Faculty"
+                        
+                        if (response.success && response.data != null) {
+                            Log.d("DEBUG_SIGNUP", "Step 0 Registration Success: ${response.data.userid}")
+                            Toast.makeText(requireContext(), "Account created! Please complete your profile.", Toast.LENGTH_SHORT).show()
+                            
+                            // Save registration data locally immediately
+                            saveRegistrationData()
+                            
+                            // Proceed to next step
+                            showFacultySelection()
+                        } else {
+                            val msg = response.message
+                            Log.e("DEBUG_SIGNUP", "Registration Failed: $msg")
+                            Toast.makeText(requireContext(), "Registration Failed: $msg", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        Log.e("DEBUG_SIGNUP", "Network Error: ${e.message}")
+                        binding.btnNextToFaculty.isEnabled = true
+                        binding.btnNextToFaculty.text = "Next: Choose Faculty"
+                        Toast.makeText(requireContext(), "Network Error: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
         }
     }
     
@@ -188,6 +238,41 @@ class SignupWizardFragment : Fragment() {
         }
     }
     
+    private fun updateProfileStep(
+        request: com.ecogo.api.UpdateProfileRequest,
+        onSuccess: () -> Unit
+    ) {
+        // Show loading if needed? Ideally keep UI responsive or show small indicator
+        // For wizard flow, we ideally block or show loading on the button
+        
+        Log.d("DEBUG_SIGNUP", "Updating profile for $nusnetId with request: $request")
+        
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val apiService = com.ecogo.api.RetrofitClient.apiService
+                val response = apiService.updateProfile(nusnetId, request)
+                
+                withContext(Dispatchers.Main) {
+                    if (response.success) {
+                        Log.d("DEBUG_SIGNUP", "Profile update success")
+                        onSuccess()
+                    } else {
+                        Log.e("DEBUG_SIGNUP", "Profile update failed: ${response.message}")
+                        Toast.makeText(requireContext(), "Update failed: ${response.message}", Toast.LENGTH_SHORT).show()
+                        // Still allow proceeding? Ideally no, but for smooth UX/prototype maybe yes?
+                        // User requested "call this interface", implying strict flow.
+                        // We will BLOCK on failure to ensure data integrity as per implied requirement.
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Log.e("DEBUG_SIGNUP", "Profile update network error: ${e.message}")
+                    Toast.makeText(requireContext(), "Network error: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     private fun showFacultySelection() {
         currentStep = 1
         
@@ -205,10 +290,16 @@ class SignupWizardFragment : Fragment() {
             selectedFaculty = faculty
             android.util.Log.d("DEBUG_SIGNUP", "Faculty selected: ${faculty.name}")
             
-            // 短暂延迟后自动跳转
-            binding.viewpagerFaculties.postDelayed({
-                showTransportPreference()
-            }, 300)
+             // Call API for Faculty
+            val request = com.ecogo.api.UpdateProfileRequest(
+                faculty = faculty.name // Or map to internal enum if needed, assuming name is fine
+            )
+            
+            updateProfileStep(request) {
+                 binding.viewpagerFaculties.postDelayed({
+                    showTransportPreference()
+                }, 300)
+            }
         }
         
         binding.viewpagerFaculties.adapter = adapter
@@ -233,10 +324,6 @@ class SignupWizardFragment : Fragment() {
         binding.viewpagerFaculties.apply {
             // 设置页面间距
             offscreenPageLimit = 1
-            
-            // 添加页面间距
-            val pageMarginPx = resources.getDimensionPixelOffset(R.dimen.pageMargin)
-            val offsetPx = resources.getDimensionPixelOffset(R.dimen.offset)
             
             setPageTransformer { page, position ->
                 val absPosition = abs(position)
@@ -295,11 +382,22 @@ class SignupWizardFragment : Fragment() {
         }
         
         // Continue按钮
-        binding.layoutTransportPreference.btnContinueTransport.isEnabled = false
-        binding.layoutTransportPreference.btnContinueTransport.alpha = 0.5f
-        binding.layoutTransportPreference.btnContinueTransport.setOnClickListener {
-            Log.d("DEBUG_SIGNUP", "Transport prefs selected: ${transportPrefs.joinToString(", ")}")
-            showCommonLocations()
+         binding.layoutTransportPreference.btnContinueTransport.setOnClickListener {
+             // Prepare API Request
+             val request = com.ecogo.api.UpdateProfileRequest(
+                 preferences = com.ecogo.api.TransportPreferencesWrapper(
+                     preferredTransport = transportPrefs.toList()
+                 )
+             )
+             
+             // Disable button
+             binding.layoutTransportPreference.btnContinueTransport.isEnabled = false
+             binding.layoutTransportPreference.btnContinueTransport.text = "Saving..."
+             
+             updateProfileStep(request) {
+                 binding.layoutTransportPreference.btnContinueTransport.text = "Continue" // Reset text (though we move)
+                 showCommonLocations()
+             }
         }
     }
     
@@ -341,8 +439,19 @@ class SignupWizardFragment : Fragment() {
             dormitory = binding.layoutCommonLocations.inputDorm.text.toString()
             teachingBuilding = binding.layoutCommonLocations.inputBuilding.text.toString()
             studySpot = binding.layoutCommonLocations.inputLibrary.text.toString()
-            Log.d("DEBUG_SIGNUP", "Locations: dorm=$dormitory, building=$teachingBuilding, spot=$studySpot")
-            showInterestsGoals()
+            
+            val request = com.ecogo.api.UpdateProfileRequest(
+                dormitoryOrResidence = dormitory,
+                mainTeachingBuilding = teachingBuilding,
+                favoriteStudySpot = studySpot
+            )
+            
+            binding.layoutCommonLocations.btnContinueLocations.isEnabled = false
+            binding.layoutCommonLocations.btnContinueLocations.text = "Saving..."
+            
+            updateProfileStep(request) {
+                showInterestsGoals()
+            }
         }
     }
     
@@ -395,9 +504,22 @@ class SignupWizardFragment : Fragment() {
         
         // Finish按钮
         binding.layoutInterestsGoals.btnFinishSignup.setOnClickListener {
-            Log.d("DEBUG_SIGNUP", "Interests: ${interests.joinToString(", ")}, Goal: $weeklyGoal")
-            selectedFaculty?.let { faculty ->
-                showMascotReveal(faculty)
+            // Prepare request
+            val request = com.ecogo.api.UpdateProfileRequest(
+                interests = interests.toList(),
+                weeklyGoals = weeklyGoal,
+                newChallenges = notifyChallenges,
+                activityReminders = notifyReminders,
+                friendActivity = notifyFriends
+            )
+            
+            binding.layoutInterestsGoals.btnFinishSignup.isEnabled = false
+            binding.layoutInterestsGoals.btnFinishSignup.text = "Finalizing..."
+            
+            updateProfileStep(request) {
+                 selectedFaculty?.let { faculty ->
+                    showMascotReveal(faculty)
+                }
             }
         }
     }
@@ -493,39 +615,21 @@ class SignupWizardFragment : Fragment() {
     }
     
     private fun completeSignup(faculty: FacultyData) {
-        Log.d("DEBUG_SIGNUP", "=== Complete Registration Data ===")
-        Log.d("DEBUG_SIGNUP", "Username: $username")
-        Log.d("DEBUG_SIGNUP", "Email: $email")
-        Log.d("DEBUG_SIGNUP", "NUSNET: $nusnetId")
-        Log.d("DEBUG_SIGNUP", "Password saved: ${password.isNotEmpty()}")
-        Log.d("DEBUG_SIGNUP", "Faculty: ${faculty.name}")
-        Log.d("DEBUG_SIGNUP", "Transport: ${transportPrefs.joinToString(", ")}")
-        Log.d("DEBUG_SIGNUP", "Dorm: $dormitory")
-        Log.d("DEBUG_SIGNUP", "Building: $teachingBuilding")
-        Log.d("DEBUG_SIGNUP", "Study Spot: $studySpot")
-        Log.d("DEBUG_SIGNUP", "Other Locations: ${otherLocations.joinToString(", ")}")
-        Log.d("DEBUG_SIGNUP", "Interests: ${interests.joinToString(", ")}")
-        Log.d("DEBUG_SIGNUP", "Weekly Goal: $weeklyGoal")
-        Log.d("DEBUG_SIGNUP", "Notifications: challenges=$notifyChallenges, reminders=$notifyReminders, friends=$notifyFriends")
+        Log.d("DEBUG_SIGNUP", "=== Completing Signup Wizard ===")
         
-        // 保存注册数据
+        // Save remaining profile data (Preferences)
+        selectedFaculty = faculty // ensured
         saveRegistrationData()
-        
-        // 标记为首次登录（用于触发功能引导）
         saveFirstLoginStatus(true)
         
-        Toast.makeText(requireContext(), "Registration successful! Please login with your credentials 🎉", Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), "Profile setup complete! Please login.", Toast.LENGTH_LONG).show()
         
-        // 延迟一下，让Toast消息能显示，然后跳转到登录页面
+        // Navigate to Login
         binding.root.postDelayed({
             try {
-                Log.d("DEBUG_SIGNUP", "Attempting navigate to login")
-                // 跳转到登录页面，清除back stack
                 findNavController().navigate(R.id.loginFragment)
-                Log.d("DEBUG_SIGNUP", "Navigate to login completed")
             } catch (e: Exception) {
-                Log.e("DEBUG_SIGNUP", "Navigation failed: ${e.message}", e)
-                Toast.makeText(requireContext(), "❌ 导航失败: ${e.message}", Toast.LENGTH_LONG).show()
+                Log.e("DEBUG_SIGNUP", "Navigation failed: ${e.message}")
             }
         }, 1000)
     }

@@ -3,7 +3,6 @@ package com.ecogo.ui.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -51,30 +50,27 @@ class ChallengeAdapter(
             icon.text = challenge.icon
             title.text = challenge.title
             description.text = challenge.description
-            
-            // Progress
-            val progressPercent = if (challenge.target > 0) {
-                ((challenge.current.toFloat() / challenge.target) * 100).toInt()
-            } else 0
-            
-            progress.max = challenge.target
-            progress.progress = challenge.current
-            progressText.text = "${challenge.current} / ${challenge.target} (${progressPercent}%)"
-            
+
+            // 目标值显示（用户进度需要从API单独获取）
+            val targetInt = challenge.target.toInt()
+            progress.max = targetInt
+            progress.progress = 0 // 用户具体进度需要调用 getChallengeProgress API
+            progressText.text = "Target: $targetInt ${getTargetUnit(challenge.type)}"
+
             // Reward
             reward.text = "+${challenge.reward} points"
-            
+
             // Participants
             participants.text = "${challenge.participants} participants"
-            
-            // Type tag
+
+            // Type tag - 显示挑战类型
             typeTag.text = when (challenge.type) {
-                "INDIVIDUAL" -> "Individual"
-                "TEAM" -> "Team"
-                "FACULTY" -> "Faculty"
+                "GREEN_TRIPS_COUNT" -> "Trip Count"
+                "GREEN_TRIPS_DISTANCE" -> "Distance"
+                "CARBON_SAVED" -> "Carbon Saved"
                 else -> challenge.type
             }
-            
+
             // Status badge
             when (challenge.status) {
                 "ACTIVE" -> {
@@ -89,6 +85,18 @@ class ChallengeAdapter(
                     statusBadge.visibility = View.VISIBLE
                     statusBadge.text = "Expired"
                 }
+            }
+        }
+
+        /**
+         * 根据挑战类型获取单位
+         */
+        private fun getTargetUnit(type: String): String {
+            return when (type) {
+                "GREEN_TRIPS_COUNT" -> "trips"
+                "GREEN_TRIPS_DISTANCE" -> "km"
+                "CARBON_SAVED" -> "g CO₂"
+                else -> ""
             }
         }
     }

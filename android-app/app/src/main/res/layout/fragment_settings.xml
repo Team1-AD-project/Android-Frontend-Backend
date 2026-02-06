@@ -40,7 +40,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:text="编辑个人资料"
+                    android:text="@string/edit_profile_title"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp" />
 
