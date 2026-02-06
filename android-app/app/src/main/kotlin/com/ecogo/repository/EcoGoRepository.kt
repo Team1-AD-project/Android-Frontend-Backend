@@ -1,6 +1,7 @@
 package com.ecogo.repository
 
 import com.ecogo.api.*
+import com.ecogo.auth.TokenManager.isVipActive
 import com.ecogo.data.Activity
 import com.ecogo.data.BusRoute
 import com.ecogo.data.CarbonFootprint
@@ -14,6 +15,7 @@ import com.ecogo.data.Faculty
 import com.ecogo.data.Friend
 import com.ecogo.data.FriendActivity
 import com.ecogo.data.HistoryItem
+import com.ecogo.data.MobileOrderHistoryData
 import com.ecogo.data.MockData
 import com.ecogo.data.Notification
 import com.ecogo.data.Product
@@ -22,12 +24,15 @@ import com.ecogo.data.RecommendationRequest
 import com.ecogo.data.RecommendationResponse
 import com.ecogo.data.RedeemRequest
 import com.ecogo.data.RedeemResponse
+import com.ecogo.data.UserVoucher
 import com.ecogo.data.Voucher
 import com.ecogo.data.VoucherRedeemRequest
 import com.ecogo.data.WalkingRoute
 import com.ecogo.data.Weather
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import com.ecogo.data.PointsCurrentData
+
 
 /**
  * EcoGo 数据仓库
@@ -158,7 +163,47 @@ class EcoGoRepository {
     }
     
     // ==================== 商品相关 ====================
-    
+    suspend fun getCurrentPoints(): Result<PointsCurrentData> = withContext(Dispatchers.IO) {
+        return@withContext try {
+            val resp = api.getCurrentPoints()
+            if (resp.code == 200 && resp.data != null) {
+                Result.success(resp.data)
+            } else {
+                Result.failure(Exception(resp.message ?: "Failed to load points"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getUserOrderHistoryMobile(
+        userId: String,
+        status: String? = null,
+        page: Int = 1,
+        size: Int = 20
+    ): Result<MobileOrderHistoryData> = withContext(Dispatchers.IO) {
+        try {
+            val response = api.getUserOrderHistoryMobile(
+                userId = userId,
+                status = status,
+                page = page,
+                size = size
+            )
+
+            // ✅ 统一后的 code/message/data 结构
+            if (response.code == 200 && response.data != null) {
+                Result.success(response.data)
+            } else {
+                Result.failure(Exception(response.message ?: "Unknown error"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+
+
+
     /**
      * 获取所有商品（带分页）
      */
@@ -166,10 +211,19 @@ class EcoGoRepository {
         page: Int = 1,
         size: Int = 20,
         category: String? = null,
-        keyword: String? = null
+        keyword: String? = null,
+        isForRedemption: Boolean? = null,
+        isVipActive: Boolean? = null
     ): Result<GoodsResponse> = withContext(Dispatchers.IO) {
         try {
-            val response = api.getAllGoods(page, size, category, keyword, null)
+            val response = api.getAllGoods(
+                page = page,
+                size = size,
+                category = category,
+                keyword = keyword,
+                isForRedemption = isForRedemption,
+                isVipActive = isVipActive
+            )
             if (response.success && response.data != null) {
                 Result.success(response.data)
             } else {
@@ -179,7 +233,8 @@ class EcoGoRepository {
             Result.failure(e)
         }
     }
-    
+
+
     /**
      * 获取可兑换商品
      */
@@ -404,18 +459,50 @@ class EcoGoRepository {
         }
     }
 
-    suspend fun getVouchers(): Result<List<Voucher>> = withContext(Dispatchers.IO) {
-        try {
-            val response = api.getVouchers()
-            if (response.success && response.data != null) {
-                Result.success(response.data)
-            } else {
-                Result.failure(Exception(response.message))
+    suspend fun getVouchers(isVipActive: Boolean? = null): Result<List<Voucher>> =
+        withContext(Dispatchers.IO) {
+            try {
+                // ✅ 改为调用你后端的 coupons 接口
+                val response = api.getGoodsCoupons(isVipActive)
+
+                if (response.success && response.data != null) {
+                    Result.success(response.data)
+                } else {
+                    Result.failure(Exception(response.message))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
             }
-        } catch (e: Exception) {
-            Result.failure(e)
         }
-    }
+
+    suspend fun getUserVouchers(userId: String, tab: String): Result<List<UserVoucher>> =
+        withContext(Dispatchers.IO) {
+            try {
+                val response = api.getUserVouchers(userId, tab)
+                if (response.success && response.data != null) {
+                    Result.success(response.data)
+                } else {
+                    Result.failure(Exception(response.message))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+
+    suspend fun getUserVoucherDetail(userVoucherId: String): Result<UserVoucher> =
+        withContext(Dispatchers.IO) {
+            try {
+                val response = api.getUserVoucherById(userVoucherId)
+                if (response.success && response.data != null) {
+                    Result.success(response.data)
+                } else {
+                    Result.failure(Exception(response.message))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+
 
     suspend fun redeemVoucher(request: VoucherRedeemRequest): Result<String> = withContext(Dispatchers.IO) {
         try {

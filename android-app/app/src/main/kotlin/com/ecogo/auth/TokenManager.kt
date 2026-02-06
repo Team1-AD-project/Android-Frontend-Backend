@@ -24,7 +24,22 @@ object TokenManager {
         applicationContext = context.applicationContext
         prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     }
-    
+
+    private const val KEY_VIP_ACTIVE = "vip_active"
+
+    fun saveToken(token: String, userId: String, username: String, vipActive: Boolean) {
+        prefs.edit().apply {
+            putString(KEY_TOKEN, token)
+            putString(KEY_USER_ID, userId)
+            putString(KEY_USERNAME, username)
+            putBoolean(KEY_VIP_ACTIVE, vipActive)
+            apply()
+        }
+    }
+
+    fun isVipActive(): Boolean =
+        prefs.getBoolean(KEY_VIP_ACTIVE, false)
+
     /**
      * 保存 Token 和用户信息
      */

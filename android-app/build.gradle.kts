@@ -36,47 +36,4 @@ val coreJar = sdkDir?.let { java.io.File(it, "platforms/android-34/core-for-syst
 val jlinkExe = javaHome?.let { java.io.File(it, "bin/jlink.exe") }
 val gradleCacheDir = gradleUserHome?.let { java.io.File(it) }
 
-debugLog(
-    hypothesisId = "H4",
-    location = "android-app/build.gradle.kts:env",
-    message = "Gradle JVM info",
-    data = mapOf(
-        "javaHome" to javaHome,
-        "javaVersion" to javaVersion,
-        "javaVendor" to System.getProperty("java.vendor")
-    )
-)
 
-debugLog(
-    hypothesisId = "H1",
-    location = "android-app/build.gradle.kts:sdk",
-    message = "Android SDK core-for-system-modules.jar info",
-    data = mapOf(
-        "sdkDir" to sdkDir,
-        "coreJarExists" to (coreJar?.exists() ?: false),
-        "coreJarSize" to (coreJar?.length() ?: -1L),
-        "coreJarPath" to (coreJar?.absolutePath ?: "")
-    )
-)
-
-debugLog(
-    hypothesisId = "H2",
-    location = "android-app/build.gradle.kts:jlink",
-    message = "JLink executable info",
-    data = mapOf(
-        "jlinkPath" to (jlinkExe?.absolutePath ?: ""),
-        "jlinkExists" to (jlinkExe?.exists() ?: false)
-    )
-)
-
-debugLog(
-    hypothesisId = "H3",
-    location = "android-app/build.gradle.kts:gradle-cache",
-    message = "Gradle cache directory info",
-    data = mapOf(
-        "gradleUserHome" to gradleUserHome,
-        "cacheExists" to (gradleCacheDir?.exists() ?: false),
-        "cacheWritable" to (gradleCacheDir?.canWrite() ?: false)
-    )
-)
-// #endregion
