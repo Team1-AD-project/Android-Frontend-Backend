@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Card Styles -->
+    <style name="CardStyle" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="android:layout_marginBottom">12dp</item>
+    </style>
+
+    <style name="CardStyle.Hero">
+        <item name="cardCornerRadius">24dp</item>
+        <item name="cardElevation">10dp</item>
+    </style>
+
+    <!-- Text Styles matching app(12) -->
+    <style name="TextAppearance.EcoGo.Title" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+    </style>
+
+    <style name="TextAppearance.EcoGo.Subtitle" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+    </style>
+
+    <style name="TextAppearance.EcoGo.Stat" parent="TextAppearance.AppCompat.Display1">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+    </style>
+
+    <style name="TextAppearance.EcoGo.StatLabel" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+    </style>
+</resources>

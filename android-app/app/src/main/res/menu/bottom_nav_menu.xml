@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/homeFragment"
+        android:icon="@drawable/ic_navigation"
+        android:title="@string/nav_home" />
+    <item
+        android:id="@+id/routesFragment"
+        android:icon="@drawable/ic_route"
+        android:title="@string/nav_routes" />
+    <item
+        android:id="@+id/communityFragment"
+        android:icon="@drawable/ic_users"
+        android:title="@string/nav_community" />
+    <item
+        android:id="@+id/chatFragment"
+        android:icon="@drawable/ic_message"
+        android:title="@string/nav_chat" />
+    <item
+        android:id="@+id/profileFragment"
+        android:icon="@drawable/ic_user"
+        android:title="@string/nav_profile" />
+</menu>

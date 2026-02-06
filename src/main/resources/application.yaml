@@ -43,3 +43,12 @@ info:
     name: EcoGo
     description: Eco-friendly carbon tracking application
     version: 1.0.0
+
+# Stripe configuration
+stripe:
+  api:
+    key: ${STRIPE_SECRET_KEY:sk_test_YOUR_SECRET_KEY}
+  publishable:
+    key: ${STRIPE_PUBLISHABLE_KEY:pk_test_YOUR_PUBLISHABLE_KEY}
+  webhook:
+    secret: ${STRIPE_WEBHOOK_SECRET:whsec_YOUR_WEBHOOK_SECRET}

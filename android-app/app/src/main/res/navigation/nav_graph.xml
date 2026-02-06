@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.ecogo.ui.fragments.LoginFragment"
+        android:label="Login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_login_to_signup"
+            app:destination="@id/signupWizardFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_login_to_onboarding"
+            app:destination="@id/onboardingFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_login_to_home"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/signupWizardFragment"
+        android:name="com.ecogo.ui.fragments.SignupWizardFragment"
+        android:label="Signup Wizard"
+        tools:layout="@layout/fragment_signup_wizard">
+        <action
+            android:id="@+id/action_signup_to_home"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/onboardingFragment"
+        android:name="com.ecogo.ui.fragments.OnboardingFragment"
+        android:label="Onboarding"
+        tools:layout="@layout/fragment_onboarding">
+        <action
+            android:id="@+id/action_onboarding_to_home"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/onboardingFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.ecogo.ui.fragments.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_home_to_routePlanner"
+            app:destination="@id/routePlannerFragment" />
+        <action
+            android:id="@+id/action_home_to_activityDetail"
+            app:destination="@id/activityDetailFragment" />
+        <action
+            android:id="@+id/action_home_to_voucher"
+            app:destination="@id/voucherFragment" />
+        <action
+            android:id="@+id/action_home_to_challenges"
+            app:destination="@id/challengesFragment" />
+        <action
+            android:id="@+id/action_home_to_checkInCalendar"
+            app:destination="@id/checkInCalendarFragment" />
+        <action
+            android:id="@+id/action_home_to_monthlyHighlights"
+            app:destination="@id/monthlyHighlightsFragment" />
+    </fragment>
+
+    <!-- Home V2 Fragment (with Banner feature) -->
+    <fragment
+        android:id="@+id/homeFragmentV2"
+        android:name="com.ecogo.ui.fragments.HomeFragmentV2"
+        android:label="Home V2"
+        tools:layout="@layout/fragment_home_v2">
+        <action
+            android:id="@+id/action_homeV2_to_routePlanner"
+            app:destination="@id/routePlannerFragment" />
+        <action
+            android:id="@+id/action_homeV2_to_activityDetail"
+            app:destination="@id/activityDetailFragment" />
+        <action
+            android:id="@+id/action_homeV2_to_voucher"
+            app:destination="@id/voucherFragment" />
+        <action
+            android:id="@+id/action_homeV2_to_challenges"
+            app:destination="@id/challengesFragment" />
+        <action
+            android:id="@+id/action_homeV2_to_checkInCalendar"
+            app:destination="@id/checkInCalendarFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/routesFragment"
+        android:name="com.ecogo.ui.fragments.RoutesFragment"
+        android:label="Routes"
+        tools:layout="@layout/fragment_routes">
+        <action
+            android:id="@+id/action_routes_to_routePlanner"
+            app:destination="@id/routePlannerFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/communityFragment"
+        android:name="com.ecogo.ui.fragments.CommunityFragment"
+        android:label="Community"
+        tools:layout="@layout/fragment_community">
+        <action
+            android:id="@+id/action_community_to_challenges"
+            app:destination="@id/challengesFragment" />
+        <action
+            android:id="@+id/action_community_to_feed"
+            app:destination="@id/communityFeedFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/communityFeedFragment"
+        android:name="com.ecogo.ui.fragments.CommunityFeedFragment"
+        android:label="社区动态"
+        tools:layout="@layout/fragment_community_feed">
+        <action
+            android:id="@+id/action_communityFeed_to_activityDetail"
+            app:destination="@id/activityDetailFragment" />
+        <action
+            android:id="@+id/action_communityFeed_to_profile"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_communityFeed_to_challengeDetail"
+            app:destination="@id/challengeDetailFragment" />
+        <action
+            android:id="@+id/action_communityFeed_to_tripSummary"
+            app:destination="@id/tripSummaryFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.ecogo.ui.fragments.ChatFragment"
+        android:label="Chat"
+        tools:layout="@layout/fragment_chat">
+        <action
+            android:id="@+id/action_chat_to_activities"
+            app:destination="@id/activitiesFragment" />
+        <action
+            android:id="@+id/action_chat_to_routePlanner"
+            app:destination="@id/routePlannerFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.ecogo.ui.fragments.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profile_to_settings"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_profile_to_share"
+            app:destination="@id/shareImpactFragment" />
+        <action
+            android:id="@+id/action_profile_to_voucher"
+            app:destination="@id/voucherFragment" />
+        <action
+            android:id="@+id/action_profile_to_shop"
+            app:destination="@id/shopFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.ecogo.ui.fragments.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_settings_to_profile"
+            app:destination="@id/profileFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/voucherFragment"
+        android:name="com.ecogo.ui.fragments.VoucherFragment"
+        android:label="Vouchers"
+        tools:layout="@layout/fragment_voucher">
+        <action
+            android:id="@+id/action_voucher_to_voucherDetail"
+            app:destination="@id/voucherDetailFragment" />
+        <action
+            android:id="@+id/action_voucher_to_itemDetail"
+            app:destination="@id/itemDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/voucherDetailFragment"
+        android:name="com.ecogo.ui.fragments.VoucherDetailFragment"
+        android:label="兑换券详情"
+        tools:layout="@layout/fragment_voucher_detail">
+        <argument
+            android:name="voucherId"
+            android:defaultValue=""
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/activitiesFragment"
+        android:name="com.ecogo.ui.fragments.ActivitiesFragment"
+        android:label="Activities"
+        tools:layout="@layout/fragment_activities">
+        <action
+            android:id="@+id/action_activities_to_activityDetail"
+            app:destination="@id/activityDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/activityDetailFragment"
+        android:name="com.ecogo.ui.fragments.ActivityDetailFragment"
+        android:label="活动详情"
+        tools:layout="@layout/fragment_activity_detail">
+        <argument
+            android:name="activityId"
+            android:defaultValue=""
+            app:argType="string" />
+        <action
+            android:id="@+id/action_activityDetail_to_routePlanner"
+            app:destination="@id/routePlannerFragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/friendsFragment"
+        android:name="com.ecogo.ui.fragments.FriendsFragment"
+        android:label="Friends"
+        tools:layout="@layout/fragment_friends">
+        <action
+            android:id="@+id/action_friends_to_chat"
+            app:destination="@id/chatFragment" />
+        <action
+            android:id="@+id/action_friends_to_profile"
+            app:destination="@id/profileFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/shopFragment"
+        android:name="com.ecogo.ui.fragments.ShopFragment"
+        android:label="Shop"
+        tools:layout="@layout/fragment_shop">
+        <action
+            android:id="@+id/action_shop_to_itemDetail"
+            app:destination="@id/itemDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/itemDetailFragment"
+        android:name="com.ecogo.ui.fragments.ItemDetailFragment"
+        android:label="商品详情"
+        tools:layout="@layout/fragment_item_detail">
+        <argument
+            android:name="itemId"
+            android:defaultValue=""
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/locationSearchFragment"
+        android:name="com.ecogo.ui.fragments.navigation.LocationSearchFragment"
+        android:label="搜索位置"
+        tools:layout="@layout/fragment_location_search">
+        <argument
+            android:name="isSelectingOrigin"
+            android:defaultValue="true"
+            app:argType="boolean" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/routePlannerFragment"
+        android:name="com.ecogo.ui.fragments.navigation.RoutePlannerFragment"
+        android:label="路线规划"
+        tools:layout="@layout/fragment_route_planner">
+        <action
+            android:id="@+id/action_routePlanner_to_locationSearch"
+            app:destination="@id/locationSearchFragment" />
+        <action
+            android:id="@+id/action_routePlanner_to_tripStart"
+            app:destination="@id/tripStartFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/tripStartFragment"
+        android:name="com.ecogo.ui.fragments.navigation.TripStartFragment"
+        android:label="行程开始"
+        tools:layout="@layout/fragment_trip_start">
+        <action
+            android:id="@+id/action_tripStart_to_inProgress"
+            app:destination="@id/tripInProgressFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/tripInProgressFragment"
+        android:name="com.ecogo.ui.fragments.navigation.TripInProgressFragment"
+        android:label="行程进行中"
+        tools:layout="@layout/fragment_trip_in_progress">
+        <action
+            android:id="@+id/action_inProgress_to_summary"
+            app:destination="@id/tripSummaryFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/tripSummaryFragment"
+        android:name="com.ecogo.ui.fragments.navigation.TripSummaryFragment"
+        android:label="行程完成"
+        tools:layout="@layout/fragment_trip_summary">
+        <action
+            android:id="@+id/action_summary_to_leaderboard"
+            app:destination="@id/communityFragment" />
+        <action
+            android:id="@+id/action_summary_to_voucher"
+            app:destination="@id/voucherFragment" />
+        <action
+            android:id="@+id/action_summary_to_routePlanner"
+            app:destination="@id/routePlannerFragment" />
+        <action
+            android:id="@+id/action_summary_to_share"
+            app:destination="@id/shareImpactFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/challengesFragment"
+        android:name="com.ecogo.ui.fragments.ChallengesFragment"
+        android:label="挑战"
+        tools:layout="@layout/fragment_challenges">
+        <action
+            android:id="@+id/action_challenges_to_challengeDetail"
+            app:destination="@id/challengeDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/challengeDetailFragment"
+        android:name="com.ecogo.ui.fragments.ChallengeDetailFragment"
+        android:label="挑战详情"
+        tools:layout="@layout/fragment_challenge_detail">
+        <argument
+            android:name="challengeId"
+            android:defaultValue=""
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/shareImpactFragment"
+        android:name="com.ecogo.ui.fragments.ShareImpactFragment"
+        android:label="分享成就"
+        tools:layout="@layout/fragment_share_impact" />
+
+    <fragment
+        android:id="@+id/checkInCalendarFragment"
+        android:name="com.ecogo.ui.fragments.CheckInCalendarFragment"
+        android:label="每日签到"
+        tools:layout="@layout/fragment_check_in_calendar" />
+
+    <fragment
+        android:id="@+id/monthlyHighlightsFragment"
+        android:name="com.ecogo.ui.fragments.MonthlyHighlightsFragment"
+        android:label="Monthly Highlights"
+        tools:layout="@layout/fragment_monthly_highlights">
+        <action
+            android:id="@+id/action_monthlyHighlights_to_activityDetail"
+            app:destination="@id/activityDetailFragment" />
+    </fragment>
+
+</navigation>

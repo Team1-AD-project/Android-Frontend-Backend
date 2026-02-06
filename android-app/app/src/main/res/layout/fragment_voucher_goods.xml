@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <!-- 商品分类筛选 -->
+    <HorizontalScrollView
+        android:id="@+id/scroll_categories"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_categories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:chipSpacing="8dp"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:checked="true"
+                android:text="All Items"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_food"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="🍔 Food"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_beverage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="☕ Beverage"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_merchandise"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="🎁 Merchandise"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_service"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="🎫 Service"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
+
+    <!-- 商品列表 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_goods"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scroll_categories" />
+
+    <!-- 加载中指示器 -->
+    <ProgressBar
+        android:id="@+id/progress_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

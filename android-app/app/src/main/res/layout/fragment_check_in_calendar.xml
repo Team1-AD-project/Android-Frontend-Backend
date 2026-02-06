@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/surface"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/primary_light"
+            app:navigationIcon="@drawable/ic_back"
+            app:title="Daily Check-In"
+            app:titleTextColor="@color/text_primary" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- 统计卡片 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_hero_gradient"
+                    android:orientation="horizontal"
+                    android:padding="20dp">
+
+                    <!-- 连续签到 -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/text_consecutive_days"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="7"
+                            android:textColor="@color/text_white"
+                            android:textSize="28sp"
+                            android:textStyle="bold"
+                            tools:text="7" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:alpha="0.9"
+                            android:text="Consecutive"
+                            android:textColor="@color/text_white"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginEnd="12dp"
+                        android:alpha="0.3"
+                        android:background="@color/text_white" />
+
+                    <!-- 累计签到 -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/text_total_check_ins"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="45"
+                            android:textColor="@color/text_white"
+                            android:textSize="28sp"
+                            android:textStyle="bold"
+                            tools:text="45" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:alpha="0.9"
+                            android:text="Total"
+                            android:textColor="@color/text_white"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginEnd="12dp"
+                        android:alpha="0.3"
+                        android:background="@color/text_white" />
+
+                    <!-- 本月签到 -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/text_month_check_ins"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="12"
+                            android:textColor="@color/text_white"
+                            android:textSize="28sp"
+                            android:textStyle="bold"
+                            tools:text="12" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:alpha="0.9"
+                            android:text="This Month"
+                            android:textColor="@color/text_white"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 日历卡片 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- 月份导航 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            android:id="@+id/button_previous_month"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Previous Month"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_back"
+                            app:tint="@color/text_secondary" />
+
+                        <TextView
+                            android:id="@+id/text_month_year"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="二月 2026"
+                            android:textColor="@color/text_primary"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            tools:text="二月 2026" />
+
+                        <ImageButton
+                            android:id="@+id/button_next_month"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Next Month"
+                            android:padding="8dp"
+                            android:rotation="180"
+                            android:src="@drawable/ic_back"
+                            app:tint="@color/text_secondary" />
+                    </LinearLayout>
+
+                    <!-- 日历网格 -->
+                    <LinearLayout
+                        android:id="@+id/calendar_grid"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 选中日期信息 -->
+            <LinearLayout
+                android:id="@+id/layout_date_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/card_background"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_check"
+                        app:tint="@color/primary" />
+
+                    <TextView
+                        android:id="@+id/text_selected_date"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:text="二月 15日"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        tools:text="二月 15日" />
+
+                    <TextView
+                        android:id="@+id/text_check_in_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Checked In · Earned 10 points"
+                        android:textColor="@color/primary"
+                        android:textSize="13sp"
+                        tools:text="Checked In · Earned 10 points" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- 签到按钮 -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_check_in"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="24dp"
+                android:text="Check In Now"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/primary"
+                app:cornerRadius="16dp"
+                app:icon="@drawable/ic_calendar_check"
+                app:iconGravity="textStart"
+                app:iconSize="24dp" />
+
+            <!-- 签到规则说明 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@color/primary_light"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Check-In Rules"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:lineSpacingExtra="4dp"
+                        android:text="• Daily check-in earns 10 points\n• 7 consecutive days bonus: 50 points\n• 30 consecutive days bonus: 200 points\n• Monthly perfect attendance earns exclusive badge"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- 签到成功提示 -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/layout_success"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:layout_margin="16dp"
+        android:visibility="gone"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="8dp"
+        tools:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#DCFCE7"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_check"
+                app:tint="#16A34A" />
+
+            <TextView
+                android:id="@+id/text_success_message"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:text="Check-in successful! Earned 10 points"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="Check-in successful! Earned 10 points" />
+
+            <ImageButton
+                android:id="@+id/button_close_success"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Close"
+                android:padding="4dp"
+                android:src="@drawable/ic_close"
+                app:tint="@color/text_secondary" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

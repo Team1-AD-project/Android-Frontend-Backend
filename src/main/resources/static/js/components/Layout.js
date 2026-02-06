@@ -49,6 +49,10 @@ const Layout = {
                             <span class="icon">${Icons.calendar}</span>
                             <span>Activities</span>
                         </a>
+                        <a href="#/vouchers" class="nav-item ${activeNav === 'vouchers' ? 'active' : ''}">
+                            <span class="icon">🎫</span>
+                            <span>Vouchers</span>
+                        </a>
                         <a href="#/leaderboard" class="nav-item ${activeNav === 'leaderboard' ? 'active' : ''}">
                             <span class="icon">${Icons.trophy}</span>
                             <span>Leaderboard</span>
@@ -111,6 +115,7 @@ const Layout = {
             'dashboard': 'Dashboard',
             'ads': 'Advertisements',
             'activities': 'Activities',
+            'vouchers': 'Vouchers',
             'leaderboard': 'Leaderboard',
             'users': 'User Management',
             'carbon': 'Carbon Credits',

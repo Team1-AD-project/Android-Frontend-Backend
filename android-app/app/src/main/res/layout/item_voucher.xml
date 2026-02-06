@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="4dp"
+    app:strokeColor="#E5E7EB"
+    app:strokeWidth="1dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- 左侧品牌图标区域 -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_icon"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/text_icon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="☕"
+                android:textSize="40sp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- 优惠券状态标签（可选） -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="false"
+            android:text="🔥 Popular"
+            android:textColor="#DC2626"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:chipBackgroundColor="#FEE2E2"
+            app:chipMinHeight="24dp"
+            app:chipStartPadding="8dp"
+            app:chipEndPadding="8dp"
+            app:layout_constraintStart_toStartOf="@id/card_icon"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 优惠券信息区域 -->
+        <LinearLayout
+            android:id="@+id/layout_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="12dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@id/card_icon"
+            app:layout_constraintEnd_toStartOf="@id/layout_price"
+            app:layout_constraintStart_toEndOf="@id/card_icon"
+            app:layout_constraintTop_toTopOf="@id/card_icon">
+
+            <TextView
+                android:id="@+id/text_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="1"
+                android:text="$10 Starbucks"
+                android:textColor="@color/text_primary"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/text_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:ellipsize="end"
+                android:lineSpacingExtra="2dp"
+                android:maxLines="2"
+                android:text="Valid at all outlets"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- 价格和按钮区域 -->
+        <LinearLayout
+            android:id="@+id/layout_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@id/card_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/card_icon">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_points_badge"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⭐"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/text_cost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="500"
+                    android:textColor="@color/primary"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_redeem"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginTop="6dp"
+                android:fontFamily="sans-serif-medium"
+                android:minWidth="88dp"
+                android:paddingHorizontal="16dp"
+                android:text="Redeem"
+                android:textAllCaps="false"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/primary"
+                app:cornerRadius="20dp"
+                app:elevation="2dp" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

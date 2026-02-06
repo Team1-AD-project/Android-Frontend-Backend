@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <!-- 标题 -->
+    <TextView
+        android:id="@+id/text_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="EcoGo Shop"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 余额卡片 -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_balance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_title">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Your Points"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary" />
+                <TextView
+                    android:id="@+id/text_points"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1,250 pts"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="16dp"
+                android:background="@color/text_secondary" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cash Balance"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary" />
+                <TextView
+                    android:id="@+id/text_cash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$50.00 SGD"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#2196F3" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- 分类标签 -->
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chip_group_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:singleSelection="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_balance">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/tab_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="All"
+            android:checked="true"
+            style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/tab_vouchers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Vouchers"
+            style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/tab_goods"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Goods"
+            style="@style/Widget.MaterialComponents.Chip.Choice" />
+    </com.google.android.material.chip.ChipGroup>
+
+    <!-- 商品列表 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_products"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chip_group_filter" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

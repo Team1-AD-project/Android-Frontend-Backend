@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SplashActivity">
+
+    <!-- Ad Image Placeholder -->
+    <ImageView
+        android:id="@+id/imgAd"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_splash_ad_placeholder"
+        android:background="#E0F2F1"
+        tools:ignore="ContentDescription" />
+
+    <!-- Skip Button Container -->
+    <LinearLayout
+        android:id="@+id/btnSkip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/bg_skip_button"
+        android:paddingStart="12dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="6dp"
+        android:orientation="horizontal"
+        android:elevation="4dp"
+        android:clickable="true"
+        android:focusable="true">
+
+        <TextView
+            android:id="@+id/tvSkipText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="跳过 3"
+            android:textSize="14sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</FrameLayout>

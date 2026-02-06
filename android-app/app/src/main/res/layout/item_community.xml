@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/text_rank"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:fontFamily="sans-serif-black"
+            android:gravity="center"
+            android:text="#1"
+            android:textColor="@color/primary"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:text="School of Computing"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/badge_background">
+
+                <View
+                    android:id="@+id/view_progress"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/primary" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:gravity="end"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_points"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-black"
+                android:text="4520"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/text_change"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+12%"
+                android:textColor="#16A34A"
+                android:textSize="10sp" />
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

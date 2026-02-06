@@ -28,6 +28,9 @@ public class Goods {
     private Integer redemptionLimit = -1;         // 每人兑换限制（-1表示无限制）
     private Integer totalRedemptionCount = 0;     // 总兑换次数
     
+    // 现金购买相关字段
+    private Double cashPrice;                     // 现金购买价格（SGD）
+    
     // 构造函数
     public Goods() {
         this.createdAt = new Date();
@@ -93,4 +96,7 @@ public class Goods {
     
     public Integer getTotalRedemptionCount() { return totalRedemptionCount; }
     public void setTotalRedemptionCount(Integer totalRedemptionCount) { this.totalRedemptionCount = totalRedemptionCount; }
+    
+    public Double getCashPrice() { return cashPrice; }
+    public void setCashPrice(Double cashPrice) { this.cashPrice = cashPrice; }
 }

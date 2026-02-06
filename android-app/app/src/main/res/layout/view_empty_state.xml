@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="48dp">
+
+    <!-- 小狮子展示 -->
+    <com.ecogo.ui.views.MascotLionView
+        android:id="@+id/mascot_empty"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginBottom="24dp" />
+
+    <!-- 标题 -->
+    <TextView
+        android:id="@+id/text_empty_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Data"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:layout_marginBottom="8dp" />
+
+    <!-- 描述 -->
+    <TextView
+        android:id="@+id/text_empty_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="There's nothing here yet"
+        android:textSize="14sp"
+        android:textColor="@color/text_secondary"
+        android:gravity="center"
+        android:layout_marginBottom="24dp" />
+
+    <!-- 操作按钮（可选） -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_action"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:text="Retry"
+        android:visibility="gone"
+        style="@style/Widget.Material3.Button.OutlinedButton" />
+
+</LinearLayout>

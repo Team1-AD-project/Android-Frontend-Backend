@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp">
+
+        <LinearLayout
+            android:id="@+id/layout_logo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="80dp"
+            android:background="@drawable/badge_background"
+            android:elevation="10dp"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🦁"
+                android:textSize="50sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="sans-serif-black"
+            android:text="@string/app_name"
+            android:textColor="@color/primary"
+            android:textSize="28sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_logo" />
+
+        <TextView
+            android:id="@+id/text_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/login_subtitle"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_title" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_layout_nusnet"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:hint="@string/login_nusnet_id"
+            app:boxStrokeColor="@color/primary"
+            app:hintTextColor="@color/primary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_subtitle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_nusnet_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/text_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_layout_password"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/login_password"
+            app:boxStrokeColor="@color/primary"
+            app:endIconMode="password_toggle"
+            app:hintTextColor="@color/primary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/input_layout_nusnet">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:textColor="@color/text_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/text_forgot_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/login_forgot_password"
+            android:textColor="@color/primary"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@id/input_layout_password"
+            app:layout_constraintTop_toBottomOf="@id/input_layout_password" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_sign_in"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="32dp"
+            android:elevation="4dp"
+            android:fontFamily="sans-serif-black"
+            android:text="@string/login_sign_in"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            app:backgroundTint="@color/primary"
+            app:cornerRadius="999dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_forgot_password" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_register"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:fontFamily="sans-serif-black"
+            android:text="@string/login_register"
+            android:textAllCaps="false"
+            android:textColor="@color/primary"
+            android:textSize="16sp"
+            app:cornerRadius="999dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/button_sign_in"
+            app:strokeColor="@color/primary"
+            app:strokeWidth="2dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

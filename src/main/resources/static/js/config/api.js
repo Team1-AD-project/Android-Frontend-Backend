@@ -31,7 +31,17 @@ const API_CONFIG = {
             ACTIVE_USERS: '/statistics/active-users',
             REDEMPTION_VOLUME: '/statistics/redemption-volume',
             EMISSION_HEATMAP: '/statistics/emission-heatmap'
-        }
+        },
+        // 优惠券管理
+        VOUCHERS: '/vouchers'
+    },
+
+    // 便捷访问方法
+    get vouchers() {
+        return {
+            list: `${this.BASE_URL}${this.ENDPOINTS.VOUCHERS}`,
+            redeem: `${this.BASE_URL}${this.ENDPOINTS.VOUCHERS}/redeem`
+        };
     }
 };
 

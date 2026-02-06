@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- 顶部关闭按钮 -->
+        <ImageButton
+            android:id="@+id/btn_close"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="end"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="关闭"
+            android:src="@drawable/ic_close" />
+
+        <!-- 标题 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="行程完成！"
+            android:textColor="@color/text_primary"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="4dp"
+            android:text="干得漂亮！"
+            android:textColor="@color/text_muted"
+            android:textSize="14sp" />
+
+        <!-- 小狮子庆祝 -->
+        <com.ecogo.ui.views.MascotLionView
+            android:id="@+id/mascot_celebrate"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginVertical="16dp" />
+
+        <!-- 环保等级 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/badge_background"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="环保等级"
+                android:textColor="@color/text_muted"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/text_eco_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="A+"
+                android:textColor="@color/primary"
+                android:textSize="32sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- 统计卡片网格 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- 距离 -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_distance"
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:visibility="invisible"
+                    app:cardBackgroundColor="@android:color/white"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_route"
+                            app:tint="@color/primary" />
+
+                        <TextView
+                            android:id="@+id/text_distance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="1.25"
+                            android:textColor="@color/text_primary"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="公里"
+                            android:textColor="@color/text_muted"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- 时长 -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_duration"
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:visibility="invisible"
+                    app:cardBackgroundColor="@android:color/white"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_history"
+                            app:tint="@color/primary" />
+
+                        <TextView
+                            android:id="@+id/text_duration"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="15"
+                            android:textColor="@color/text_primary"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="分钟"
+                            android:textColor="@color/text_muted"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <!-- 碳减排 -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_carbon"
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:visibility="invisible"
+                    app:cardBackgroundColor="@android:color/white"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_leaf"
+                            app:tint="@color/primary" />
+
+                        <TextView
+                            android:id="@+id/text_carbon_saved"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="125"
+                            android:textColor="@color/primary"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="g CO₂ 减排"
+                            android:textColor="@color/text_muted"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- 积分 -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_points"
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:visibility="invisible"
+                    app:cardBackgroundColor="@android:color/white"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_sparkles"
+                            app:tint="@color/primary" />
+
+                        <TextView
+                            android:id="@+id/text_points"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="+120"
+                            android:textColor="@color/primary"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="积分"
+                            android:textColor="@color/text_muted"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- 下一步操作按钮 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="vertical">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_share"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="分享成就"
+                android:textSize="16sp"
+                app:cornerRadius="28dp"
+                app:icon="@drawable/ic_share"
+                app:strokeColor="@color/primary" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_view_leaderboard"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    android:text="查看排行"
+                    android:textSize="14sp"
+                    app:cornerRadius="28dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_redeem"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_marginHorizontal="6dp"
+                    android:layout_weight="1"
+                    android:text="兑换奖励"
+                    android:textSize="14sp"
+                    app:cornerRadius="28dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_again"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:text="再来一次"
+                    android:textSize="14sp"
+                    app:cornerRadius="28dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

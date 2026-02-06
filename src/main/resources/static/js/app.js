@@ -11,6 +11,8 @@ import CarbonCreditsPage from './views/CarbonCreditsPage.js';
 import AdvertisementListPage from './views/AdvertisementListPage.js';
 import AdvertisementFormPage from './views/AdvertisementFormPage.js';
 import SettingsPage from './views/SettingsPage.js';
+import { VoucherListPage } from './views/VoucherListPage.js';
+import { VoucherFormPage } from './views/VoucherFormPage.js';
 
 // --- Route Configuration ---
 const routes = {
@@ -29,7 +31,12 @@ const routes = {
     // Advertisement specific routes
     '/ads': AdvertisementListPage,
     '/ad/new': AdvertisementFormPage,
-    '/ad/edit': AdvertisementFormPage
+    '/ad/edit': AdvertisementFormPage,
+
+    // Voucher specific routes
+    '/vouchers': VoucherListPage,
+    '/voucher/new': VoucherFormPage,
+    '/voucher/edit': VoucherFormPage
 };
 
 // --- Router Handler ---
@@ -44,16 +51,42 @@ const router = () => {
         routeKey += '/' + parts[2];
     }
 
-    const page = routes[routeKey] || routes['/'];
+    let page = routes[routeKey];
+    
+    // Handle class-based pages (VoucherListPage, VoucherFormPage)
+    if (!page && routeKey.startsWith('/voucher/edit')) {
+        const voucherId = parts[3];
+        page = new VoucherFormPage(voucherId);
+    } else if (page === VoucherListPage) {
+        page = new VoucherListPage();
+    } else if (page === VoucherFormPage) {
+        page = new VoucherFormPage();
+    }
 
-    if (page && page.init) {
+    page = page || routes['/'];
+
+    if (page && typeof page.init === 'function') {
+        page.init().then(() => {
+            const content = page.render();
+            document.getElementById('app').innerHTML = content;
+            // Store instance for global handlers
+            if (page instanceof VoucherListPage) {
+                window.voucherListPageInstance = page;
+            } else if (page instanceof VoucherFormPage) {
+                window.voucherFormPageInstance = page;
+            }
+        });
+    } else if (page && typeof page.render === 'function') {
+        const content = page.render();
+        document.getElementById('app').innerHTML = content;
+    } else if (page && page.init) {
         page.init();
     } else if (page && page.render) {
         page.render();
     } else {
         console.error(`No handler or page found for route: ${routeKey}`);
         // Optionally, render a 404 page
-        document.getElementById('root').innerHTML = `<h1>404 Not Found</h1>`;
+        document.getElementById('app').innerHTML = `<h1>404 Not Found</h1>`;
     }
 };
 

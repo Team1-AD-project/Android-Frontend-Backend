@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_transport_preference"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:visibility="gone">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- Header -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Your Transport Habits"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Select your preferred ways to get around campus"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary" />
+
+        <!-- Progress Indicator -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="24dp"
+            android:gravity="center">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="4dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:background="@color/primary" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="4dp"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:background="@color/primary" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="4dp"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:background="@color/primary" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="4dp"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:background="@color/border"
+                android:alpha="0.3" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="4dp"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:background="@color/border"
+                android:alpha="0.3" />
+        </LinearLayout>
+
+        <!-- Transport Options -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Select all that apply:"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary" />
+
+        <!-- Bus -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_bus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="@color/border"
+            app:cardBackgroundColor="@android:color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="20dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="🚌"
+                    android:textSize="32sp"
+                    android:gravity="center" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bus"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Campus shuttle &amp; public buses"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/check_bus"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="@drawable/circle_shape"
+                    android:backgroundTint="@color/primary"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Walking -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_walking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="@color/border"
+            app:cardBackgroundColor="@android:color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="20dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="🚶"
+                    android:textSize="32sp"
+                    android:gravity="center" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Walking"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="On foot around campus"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/check_walking"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="@drawable/circle_shape"
+                    android:backgroundTint="@color/primary"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Cycling -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_cycling"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="@color/border"
+            app:cardBackgroundColor="@android:color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="20dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="🚲"
+                    android:textSize="32sp"
+                    android:gravity="center" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cycling"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Bike or e-scooter"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/check_cycling"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="@drawable/circle_shape"
+                    android:backgroundTint="@color/primary"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Carpool -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_carpool"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="@color/border"
+            app:cardBackgroundColor="@android:color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="20dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="🚗"
+                    android:textSize="32sp"
+                    android:gravity="center" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Carpool"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Shared rides with friends"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/check_carpool"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="@drawable/circle_shape"
+                    android:backgroundTint="@color/primary"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Continue Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_continue_transport"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Continue"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:cornerRadius="28dp"
+            app:icon="@drawable/ic_chevron_right"
+            app:iconGravity="end"
+            app:backgroundTint="@color/primary"
+            style="@style/Widget.Material3.Button" />
+
+    </LinearLayout>
+
+</ScrollView>

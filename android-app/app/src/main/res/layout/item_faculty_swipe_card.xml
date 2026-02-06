@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_faculty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        app:cardCornerRadius="32dp"
+        app:cardElevation="8dp"
+        app:strokeWidth="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="32dp">
+
+            <!-- Faculty Name -->
+            <TextView
+                android:id="@+id/text_faculty_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Engineering"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:gravity="center" />
+
+            <!-- Faculty Slogan -->
+            <TextView
+                android:id="@+id/text_faculty_slogan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="32dp"
+                android:text="Building the Future 🛠️"
+                android:textSize="16sp"
+                android:textColor="@color/text_secondary"
+                android:gravity="center" />
+
+            <!-- Faculty Color Badge -->
+            <View
+                android:id="@+id/view_faculty_color"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/circle_shape" />
+
+            <!-- Mascot Preview -->
+            <com.ecogo.ui.views.MascotLionView
+                android:id="@+id/mascot_preview"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Outfit Items Section -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/border"
+                app:cardBackgroundColor="@color/background">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🎁 Starter Outfit"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:id="@+id/text_outfit_items"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="• Safety Helmet\n• Safety Goggles\n• Engin Plaid"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_secondary"
+                        android:lineSpacingExtra="4dp" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="24dp" />
+
+            <!-- Tap to Select Hint -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/primary">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="👆 Tap to Select"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</FrameLayout>
