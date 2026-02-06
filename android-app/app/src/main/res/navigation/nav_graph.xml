@@ -74,6 +74,9 @@
         <action
             android:id="@+id/action_home_to_monthlyHighlights"
             app:destination="@id/monthlyHighlightsFragment" />
+        <action
+            android:id="@+id/action_home_to_activities"
+            app:destination="@id/activitiesFragment" />
     </fragment>
 
     <!-- Home V2 Fragment (with Banner feature) -->

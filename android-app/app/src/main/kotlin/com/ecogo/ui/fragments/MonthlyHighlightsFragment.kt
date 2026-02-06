@@ -182,7 +182,18 @@ class MonthlyHighlightsFragment : Fragment() {
             color = "#A78BFA"
         ))
 
-        // 3. CO2减排 (尝试从API获取，失败则使用mock)
+        // 3. 获取用户已加入的挑战数量 (Mock data for now)
+        val joinedChallengesCount = 3 // TODO: Replace with real API call when challenges table is ready
+
+        stats.add(MonthStat(
+            icon = "🏆",
+            title = "Challenges",
+            value = "$joinedChallengesCount",
+            subtitle = "joined this month",
+            color = "#F97316"
+        ))
+
+        // 4. CO2减排 (尝试从API获取，失败则使用mock)
         val carbon = repository.getCarbonFootprint(userId, "monthly").getOrNull()
         if (carbon != null) {
             stats.add(MonthStat(
@@ -204,7 +215,7 @@ class MonthlyHighlightsFragment : Fragment() {
             ))
         }
 
-        // 4. 连续签到天数 (尝试从API获取)
+        // 5. 连续签到天数 (尝试从API获取)
         val checkInStatus = repository.getCheckInStatus(userId).getOrNull()
         if (checkInStatus != null) {
             stats.add(MonthStat(

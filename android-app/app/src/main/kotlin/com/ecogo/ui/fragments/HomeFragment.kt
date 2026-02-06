@@ -18,7 +18,8 @@ import com.ecogo.data.Outfit
 import com.ecogo.data.RecommendationRequest
 import com.ecogo.databinding.FragmentHomeBinding
 import com.ecogo.ui.adapters.HighlightAdapter
-import com.ecogo.ui.adapters.WalkingRouteAdapter
+import com.ecogo.ui.adapters.HomeStatAdapter
+import com.ecogo.ui.adapters.HomeStat
 import com.ecogo.repository.EcoGoRepository
 import kotlinx.coroutines.launch
 
@@ -133,18 +134,21 @@ class HomeFragment : Fragment() {
     }
     
     private fun setupRecyclerView() {
+        // Monthly Highlights显示统计数据
         binding.recyclerHighlights.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = HomeStatAdapter(emptyList()) { stat ->
+                // 点击统计卡片跳转到月度亮点页面
+                findNavController().navigate(R.id.action_home_to_monthlyHighlights)
+            }
+        }
+        // Activities显示活动列表
+        binding.recyclerActivities.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = HighlightAdapter(emptyList()) { activity ->
                 // 跳转到活动详情页，传递活动ID
                 val action = HomeFragmentDirections.actionHomeToActivityDetail(activity.id ?: "")
                 findNavController().navigate(action)
-            }
-        }
-        binding.recyclerWalkingRoutes.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = WalkingRouteAdapter(emptyList()) { route ->
-                findNavController().navigate(com.ecogo.R.id.routesFragment)
             }
         }
     }
@@ -161,8 +165,8 @@ class HomeFragment : Fragment() {
             loadBusInfo()
             
             // 第二优先级：并发加载次要数据
-            launch { loadActivities() }
-            launch { loadWalkingRoutes() }
+            launch { loadMonthlyHighlightsStats() }
+            launch { loadHomeActivities() }
             launch { loadUserProfile() }
             launch { loadMonthlyPoints() }
             
@@ -228,19 +232,54 @@ class HomeFragment : Fragment() {
         }
     }
     
-    private suspend fun loadActivities() {
-        val activitiesResult = repository.getAllActivities().getOrElse { MockData.ACTIVITIES }
-        binding.recyclerHighlights.adapter = HighlightAdapter(activitiesResult.take(3)) { activity ->
-            // 跳转到活动详情页，传递活动ID
-            val action = HomeFragmentDirections.actionHomeToActivityDetail(activity.id ?: "")
-            findNavController().navigate(action)
-        }
+    private suspend fun loadMonthlyHighlightsStats() {
+        val userId = com.ecogo.auth.TokenManager.getUserId() ?: "user123"
+        val stats = mutableListOf<HomeStat>()
+
+        // 1. 获取积分数据
+        val pointsResult = repository.getCurrentPoints().getOrNull()
+        val userProfile = repository.getMobileUserProfile().getOrNull()
+        val currentPoints = pointsResult?.currentPoints
+            ?: userProfile?.userInfo?.currentPoints?.toLong()
+            ?: 0L
+
+        stats.add(HomeStat(
+            icon = "⭐",
+            title = "Total Points",
+            value = "$currentPoints",
+            subtitle = "current balance",
+            color = "#FCD34D"
+        ))
+
+        // 2. 获取用户已加入的活动数量
+        val joinedActivitiesCount = repository.getJoinedActivitiesCount(userId).getOrNull() ?: 0
+        stats.add(HomeStat(
+            icon = "🎯",
+            title = "Activities",
+            value = "$joinedActivitiesCount",
+            subtitle = "joined this month",
+            color = "#A78BFA"
+        ))
+
+        // 3. 获取用户已加入的挑战数量 (Mock data)
+        val joinedChallengesCount = 3 // TODO: Replace with real API
+        stats.add(HomeStat(
+            icon = "🏆",
+            title = "Challenges",
+            value = "$joinedChallengesCount",
+            subtitle = "joined this month",
+            color = "#F97316"
+        ))
+
+        (binding.recyclerHighlights.adapter as? HomeStatAdapter)?.updateData(stats)
     }
     
-    private suspend fun loadWalkingRoutes() {
-        val walkingRoutes = repository.getWalkingRoutes().getOrElse { MockData.WALKING_ROUTES }
-        binding.recyclerWalkingRoutes.adapter = WalkingRouteAdapter(walkingRoutes) { route ->
-            findNavController().navigate(com.ecogo.R.id.routesFragment)
+    private suspend fun loadHomeActivities() {
+        val activitiesResult = repository.getAllActivities().getOrElse { MockData.ACTIVITIES }
+        // 显示最多5个活动在首页，使用横向滑动小卡片样式
+        binding.recyclerActivities.adapter = HighlightAdapter(activitiesResult.take(5)) { activity ->
+            val action = HomeFragmentDirections.actionHomeToActivityDetail(activity.id ?: "")
+            findNavController().navigate(action)
         }
     }
 
@@ -264,6 +303,11 @@ class HomeFragment : Fragment() {
         binding.textViewAll.setOnClickListener {
             // 跳转到月度亮点页面
             findNavController().navigate(R.id.action_home_to_monthlyHighlights)
+        }
+
+        binding.textViewAllActivities.setOnClickListener {
+            // 跳转到活动列表页面
+            findNavController().navigate(R.id.action_home_to_activities)
         }
         
         // 点击小狮子跳转到 Profile
