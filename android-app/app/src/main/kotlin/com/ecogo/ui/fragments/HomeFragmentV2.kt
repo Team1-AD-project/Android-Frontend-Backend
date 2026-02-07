@@ -218,9 +218,14 @@ class HomeFragmentV2 : Fragment() {
 
     private fun setupActions() {
         binding.buttonOpenMap.setOnClickListener {
-            android.widget.Toast.makeText(requireContext(), "Map feature under development", android.widget.Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_homeV2_to_routePlanner)
         }
-        
+
+        // 点击地图卡片也可以进入路线规划
+        binding.cardMap.setOnClickListener {
+            findNavController().navigate(R.id.action_homeV2_to_routePlanner)
+        }
+
         binding.cardVoucherShortcut.setOnClickListener {
             findNavController().navigate(R.id.voucherFragment)
         }

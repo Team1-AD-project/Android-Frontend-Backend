@@ -37,6 +37,10 @@ public enum ErrorCode {
     // Advertisement module error (45xx)
     ADVERTISEMENT_NOT_FOUND(4501, "Advertisement not found"),
 
+    // Trip module error (46xx)
+    TRIP_NOT_FOUND(4601, "Trip not found"),
+    TRIP_STATUS_ERROR(4602, "Trip status error, current status: %s"),
+
     // Server Errors (5xxx)
     DB_ERROR(5001, "Database operation failed"),
     SYSTEM_ERROR(5002, "Internal server error, please try again later"),

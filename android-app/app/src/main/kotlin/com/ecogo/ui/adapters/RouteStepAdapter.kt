@@ -3,6 +3,7 @@ package com.ecogo.ui.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.ecogo.R
 import com.ecogo.data.RouteStep
 import com.ecogo.databinding.ItemRouteStepBinding
 import com.ecogo.utils.MapUtils
@@ -40,26 +41,26 @@ class RouteStepAdapter(
 
         fun bind(step: RouteStep, stepNumber: Int) {
             binding.apply {
-                textStepNumber.text = stepNumber.toString()
-                
                 // 交通方式图标
-                textIcon.text = when (step.mode) {
-                    com.ecogo.data.TransportMode.WALK -> "🚶"
-                    com.ecogo.data.TransportMode.CYCLE -> "🚲"
-                    com.ecogo.data.TransportMode.BUS -> "🚌"
-                    com.ecogo.data.TransportMode.MIXED -> "📍"
+                val iconRes = when (step.mode) {
+                    com.ecogo.data.TransportMode.WALK -> R.drawable.ic_walking
+                    com.ecogo.data.TransportMode.CYCLE -> R.drawable.ic_bicycling
+                    com.ecogo.data.TransportMode.BUS -> R.drawable.ic_transit
+                    com.ecogo.data.TransportMode.MIXED -> R.drawable.ic_walking
                 }
-                
-                textInstruction.text = step.instruction
-                
-                // 详细信息
+                ivStepIcon.setImageResource(iconRes)
+
+                // 步骤说明
+                tvStepInstruction.text = step.instruction
+
+                // 距离和时长
                 val distanceStr = MapUtils.formatDistance(step.distance)
                 val durationStr = if (step.duration >= 60) {
                     "${step.duration / 60}分钟"
                 } else {
                     "${step.duration}秒"
                 }
-                textDetails.text = "$distanceStr • $durationStr"
+                tvStepDistance.text = "$distanceStr • $durationStr"
             }
         }
     }

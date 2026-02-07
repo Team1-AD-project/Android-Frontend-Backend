@@ -17,6 +17,9 @@ public class User {
     private String nickname;
     private String avatar;
     private boolean isAdmin;
+    private boolean isDeactivated;
+
+    private String faculty; // 学院
 
     private Vip vip;
     private Stats stats;
@@ -105,6 +108,22 @@ public class User {
 
     public void setAdmin(boolean admin) {
         isAdmin = admin;
+    }
+
+    public boolean isDeactivated() {
+        return isDeactivated;
+    }
+
+    public void setDeactivated(boolean deactivated) {
+        isDeactivated = deactivated;
+    }
+
+    public String getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(String faculty) {
+        this.faculty = faculty;
     }
 
     public Vip getVip() {

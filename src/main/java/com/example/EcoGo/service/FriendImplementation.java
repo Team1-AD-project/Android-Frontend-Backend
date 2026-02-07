@@ -65,7 +65,7 @@ public class FriendImplementation implements FriendInterface {
             if (friendUser.isPresent()) {
                 User user = friendUser.get();
                 friend.setFriendNickname(user.getNickname());
-                friend.setFriendPoints(user.getTotalPoints());
+                friend.setFriendPoints((int) user.getTotalPoints());
                 friend.setFriendFaculty(user.getFaculty());
             }
             return friend;

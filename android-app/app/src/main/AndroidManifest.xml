@@ -2,9 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- 临时禁用位置权限 -->
-    <!-- <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> -->
-    <!-- <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".EcoGoApplication"
@@ -14,10 +16,10 @@
         android:theme="@style/Theme.EcoGo"
         android:usesCleartextTraffic="true">
         
-        <!-- Google Maps API Key (临时禁用) -->
-        <!-- <meta-data
+        <!-- Google Maps API Key -->
+        <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="YOUR_GOOGLE_MAPS_API_KEY_HERE" /> -->
+            android:value="@string/google_maps_api_key" />
         
         <!-- FileProvider for sharing images -->
         <provider
@@ -45,6 +47,24 @@
             android:theme="@style/Theme.EcoGo">
             <!-- Launcher intent moved to SplashActivity -->
         </activity>
+
+        <!-- Map Activity -->
+        <activity
+            android:name="com.ecogo.app.ui.map.MapActivity"
+            android:exported="false"
+            android:theme="@style/Theme.EcoGo" />
+
+        <!-- History Map Activity -->
+        <activity
+            android:name="com.ecogo.app.ui.history.HistoryMapActivity"
+            android:exported="false"
+            android:theme="@style/Theme.EcoGo" />
+
+        <!-- Location Tracking Service -->
+        <service
+            android:name="com.ecogo.app.service.LocationTrackingService"
+            android:foregroundServiceType="location"
+            android:exported="false" />
     </application>
 
 </manifest>

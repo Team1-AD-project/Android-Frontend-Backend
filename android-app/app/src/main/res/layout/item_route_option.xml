@@ -1,198 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardRouteOption"
+    android:layout_width="280dp"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="20dp"
-    app:cardElevation="4dp">
+    android:layout_marginVertical="6dp"
+    android:layout_marginHorizontal="4dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="12dp">
 
-        <!-- Header with Badge -->
+        <!-- 路线摘要 -->
+        <TextView
+            android:id="@+id/tvRouteSummary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#1976D2"
+            android:maxLines="2"
+            android:ellipsize="end"
+            tools:text="地铁1号线 → 公交46路" />
+
+        <!-- 路线信息 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:id="@+id/text_badge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_recommendation_tag"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:text="🌿 最环保"
-                android:textColor="@color/primary"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:visibility="gone" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-
-            <TextView
-                android:id="@+id/text_mode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="🚶 步行"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
-        <!-- Time & Distance -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="6dp"
             android:orientation="horizontal">
 
-            <LinearLayout
+            <!-- 时长 -->
+            <TextView
+                android:id="@+id/tvRouteTime"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:textSize="12sp"
+                android:textColor="#666666"
+                android:drawablePadding="4dp"
+                app:drawableStartCompat="@android:drawable/ic_menu_recent_history"
+                app:drawableTint="#666666"
+                tools:text="28 分钟" />
 
-                <TextView
-                    android:id="@+id/text_duration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="15分钟"
-                    android:textColor="@color/text_primary"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/estimated_time"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
+            <!-- 距离 -->
+            <TextView
+                android:id="@+id/tvRouteDistance"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:textSize="12sp"
+                android:textColor="#666666"
+                android:drawablePadding="4dp"
+                app:drawableStartCompat="@android:drawable/ic_menu_mylocation"
+                app:drawableTint="#666666"
+                tools:text="5.2 公里" />
 
-                <TextView
-                    android:id="@+id/text_distance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="1.2km"
-                    android:textColor="@color/text_primary"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/distance"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <!-- Environmental Data -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/bg_carbon_gradient"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:gravity="center">
-
-            <LinearLayout
+            <!-- 碳排放 -->
+            <TextView
+                android:id="@+id/tvRouteCarbon"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="☁️"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/text_carbon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="0g CO₂"
-                    android:textColor="@color/primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🌱"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/text_points"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="+50积分"
-                    android:textColor="@color/primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="💰"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/text_savings"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="节省$2"
-                    android:textColor="@color/primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
+                android:textSize="12sp"
+                android:textColor="#4CAF50"
+                tools:text="0.26 kg" />
 
         </LinearLayout>
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

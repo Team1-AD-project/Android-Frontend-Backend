@@ -44,4 +44,10 @@
     <!-- Material Design defaults -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Map Route Colors -->
+    <color name="green_primary">#4CAF50</color>
+    <color name="route_remaining">#4285F4</color>
+    <color name="route_traveled">#9E9E9E</color>
+    <color name="route_planned">#4285F4</color>
 </resources>

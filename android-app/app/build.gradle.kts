@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("androidx.navigation.safeargs.kotlin")
     id("kotlin-parcelize")
+    id("com.google.devtools.ksp") version "2.1.0-1.0.29"
 }
 
 android {
@@ -68,8 +69,8 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.8.2")
     
     // Navigation Component
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.6")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.6")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.8.5")
+    implementation("androidx.navigation:navigation-ui-ktx:2.8.5")
     
     // Lifecycle
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
@@ -77,7 +78,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     
     // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     
     // ViewPager2
     implementation("androidx.viewpager2:viewpager2:1.0.0")
@@ -102,11 +103,17 @@ dependencies {
     // Stripe Android SDK
     implementation("com.stripe:stripe-android:20.37.0")
     
-    // Google Maps & Location (临时禁用以加快启动)
-    // implementation("com.google.android.gms:play-services-maps:18.2.0")
-    // implementation("com.google.android.gms:play-services-location:21.1.0")
-    // implementation("com.google.maps.android:android-maps-utils:3.8.2")
-    
+    // Google Maps & Location
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("com.google.android.gms:play-services-location:21.1.0")
+    implementation("com.google.maps.android:android-maps-utils:3.8.2")
+    implementation("com.google.android.libraries.places:places:3.3.0")
+
+    // Room Database (for NavigationHistory)
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
+
     // Testing
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

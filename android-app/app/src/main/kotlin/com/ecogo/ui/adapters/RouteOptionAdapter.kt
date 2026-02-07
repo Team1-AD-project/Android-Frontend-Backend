@@ -1,7 +1,6 @@
 package com.ecogo.ui.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ecogo.R
@@ -44,43 +43,36 @@ class RouteOptionAdapter(
 
         fun bind(route: NavRoute) {
             binding.apply {
-                // 显示徽章（如果有）
-                if (route.badge.isNotEmpty()) {
-                    textBadge.text = route.badge
-                    textBadge.visibility = View.VISIBLE
-                } else {
-                    textBadge.visibility = View.GONE
-                }
-                
-                // 交通方式图标
+                // 交通方式图标 + 徽章
                 val modeIcon = when (route.mode) {
                     com.ecogo.data.TransportMode.WALK -> "🚶 步行"
                     com.ecogo.data.TransportMode.CYCLE -> "🚲 骑行"
                     com.ecogo.data.TransportMode.BUS -> "🚌 公交"
                     com.ecogo.data.TransportMode.MIXED -> "🚶🚌 混合"
                 }
-                textMode.text = modeIcon
-                
-                // 时间和距离
-                textDuration.text = MapUtils.formatDuration(route.duration)
-                textDistance.text = String.format("%.1fkm", route.distance)
-                
-                // 环保数据
-                textCarbon.text = CarbonCalculator.formatCarbon(route.carbonEmission)
-                textPoints.text = "+${route.points}积分"
-                textSavings.text = "节省$${String.format("%.1f", CarbonCalculator.calculateMoneySaved(route.distance))}"
-                
+                val badgeText = if (route.badge.isNotEmpty()) " [${route.badge}]" else ""
+                tvRouteSummary.text = "$modeIcon$badgeText"
+
+                // 时间
+                tvRouteTime.text = MapUtils.formatDuration(route.duration)
+
+                // 距离
+                tvRouteDistance.text = String.format("%.1fkm", route.distance)
+
+                // 碳排放
+                tvRouteCarbon.text = CarbonCalculator.formatCarbon(route.carbonEmission)
+
                 // 推荐路线高亮
                 if (route.isRecommended) {
-                    root.setCardBackgroundColor(
+                    cardRouteOption.setCardBackgroundColor(
                         root.context.getColor(R.color.background)
                     )
                 } else {
-                    root.setCardBackgroundColor(
+                    cardRouteOption.setCardBackgroundColor(
                         root.context.getColor(android.R.color.white)
                     )
                 }
-                
+
                 root.setOnClickListener {
                     onRouteClick(route)
                 }
