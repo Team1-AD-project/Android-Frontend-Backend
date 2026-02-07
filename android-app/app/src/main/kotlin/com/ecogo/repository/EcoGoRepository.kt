@@ -706,6 +706,23 @@ class EcoGoRepository {
         }
 
     /**
+     * 获取用户已加入的挑战列表
+     */
+    suspend fun getJoinedChallenges(userId: String): Result<List<com.ecogo.data.Challenge>> =
+        withContext(Dispatchers.IO) {
+            try {
+                val response = api.getUserChallenges(userId)
+                if (response.success && response.data != null) {
+                    Result.success(response.data)
+                } else {
+                    Result.failure(Exception(response.message))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+
+    /**
      * 每日签到
      * POST /api/v1/checkin?userId={userId}
      * Note: Previous checkIn was mock, now using real endpoint if available or keeping logic consistent.

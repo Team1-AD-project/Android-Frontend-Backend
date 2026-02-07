@@ -14,6 +14,8 @@ import com.ecogo.R
 import com.ecogo.databinding.FragmentMonthlyHighlightsBinding
 import com.ecogo.repository.EcoGoRepository
 import com.ecogo.ui.adapters.MonthlyActivityAdapter
+import com.ecogo.ui.adapters.MonthlyChallengeAdapter
+import com.ecogo.ui.adapters.ChallengeWithProgress
 import com.ecogo.ui.adapters.MonthStatAdapter
 import com.ecogo.ui.adapters.PopularRouteAdapter
 import com.ecogo.ui.adapters.MilestoneAdapter
@@ -82,18 +84,10 @@ class MonthlyHighlightsFragment : Fragment() {
         binding.btnViewFullLeaderboard.setOnClickListener {
             findNavController().navigate(R.id.communityFragment)
         }
-        
-        // 挑战卡片点击事件
-        binding.cardChallenge1.setOnClickListener {
-            findNavController().navigate(R.id.challengesFragment)
-        }
-        
-        binding.cardChallenge2.setOnClickListener {
-            findNavController().navigate(R.id.challengesFragment)
-        }
-        
-        binding.cardChallenge3.setOnClickListener {
-            findNavController().navigate(R.id.challengesFragment)
+
+        // 查看全部挑战
+        binding.btnViewAllChallenges.setOnClickListener {
+            findNavController().navigate(R.id.action_monthlyHighlights_to_challenges)
         }
     }
     
@@ -115,6 +109,14 @@ class MonthlyHighlightsFragment : Fragment() {
             }
         }
         
+        // 挑战列表
+        binding.recyclerChallenges.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = MonthlyChallengeAdapter(emptyList()) { challenge ->
+                findNavController().navigate(R.id.action_monthlyHighlights_to_challenges)
+            }
+        }
+
         // 流行路线列表
         binding.recyclerPopularRoutes.apply {
             layoutManager = LinearLayoutManager(context)
@@ -271,34 +273,29 @@ class MonthlyHighlightsFragment : Fragment() {
     }
     
     private suspend fun loadChallenges() {
-        // TODO: 从后端加载挑战数据
-        // 这里使用模拟数据展示
-        val carbon = repository.getCarbonFootprint("user123", "monthly").getOrNull()
-        val checkInStatus = repository.getCheckInStatus("user123").getOrNull()
-        
-        // 更新挑战1：巴士出行
-        if (carbon != null) {
-            val busTrips = carbon.tripsByBus
-            val progress = (busTrips.toFloat() / 20 * 100).toInt().coerceIn(0, 100)
-            binding.progressChallenge1.progress = progress
-            binding.textChallenge1Progress.text = "$busTrips/20 trips · 🎁 +200 pts"
+        val userId = com.ecogo.auth.TokenManager.getUserId() ?: "user123"
+
+        // 从后端获取用户已加入的挑战列表
+        val joinedChallenges = repository.getJoinedChallenges(userId).getOrElse { emptyList() }
+
+        if (joinedChallenges.isEmpty()) {
+            binding.recyclerChallenges.visibility = View.GONE
+            binding.textNoJoinedChallenges.visibility = View.VISIBLE
+            binding.textChallengeCount.text = "0 Joined Challenges"
+            return
         }
-        
-        // 更新挑战2：CO2减排
-        if (carbon != null) {
-            val co2Saved = carbon.co2Saved
-            val progress = (co2Saved / 50 * 100).toInt().coerceIn(0, 100)
-            binding.progressChallenge2.progress = progress
-            binding.textChallenge2Progress.text = "${String.format("%.1f", co2Saved)}/50 kg · 🎁 +300 pts"
+
+        binding.recyclerChallenges.visibility = View.VISIBLE
+        binding.textNoJoinedChallenges.visibility = View.GONE
+        binding.textChallengeCount.text = "${joinedChallenges.size} Joined Challenges"
+
+        // 为每个挑战获取用户进度
+        val challengeItems = joinedChallenges.map { challenge ->
+            val progress = repository.getChallengeProgress(challenge.id, userId).getOrNull()
+            ChallengeWithProgress(challenge, progress)
         }
-        
-        // 更新挑战3：连续签到
-        if (checkInStatus != null) {
-            val consecutiveDays = checkInStatus.consecutiveDays
-            val progress = (consecutiveDays.toFloat() / 15 * 100).toInt().coerceIn(0, 100)
-            binding.progressChallenge3.progress = progress
-            binding.textChallenge3Progress.text = "$consecutiveDays/15 days · 🎁 +500 pts"
-        }
+
+        (binding.recyclerChallenges.adapter as? MonthlyChallengeAdapter)?.updateData(challengeItems)
     }
     
     private suspend fun loadPopularRoutes() {

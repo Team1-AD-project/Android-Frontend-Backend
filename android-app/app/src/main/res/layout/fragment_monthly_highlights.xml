@@ -296,16 +296,34 @@
             </LinearLayout>
 
             <!-- Monthly Challenges Section -->
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="🏆 Monthly Challenges"
-                android:textColor="@color/text_primary"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="🏆 Monthly Challenges"
+                    android:textColor="@color/text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_view_all_challenges"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="View All"
+                    android:textColor="@color/primary"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
             <TextView
+                android:id="@+id/text_challenge_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -313,219 +331,26 @@
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp" />
 
-            <!-- Challenge Cards -->
-            <LinearLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_challenges"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:orientation="vertical">
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never" />
 
-                <!-- Challenge 1 -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_challenge1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:background="@drawable/bg_stat_icon"
-                            android:gravity="center"
-                            android:text="🚌"
-                            android:textSize="24sp" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Bus Rider"
-                                android:textColor="@color/text_primary"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="Take 20 bus trips this month"
-                                android:textColor="@color/text_secondary"
-                                android:textSize="12sp" />
-
-                            <ProgressBar
-                                android:id="@+id/progress_challenge1"
-                                style="?android:attr/progressBarStyleHorizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="6dp"
-                                android:layout_marginTop="8dp"
-                                android:max="100"
-                                android:progress="75"
-                                android:progressDrawable="@drawable/progress_circle" />
-
-                            <TextView
-                                android:id="@+id/text_challenge1_progress"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="15/20 trips · 🎁 +200 pts"
-                                android:textColor="@color/primary"
-                                android:textSize="11sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- Challenge 2 -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_challenge2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:background="@drawable/bg_stat_icon"
-                            android:gravity="center"
-                            android:text="🌱"
-                            android:textSize="24sp" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Carbon Warrior"
-                                android:textColor="@color/text_primary"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="Save 50kg CO₂ this month"
-                                android:textColor="@color/text_secondary"
-                                android:textSize="12sp" />
-
-                            <ProgressBar
-                                android:id="@+id/progress_challenge2"
-                                style="?android:attr/progressBarStyleHorizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="6dp"
-                                android:layout_marginTop="8dp"
-                                android:max="100"
-                                android:progress="45"
-                                android:progressDrawable="@drawable/progress_circle" />
-
-                            <TextView
-                                android:id="@+id/text_challenge2_progress"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="22.5/50 kg · 🎁 +300 pts"
-                                android:textColor="@color/primary"
-                                android:textSize="11sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- Challenge 3 -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_challenge3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:background="@drawable/bg_stat_icon"
-                            android:gravity="center"
-                            android:text="🔥"
-                            android:textSize="24sp" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Consistency King"
-                                android:textColor="@color/text_primary"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="Check in for 15 consecutive days"
-                                android:textColor="@color/text_secondary"
-                                android:textSize="12sp" />
-
-                            <ProgressBar
-                                android:id="@+id/progress_challenge3"
-                                style="?android:attr/progressBarStyleHorizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="6dp"
-                                android:layout_marginTop="8dp"
-                                android:max="100"
-                                android:progress="53"
-                                android:progressDrawable="@drawable/progress_circle" />
-
-                            <TextView
-                                android:id="@+id/text_challenge3_progress"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="8/15 days · 🎁 +500 pts"
-                                android:textColor="@color/primary"
-                                android:textSize="11sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
+            <!-- Empty state for challenges -->
+            <TextView
+                android:id="@+id/text_no_joined_challenges"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:text="No challenges joined yet"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:visibility="gone" />
 
             <!-- Leaderboard Preview -->
             <LinearLayout

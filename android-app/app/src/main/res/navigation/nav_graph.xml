@@ -421,6 +421,9 @@
         <action
             android:id="@+id/action_monthlyHighlights_to_joinedActivities"
             app:destination="@id/activitiesFragment" />
+        <action
+            android:id="@+id/action_monthlyHighlights_to_challenges"
+            app:destination="@id/challengesFragment" />
     </fragment>
 
 </navigation>
