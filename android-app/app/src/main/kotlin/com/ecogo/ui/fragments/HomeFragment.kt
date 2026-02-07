@@ -40,7 +40,7 @@ class HomeFragment : Fragment() {
     ): View {
         return try {
             Log.d("DEBUG_HOME", "HomeFragment onCreateView - inflating binding")
-            Toast.makeText(context, "\uD83C\uDFE0 HomeFragment 正在加载...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "🏠 HomeFragment 正在加载...", Toast.LENGTH_SHORT).show()
             _binding = FragmentHomeBinding.inflate(inflater, container, false)
             Log.d("DEBUG_HOME", "HomeFragment binding inflated successfully")
             Toast.makeText(context, "✅ HomeFragment 加载成功！", Toast.LENGTH_SHORT).show()
@@ -215,13 +215,25 @@ class HomeFragment : Fragment() {
 
             }
 
+
+            // Update Carbon Footprint (Added)
+            val carbon = userInfo.totalCarbon
+            val trees = if (carbon > 0) carbon / 18.0 else 0.0
+            binding.textCo2Saved.text = "%.1f kg".format(carbon)
+            binding.textTreeEquivalent.text = "%.1f trees".format(trees) // User asked for 1 decimal place
+
+            // Update Carbon Period if stats available
+            profile.stats?.let { stats ->
+                binding.textCarbonPeriod.text = "Total · ${stats.totalTrips} eco trips"
+            }
         }
     }
 
     private suspend fun loadSocScore() {
-        val scoreResult = repository.getFacultyPointsStats()
-        val score = scoreResult.getOrNull() ?: 0
-        binding.textSocScore.text = score.toString()
+        val scoreResult = repository.getFacultyTotalCarbon()
+        val data = scoreResult.getOrNull()
+        val score = data?.totalCarbon ?: 0.0
+        binding.textSocScore.text = "%.1f".format(score)
     }
 
     private suspend fun loadMonthlyPoints() {
@@ -485,15 +497,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun loadCarbonFootprint() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            val carbon = repository.getCarbonFootprint("user123", "monthly").getOrNull()
-            if (carbon != null) {
-                binding.textCo2Saved.text = "${"%.1f".format(carbon.co2Saved)} kg"
-                binding.textTreeEquivalent.text = "${carbon.equivalentTrees} trees"
-                val totalTrips = carbon.tripsByBus + carbon.tripsByWalking + carbon.tripsByBicycle
-                binding.textCarbonPeriod.text = "This month · $totalTrips eco trips"
-            }
-        }
+        // Deprecated: Carbon footprint is now loaded from UserProfile (totalCarbon)
+        // Kept empty to avoid breaking older calls if any, but removed from loadData()
     }
 
     private fun loadWeather() {

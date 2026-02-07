@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ecogo.R
 import com.ecogo.api.RetrofitClient
+import com.ecogo.auth.TokenManager
 import com.ecogo.data.Challenge
 import com.ecogo.databinding.FragmentChallengesBinding
 import com.ecogo.ui.adapters.ChallengeAdapter
@@ -31,6 +32,7 @@ class ChallengesFragment : Fragment() {
 
     private lateinit var challengeAdapter: ChallengeAdapter
     private var allChallenges: List<Challenge> = emptyList()
+    private var joinedChallengeIds: Set<String> = emptySet()
     private var currentFilter: String = "ALL"
 
     override fun onCreateView(
@@ -92,11 +94,25 @@ class ChallengesFragment : Fragment() {
                 val response = RetrofitClient.apiService.getAllChallenges()
                 if (response.code == 200 && response.data != null) {
                     allChallenges = response.data
-                    filterAndDisplayChallenges()
                     Log.d("ChallengesFragment", "Loaded ${allChallenges.size} challenges from API")
                 } else {
                     showError("Failed to load challenges: ${response.message}")
+                    return@launch
                 }
+
+                // 获取用户已加入的挑战ID列表
+                val userId = TokenManager.getUserId() ?: "user123"
+                try {
+                    val userResponse = RetrofitClient.apiService.getUserChallenges(userId)
+                    if (userResponse.success && userResponse.data != null) {
+                        joinedChallengeIds = userResponse.data.map { it.id }.toSet()
+                        Log.d("ChallengesFragment", "User joined ${joinedChallengeIds.size} challenges")
+                    }
+                } catch (e: Exception) {
+                    Log.e("ChallengesFragment", "Error loading user challenges", e)
+                }
+
+                filterAndDisplayChallenges()
             } catch (e: Exception) {
                 Log.e("ChallengesFragment", "Error loading challenges", e)
                 showError("Network error: ${e.message}")
@@ -111,7 +127,7 @@ class ChallengesFragment : Fragment() {
      */
     private fun filterAndDisplayChallenges() {
         val filtered = when (currentFilter) {
-            "ACTIVE" -> allChallenges.filter { it.status == "ACTIVE" }
+            "ACTIVE" -> allChallenges.filter { it.id in joinedChallengeIds }
             "COMPLETED" -> allChallenges.filter { it.status == "COMPLETED" || it.status == "EXPIRED" }
             else -> allChallenges
         }

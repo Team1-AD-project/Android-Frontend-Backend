@@ -12,6 +12,7 @@ import com.ecogo.data.CheckInResponse
 import com.ecogo.data.CheckInStatus
 import com.ecogo.data.DailyGoal
 import com.ecogo.data.Faculty
+import com.ecogo.data.FacultyCarbonData
 import com.ecogo.data.Friend
 import com.ecogo.data.FriendActivity
 import com.ecogo.data.HistoryItem
@@ -857,6 +858,23 @@ class EcoGoRepository {
         withContext(Dispatchers.IO) {
             try {
                 val response = api.getCarbonFootprint(userId, period)
+                if (response.success && response.data != null) {
+                    Result.success(response.data)
+                } else {
+                    Result.failure(Exception(response.message))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+
+    /**
+     * 获取学院碳足迹总和 (SoC Score)
+     */
+    suspend fun getFacultyTotalCarbon(): Result<com.ecogo.data.FacultyCarbonData> =
+        withContext(Dispatchers.IO) {
+            try {
+                val response = api.getFacultyTotalCarbon()
                 if (response.success && response.data != null) {
                     Result.success(response.data)
                 } else {

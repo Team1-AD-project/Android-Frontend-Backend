@@ -287,6 +287,11 @@ data class CarbonFootprint(
     val tripsByBicycle: Int = 0
 )
 
+data class FacultyCarbonData(
+    val faculty: String,
+    val totalCarbon: Double
+)
+
 // Friend / Social
 data class Friend(
     val userId: String,

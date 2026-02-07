@@ -9,10 +9,15 @@ import com.ecogo.R
 import com.ecogo.data.Activity
 
 class ActivityAdapter(
-    private val activities: List<Activity>,
+    private var activities: List<Activity>,
     private val onActivityClick: (Activity) -> Unit = {}
 ) : RecyclerView.Adapter<ActivityAdapter.ActivityViewHolder>() {
-    
+
+    fun updateActivities(newActivities: List<Activity>) {
+        activities = newActivities
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActivityViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_activity, parent, false)

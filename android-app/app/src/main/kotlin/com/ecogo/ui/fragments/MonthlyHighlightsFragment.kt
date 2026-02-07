@@ -266,10 +266,10 @@ class MonthlyHighlightsFragment : Fragment() {
     private suspend fun loadMonthlyAchievements() {
         // TODO: 从后端加载本月解锁的成就
         // 这里使用模拟数据
-        binding.textAchievementsUnlocked.text = "3 Achievements Unlocked This Month"
+//        binding.textAchievementsUnlocked.text = "3 Achievements Unlocked This Month"
         
         // 显示成就徽章（如果有）
-        binding.layoutAchievements.visibility = View.VISIBLE
+//        binding.layoutAchievements.visibility = View.VISIBLE
     }
     
     private suspend fun loadChallenges() {
