@@ -11,6 +11,7 @@ import com.ecogo.data.CheckInResponse
 import com.ecogo.data.CheckInStatus
 import com.ecogo.data.DailyGoal
 import com.ecogo.data.Faculty
+import com.ecogo.data.FacultyCarbonData
 import com.ecogo.data.Friend
 import com.ecogo.data.FriendActivity
 import com.ecogo.data.HistoryItem
@@ -453,6 +454,13 @@ interface ApiService {
      */
     @POST("api/v1/carbon/record")
     suspend fun recordTrip(@Body request: Map<String, Any>): ApiResponse<CarbonFootprint>
+
+    /**
+     * 获取学院总碳足迹 (SoC Score)
+     * GET /api/v1/carbon-records/faculty/total
+     */
+    @GET("api/v1/carbon-records/faculty/total")
+    suspend fun getFacultyTotalCarbon(): ApiResponse<FacultyCarbonData>
     
     // ==================== 通知相关 ====================
     

@@ -213,9 +213,10 @@ class HomeFragment : Fragment() {
     }
 
     private suspend fun loadSocScore() {
-        val scoreResult = repository.getFacultyPointsStats()
-        val score = scoreResult.getOrNull() ?: 0
-        binding.textSocScore.text = score.toString()
+        val scoreResult = repository.getFacultyTotalCarbon()
+        val data = scoreResult.getOrNull()
+        val score = data?.totalCarbon ?: 0.0
+        binding.textSocScore.text = "%.1f".format(score)
     }
 
     private suspend fun loadMonthlyPoints() {
