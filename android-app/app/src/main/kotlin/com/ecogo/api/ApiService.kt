@@ -191,6 +191,11 @@ interface ApiService {
     suspend fun getRankingsByPeriod(@Query("period") period: String): ApiResponse<List<Ranking>>
     
     // ==================== 商品相关 ====================
+    @GET("api/v1/support/churn/me")
+    suspend fun getMyChurnRisk(
+        @Query("userId") userId: String
+    ): ApiResponse<ChurnRiskDTO>
+
 
     @GET("/api/v1/mobile/points/current")
     suspend fun getCurrentPoints(): ApiResponse<PointsCurrentData>
@@ -644,6 +649,10 @@ interface ApiService {
 }
 
 // ==================== DTO 数据类 ====================
+data class ChurnRiskDTO(
+    val userId: String,
+    val riskLevel: String
+)
 
 
 /**

@@ -503,6 +503,12 @@ class EcoGoRepository {
             }
         }
 
+    suspend fun fetchMyChurnRisk(userId: String): String? {
+        val resp = api.getMyChurnRisk(userId)
+        return if (resp.code == 200) resp.data?.riskLevel else null
+    }
+
+
 
     suspend fun redeemVoucher(request: VoucherRedeemRequest): Result<String> = withContext(Dispatchers.IO) {
         try {

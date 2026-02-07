@@ -22,6 +22,7 @@ import com.ecogo.ui.adapters.HomeStatAdapter
 import com.ecogo.ui.adapters.HomeStat
 import com.ecogo.repository.EcoGoRepository
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeFragment : Fragment() {
 
@@ -39,7 +40,7 @@ class HomeFragment : Fragment() {
     ): View {
         return try {
             Log.d("DEBUG_HOME", "HomeFragment onCreateView - inflating binding")
-            Toast.makeText(context, "🏠 HomeFragment 正在加载...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "\uD83C\uDFE0 HomeFragment 正在加载...", Toast.LENGTH_SHORT).show()
             _binding = FragmentHomeBinding.inflate(inflater, container, false)
             Log.d("DEBUG_HOME", "HomeFragment binding inflated successfully")
             Toast.makeText(context, "✅ HomeFragment 加载成功！", Toast.LENGTH_SHORT).show()
@@ -198,6 +199,22 @@ class HomeFragment : Fragment() {
 
             // Load SoC Score independently
             loadSocScore()
+
+            // 登录后提示 churn toast
+            // 只弹一次，避免每次刷新 home 都弹
+            if (shouldShowChurnToastToday()){
+                val userId = com.ecogo.auth.TokenManager.getUserId()
+                if (!userId.isNullOrBlank()) {
+                    val level = repository.fetchMyChurnRisk(userId)
+                    withContext(kotlinx.coroutines.Dispatchers.Main) {
+                        kotlinx.coroutines.delay(800)
+                        Log.d("CHURN", "TokenManager userId = ${com.ecogo.auth.TokenManager.getUserId()}")
+                        Toast.makeText(requireContext(), churnToastMessage(level), Toast.LENGTH_LONG).show()
+                    }
+                }
+
+            }
+
         }
     }
 
@@ -544,6 +561,30 @@ class HomeFragment : Fragment() {
             else -> R.drawable.ic_weather_cloudy
         }
     }
+
+//------------------------预警相关，郑思远修改--------------------------------
+    private fun churnToastMessage(riskLevel: String?): String {
+        return when (riskLevel?.uppercase()) {
+            "LOW" -> "EcoGo：状态稳定！完成一次绿色出行还能多拿积分～"
+            "MEDIUM" -> "EcoGo：给你一个小挑战，完成即可获得奖励积分！"
+            "HIGH" -> "EcoGo：最近不太活跃，送你一张限时券，回来看看吧！"
+            "INSUFFICIENT_DATA" -> "EcoGo：再多用一会儿，我们能给你更精准的建议～"
+            else -> "EcoGo：欢迎回来！"
+        }
+    }
+
+    private fun shouldShowChurnToastToday(): Boolean {
+        val sp = requireContext().getSharedPreferences("ecogo_pref", android.content.Context.MODE_PRIVATE)
+        val today = java.time.LocalDate.now().toString() // "2026-02-07"
+        val lastShown = sp.getString("churn_toast_last_date", null)
+        if (lastShown != today) {
+            sp.edit().putString("churn_toast_last_date", today).apply()
+            return true
+        }
+        return false
+    }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()
