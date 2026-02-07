@@ -100,9 +100,14 @@ class ActivitiesFragment : Fragment() {
     }
 
     private fun filterAndDisplayActivities() {
+        // Only show published/ongoing activities with type ONLINE
+        val activeActivities = allActivities.filter {
+            (it.status.equals("PUBLISHED", ignoreCase = true) || it.status.equals("ONGOING", ignoreCase = true))
+                    && it.type.equals("ONLINE", ignoreCase = true)
+        }
         val filtered = when (currentFilter) {
-            "JOINED" -> allActivities.filter { it.participantIds.contains(userId) }
-            else -> allActivities
+            "JOINED" -> activeActivities.filter { it.participantIds.contains(userId) }
+            else -> activeActivities
         }
 
         activityAdapter.updateActivities(filtered)
