@@ -279,14 +279,6 @@ class HomeFragment : Fragment() {
         ))
 
         (binding.recyclerHighlights.adapter as? HomeStatAdapter)?.updateData(stats)
-
-        // 加载活动列表（合并重复的loadHomeActivities逻辑）
-        val activitiesResult = repository.getAllActivities().getOrElse { MockData.ACTIVITIES }
-        binding.recyclerHighlights.adapter = HighlightAdapter(activitiesResult.take(3)) { activity ->
-            // 跳转到活动详情页，传递活动ID
-            val action = HomeFragmentDirections.actionHomeToActivityDetail(activity.id ?: "")
-            findNavController().navigate(action)
-        }
     }
 
     private suspend fun loadHomeActivities() {
