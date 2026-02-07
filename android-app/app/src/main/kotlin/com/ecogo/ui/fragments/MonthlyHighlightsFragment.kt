@@ -188,8 +188,8 @@ class MonthlyHighlightsFragment : Fragment() {
             color = "#A78BFA"
         ))
 
-        // 3. 获取用户已加入的挑战数量 (Mock data for now)
-        val joinedChallengesCount = 3 // TODO: Replace with real API call when challenges table is ready
+        // 3. 获取用户已加入的挑战数量
+        val joinedChallengesCount = repository.getJoinedChallengesCount(userId).getOrNull() ?: 0
 
         stats.add(MonthStat(
             icon = "🏆",

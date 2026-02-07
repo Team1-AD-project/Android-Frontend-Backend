@@ -268,8 +268,8 @@ class HomeFragment : Fragment() {
             color = "#A78BFA"
         ))
 
-        // 3. 获取用户已加入的挑战数量 (Mock data)
-        val joinedChallengesCount = 3 // TODO: Replace with real API
+        // 3. 获取用户已加入的挑战数量
+        val joinedChallengesCount = repository.getJoinedChallengesCount(userId).getOrNull() ?: 0
         stats.add(HomeStat(
             icon = "🏆",
             title = "Challenges",
