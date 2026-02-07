@@ -100,11 +100,7 @@ class VoucherAdapter(
                 else -> 0.6f
             }
 
-            // ---------- chip_status（你现在默认 gone，可按需显示） ----------
-            statusChip.visibility = if (!isOwned && voucher.available == true) View.VISIBLE else View.GONE
-            if (statusChip.visibility == View.VISIBLE) {
-                statusChip.text = "🔥 Popular"
-            }
+
 
             // ---------- 图片优先：img_icon / text_icon 兜底 ----------
             val url = voucher.imageUrl

@@ -56,6 +56,7 @@ data class Voucher(
     @SerializedName("isActive") val available: Boolean = true,
     val imageUrl: String? = null,
     val stock: Int? = null,
+    @SerializedName("vipLevelRequired") val vipLevelRequired: Int = 0,
 
     // ✅ 新增两个字段：Gson 不会报错，因为都有默认值
     val goodsId: String? = null,         // marketplace: goodsId=id；owned: goodsId=uv.goodsId

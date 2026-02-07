@@ -47,8 +47,8 @@ class ShopGoodsAdapterV2(
             binding.buttonRedeem.visibility = View.GONE
 
             // Shop 用 price
-            val price = item.price ?: 0.0
-            binding.textCost.text = String.format("%.2f", price)
+            val points = item.redemptionPoints ?: 0.0
+            binding.textCost.text = "${points} pts"
 
             // VIP 标签（有就显示）
             if (item.vipLevelRequired > 0) {
