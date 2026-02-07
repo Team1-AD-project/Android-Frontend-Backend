@@ -33,6 +33,7 @@ class ChallengesFragment : Fragment() {
     private lateinit var challengeAdapter: ChallengeAdapter
     private var allChallenges: List<Challenge> = emptyList()
     private var joinedChallengeIds: Set<String> = emptySet()
+    private var completedChallengeIds: MutableSet<String> = mutableSetOf()
     private var currentFilter: String = "ALL"
 
     override fun onCreateView(
@@ -107,6 +108,21 @@ class ChallengesFragment : Fragment() {
                     if (userResponse.success && userResponse.data != null) {
                         joinedChallengeIds = userResponse.data.map { it.id }.toSet()
                         Log.d("ChallengesFragment", "User joined ${joinedChallengeIds.size} challenges")
+
+                        // 检查每个已参加挑战的进度，判断哪些已完成
+                        completedChallengeIds.clear()
+                        for (challengeId in joinedChallengeIds) {
+                            try {
+                                val progressResp = RetrofitClient.apiService.getChallengeProgress(challengeId, userId)
+                                if (progressResp.code == 200 && progressResp.data != null) {
+                                    if (progressResp.data.status == "COMPLETED") {
+                                        completedChallengeIds.add(challengeId)
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                Log.e("ChallengesFragment", "Error checking progress for $challengeId", e)
+                            }
+                        }
                     }
                 } catch (e: Exception) {
                     Log.e("ChallengesFragment", "Error loading user challenges", e)
@@ -127,12 +143,12 @@ class ChallengesFragment : Fragment() {
      */
     private fun filterAndDisplayChallenges() {
         val filtered = when (currentFilter) {
-            "ACTIVE" -> allChallenges.filter { it.id in joinedChallengeIds }
-            "COMPLETED" -> allChallenges.filter { it.status == "COMPLETED" || it.status == "EXPIRED" }
+            "ACTIVE" -> allChallenges.filter { it.id in joinedChallengeIds && it.id !in completedChallengeIds }
+            "COMPLETED" -> allChallenges.filter { it.id in completedChallengeIds }
             else -> allChallenges
         }
 
-        challengeAdapter.updateChallenges(filtered)
+        challengeAdapter.updateChallenges(filtered, completedChallengeIds)
 
         // Show empty state
         if (filtered.isEmpty()) {

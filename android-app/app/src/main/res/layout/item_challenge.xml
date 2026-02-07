@@ -99,16 +99,16 @@
                 android:layout_width="0dp"
                 android:layout_height="8dp"
                 android:layout_weight="1"
-                android:max="10"
-                android:progress="6"
-                android:progressDrawable="@drawable/progress_circle" />
+                android:max="100"
+                android:progress="0"
+                android:progressDrawable="@drawable/progress_bar_horizontal" />
 
             <TextView
                 android:id="@+id/text_progress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="6 / 10 (60%)"
+                android:text=""
                 android:textColor="@color/primary"
                 android:textSize="12sp"
                 android:textStyle="bold" />

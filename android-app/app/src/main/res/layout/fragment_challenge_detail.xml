@@ -328,16 +328,16 @@
                         android:layout_width="0dp"
                         android:layout_height="12dp"
                         android:layout_weight="1"
-                        android:max="10"
-                        android:progress="6"
-                        android:progressDrawable="@drawable/progress_circle" />
+                        android:max="100"
+                        android:progress="0"
+                        android:progressDrawable="@drawable/progress_bar_horizontal" />
 
                     <TextView
                         android:id="@+id/text_progress_percent"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="60%"
+                        android:text="0%"
                         android:textColor="@color/primary"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -348,52 +348,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="6 / 10"
+                    android:text="0 / 0"
                     android:textColor="@color/text_muted"
                     android:textSize="14sp" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- 排行榜卡片 -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:cardBackgroundColor="@android:color/white"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Leaderboard"
-                    android:textColor="@color/text_primary"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_leaderboard"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:nestedScrollingEnabled="false" />
-
-                <TextView
-                    android:id="@+id/empty_leaderboard"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginVertical="24dp"
-                    android:text="No leaderboard data yet"
-                    android:textColor="@color/text_muted"
-                    android:textSize="14sp"
-                    android:visibility="gone" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

@@ -14,6 +14,8 @@ class ChallengeAdapter(
     private val onChallengeClick: (Challenge) -> Unit
 ) : RecyclerView.Adapter<ChallengeAdapter.ChallengeViewHolder>() {
 
+    private var completedIds: Set<String> = emptySet()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChallengeViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_challenge, parent, false)
@@ -22,7 +24,8 @@ class ChallengeAdapter(
 
     override fun onBindViewHolder(holder: ChallengeViewHolder, position: Int) {
         val challenge = challenges[position]
-        holder.bind(challenge)
+        val isCompleted = challenge.id in completedIds
+        holder.bind(challenge, isCompleted)
         holder.itemView.setOnClickListener {
             onChallengeClick(challenge)
         }
@@ -30,8 +33,9 @@ class ChallengeAdapter(
 
     override fun getItemCount() = challenges.size
 
-    fun updateChallenges(newChallenges: List<Challenge>) {
+    fun updateChallenges(newChallenges: List<Challenge>, completed: Set<String> = emptySet()) {
         challenges = newChallenges
+        completedIds = completed
         notifyDataSetChanged()
     }
 
@@ -46,15 +50,15 @@ class ChallengeAdapter(
         private val typeTag: TextView = itemView.findViewById(R.id.text_type_tag)
         private val statusBadge: TextView = itemView.findViewById(R.id.badge_status)
 
-        fun bind(challenge: Challenge) {
+        fun bind(challenge: Challenge, isCompleted: Boolean = false) {
             icon.text = challenge.icon
             title.text = challenge.title
             description.text = challenge.description
 
-            // 目标值显示（用户进度需要从API单独获取）
+            // 目标值显示
             val targetInt = challenge.target.toInt()
-            progress.max = targetInt
-            progress.progress = 0 // 用户具体进度需要调用 getChallengeProgress API
+            progress.max = if (targetInt > 0) targetInt else 1
+            progress.progress = if (isCompleted) targetInt else 0
             progressText.text = "Target: $targetInt ${getTargetUnit(challenge.type)}"
 
             // Reward
@@ -72,18 +76,18 @@ class ChallengeAdapter(
             }
 
             // Status badge
-            when (challenge.status) {
-                "ACTIVE" -> {
-                    statusBadge.visibility = View.GONE
-                }
-                "COMPLETED" -> {
+            when {
+                isCompleted -> {
                     statusBadge.visibility = View.VISIBLE
                     statusBadge.text = "Completed"
                     statusBadge.setBackgroundResource(R.drawable.badge_background)
                 }
-                "EXPIRED" -> {
+                challenge.status == "EXPIRED" -> {
                     statusBadge.visibility = View.VISIBLE
                     statusBadge.text = "Expired"
+                }
+                else -> {
+                    statusBadge.visibility = View.GONE
                 }
             }
         }
@@ -95,7 +99,7 @@ class ChallengeAdapter(
             return when (type) {
                 "GREEN_TRIPS_COUNT" -> "trips"
                 "GREEN_TRIPS_DISTANCE" -> "km"
-                "CARBON_SAVED" -> "g CO₂"
+                "CARBON_SAVED" -> "kg CO₂"
                 else -> ""
             }
         }

@@ -11,17 +11,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.ecogo.R
 import com.ecogo.api.RetrofitClient
 import com.ecogo.data.Challenge
 import com.ecogo.data.MascotEmotion
 import com.ecogo.data.MascotSize
-import com.ecogo.data.Ranking
 import com.ecogo.data.UserChallengeProgress
 import com.ecogo.databinding.FragmentChallengeDetailBinding
-import com.ecogo.ui.adapters.LeaderboardAdapter
-import com.ecogo.ui.dialogs.AchievementUnlockDialog
 import com.ecogo.auth.TokenManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
@@ -37,8 +33,6 @@ class ChallengeDetailFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val args: ChallengeDetailFragmentArgs by navArgs()
-    private lateinit var leaderboardAdapter: LeaderboardAdapter
-
     private var challengeId: String = ""
     private var isAccepted = false
     private var currentChallenge: Challenge? = null
@@ -59,7 +53,6 @@ class ChallengeDetailFragment : Fragment() {
         challengeId = args.challengeId
 
         setupMascot()
-        setupRecyclerView()
         setupUI()
         fetchChallengeFromApi()
         setupAnimations()
@@ -69,14 +62,6 @@ class ChallengeDetailFragment : Fragment() {
         binding.mascotCheer.apply {
             mascotSize = MascotSize.MEDIUM
             setEmotion(MascotEmotion.HAPPY)
-        }
-    }
-
-    private fun setupRecyclerView() {
-        leaderboardAdapter = LeaderboardAdapter(emptyList())
-        binding.recyclerLeaderboard.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = leaderboardAdapter
         }
     }
 
@@ -173,7 +158,7 @@ class ChallengeDetailFragment : Fragment() {
 
         // Progress - 默认显示目标值（用户进度需要单独获取）
         val target = challenge.target.toInt()
-        binding.progressChallenge.max = target
+        binding.progressChallenge.max = if (target > 0) target else 1
         binding.progressChallenge.progress = 0
         binding.textProgress.text = "0 / $target"
         binding.textProgressPercent.text = "0%"
@@ -197,10 +182,6 @@ class ChallengeDetailFragment : Fragment() {
         // Participants
         binding.textParticipants.text = "${challenge.participants} people"
 
-        // Leaderboard - 目前API未返回排行榜数据，先隐藏
-        binding.recyclerLeaderboard.visibility = View.GONE
-        binding.emptyLeaderboard.visibility = View.VISIBLE
-
         // Update button state
         updateButtonState(challenge.status)
     }
@@ -213,15 +194,27 @@ class ChallengeDetailFragment : Fragment() {
         val target = progress.target.toInt()
         val percent = progress.progressPercent.toInt()
 
-        binding.progressChallenge.max = target
-        binding.progressChallenge.progress = current
+        binding.progressChallenge.max = if (target > 0) target else 1
+        binding.progressChallenge.progress = current.coerceAtMost(target)
         binding.textProgress.text = "$current / $target"
         binding.textProgressPercent.text = "$percent%"
 
         // 更新按钮状态
         if (progress.status == "COMPLETED") {
-            binding.btnAccept.text = "Challenge Completed"
+            binding.btnAccept.text = "Challenge Completed ✓"
             binding.btnAccept.isEnabled = false
+
+            // 显示奖励已发放
+            val reward = currentChallenge?.reward ?: 0
+            if (reward > 0 && progress.rewardClaimed) {
+                Toast.makeText(requireContext(),
+                    "Congratulations! +$reward points rewarded!",
+                    Toast.LENGTH_SHORT).show()
+            }
+
+            // Mascot celebration
+            binding.mascotCheer.setEmotion(MascotEmotion.CELEBRATING)
+            binding.mascotCheer.celebrateAnimation()
         } else {
             binding.btnAccept.text = "Keep Going"
             binding.btnAccept.setIconResource(R.drawable.ic_check)

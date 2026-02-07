@@ -55,7 +55,7 @@
                 android:layout_marginTop="8dp"
                 android:max="100"
                 android:progress="0"
-                android:progressDrawable="@drawable/progress_circle" />
+                android:progressDrawable="@drawable/progress_bar_horizontal" />
 
             <TextView
                 android:id="@+id/text_challenge_progress"
