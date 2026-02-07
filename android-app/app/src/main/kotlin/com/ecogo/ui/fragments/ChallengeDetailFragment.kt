@@ -199,22 +199,23 @@ class ChallengeDetailFragment : Fragment() {
         binding.textProgress.text = "$current / $target"
         binding.textProgressPercent.text = "$percent%"
 
-        // 更新按钮状态
+        // 3-state button: Keep Going → Claim Reward → Challenge Completed
         if (progress.status == "COMPLETED") {
-            binding.btnAccept.text = "Challenge Completed ✓"
-            binding.btnAccept.isEnabled = false
-
-            // 显示奖励已发放
-            val reward = currentChallenge?.reward ?: 0
-            if (reward > 0 && progress.rewardClaimed) {
-                Toast.makeText(requireContext(),
-                    "Congratulations! +$reward points rewarded!",
-                    Toast.LENGTH_SHORT).show()
+            if (progress.rewardClaimed) {
+                // Reward already claimed → show completed
+                binding.btnAccept.text = "Challenge Completed \u2713"
+                binding.btnAccept.isEnabled = false
+                binding.mascotCheer.setEmotion(MascotEmotion.CELEBRATING)
+                binding.mascotCheer.celebrateAnimation()
+            } else {
+                // Completed but reward not claimed → show Claim Reward
+                val reward = currentChallenge?.reward ?: 0
+                binding.btnAccept.text = "Claim Reward (+$reward pts)"
+                binding.btnAccept.icon = null
+                binding.btnAccept.isEnabled = true
+                binding.mascotCheer.setEmotion(MascotEmotion.CELEBRATING)
+                binding.mascotCheer.celebrateAnimation()
             }
-
-            // Mascot celebration
-            binding.mascotCheer.setEmotion(MascotEmotion.CELEBRATING)
-            binding.mascotCheer.celebrateAnimation()
         } else {
             binding.btnAccept.text = "Keep Going"
             binding.btnAccept.setIconResource(R.drawable.ic_check)
@@ -246,7 +247,7 @@ class ChallengeDetailFragment : Fragment() {
     }
 
     /**
-     * 参加挑战
+     * 参加挑战 / 领取奖励
      */
     private fun acceptChallenge() {
         val userId = TokenManager.getUserId()
@@ -255,8 +256,9 @@ class ChallengeDetailFragment : Fragment() {
             return
         }
 
+        val progress = userProgress
         if (!isAccepted) {
-            // 调用API参加挑战
+            // Join challenge
             viewLifecycleOwner.lifecycleScope.launch {
                 try {
                     val response = RetrofitClient.apiService.joinChallenge(challengeId, userId)
@@ -264,8 +266,6 @@ class ChallengeDetailFragment : Fragment() {
                         isAccepted = true
                         userProgress = response.data
                         updateProgressUI(response.data)
-
-                        // Mascot celebration animation
                         binding.mascotCheer.celebrateAnimation()
 
                         MaterialAlertDialogBuilder(requireContext())
@@ -273,8 +273,6 @@ class ChallengeDetailFragment : Fragment() {
                             .setMessage("Challenge accepted! Let's complete it!")
                             .setPositiveButton("OK", null)
                             .show()
-
-                        Log.d("ChallengeDetail", "Joined challenge successfully")
                     } else {
                         Toast.makeText(requireContext(), "Failed to join: ${response.message}", Toast.LENGTH_SHORT).show()
                     }
@@ -283,17 +281,42 @@ class ChallengeDetailFragment : Fragment() {
                     Toast.makeText(requireContext(), "Network error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
+        } else if (progress != null && progress.status == "COMPLETED" && !progress.rewardClaimed) {
+            // Claim reward
+            claimReward(userId)
         } else {
-            // 用户已参加，检查是否完成
-            val progress = userProgress
-            if (progress != null && progress.status == "COMPLETED") {
-                // Show achievement unlock dialog if there's a badge
-                val challenge = currentChallenge
-                if (challenge?.badge != null) {
-                    Toast.makeText(requireContext(), "Congratulations! You've completed the challenge!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Keep going! You're making progress!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    /**
+     * 领取挑战完成奖励
+     */
+    private fun claimReward(userId: String) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                binding.btnAccept.isEnabled = false
+                val response = RetrofitClient.apiService.claimChallengeReward(challengeId, userId)
+                if (response.code == 200 && response.data != null) {
+                    userProgress = response.data
+                    updateProgressUI(response.data)
+
+                    val reward = currentChallenge?.reward ?: 0
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Reward Claimed!")
+                        .setMessage("Congratulations! You earned +$reward points!")
+                        .setPositiveButton("OK", null)
+                        .show()
+
+                    Log.d("ChallengeDetail", "Reward claimed successfully")
+                } else {
+                    binding.btnAccept.isEnabled = true
+                    Toast.makeText(requireContext(), "Failed to claim: ${response.message}", Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Toast.makeText(requireContext(), "Keep going! You're making progress!", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Log.e("ChallengeDetail", "Error claiming reward", e)
+                binding.btnAccept.isEnabled = true
+                Toast.makeText(requireContext(), "Network error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }

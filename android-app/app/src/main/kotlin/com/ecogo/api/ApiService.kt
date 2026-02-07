@@ -109,6 +109,16 @@ interface ApiService {
         @Query("userId") userId: String
     ): ApiResponse<UserChallengeProgress>
 
+    /**
+     * 领取挑战完成奖励
+     * POST /api/v1/mobile/challenges/{id}/claim-reward?userId={userId}
+     */
+    @POST("api/v1/mobile/challenges/{id}/claim-reward")
+    suspend fun claimChallengeReward(
+        @Path("id") challengeId: String,
+        @Query("userId") userId: String
+    ): ApiResponse<UserChallengeProgress>
+
     // ==================== 活动相关 ====================
 
     /**
