@@ -44,6 +44,7 @@ class SignupWizardFragment : Fragment() {
     
     private var currentStep = 0
     private var selectedFaculty: FacultyData? = null
+    private val repository = com.ecogo.repository.EcoGoRepository()
     
     // Step 0: Personal info
     private var username: String = ""
@@ -238,6 +239,11 @@ class SignupWizardFragment : Fragment() {
         }
     }
     
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> 6eedbfe (fix:fixUserRegister&UserPoints)
     private fun updateProfileStep(
         request: com.ecogo.api.UpdateProfileRequest,
         onSuccess: () -> Unit
@@ -247,6 +253,7 @@ class SignupWizardFragment : Fragment() {
         
         Log.d("DEBUG_SIGNUP", "Updating profile for $nusnetId with request: $request")
         
+<<<<<<< HEAD
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val apiService = com.ecogo.api.RetrofitClient.apiService
@@ -269,10 +276,31 @@ class SignupWizardFragment : Fragment() {
                     Log.e("DEBUG_SIGNUP", "Profile update network error: ${e.message}")
                     Toast.makeText(requireContext(), "Network error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
+=======
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val result = repository.updateInternalUserProfile(nusnetId, request)
+                
+                if (result.isSuccess) {
+                    Log.d("DEBUG_SIGNUP", "Profile update success")
+                    onSuccess()
+                } else {
+                    val error = result.exceptionOrNull()?.message ?: "Unknown error"
+                    Log.e("DEBUG_SIGNUP", "Profile update failed: $error")
+                    Toast.makeText(requireContext(), "Update failed: $error", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Log.e("DEBUG_SIGNUP", "Profile update network error: ${e.message}")
+                Toast.makeText(requireContext(), "Network error: ${e.message}", Toast.LENGTH_SHORT).show()
+>>>>>>> 6eedbfe (fix:fixUserRegister&UserPoints)
             }
         }
     }
 
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> 6eedbfe (fix:fixUserRegister&UserPoints)
     private fun showFacultySelection() {
         currentStep = 1
         
@@ -382,10 +410,24 @@ class SignupWizardFragment : Fragment() {
         }
         
         // Continue按钮
+<<<<<<< HEAD
          binding.layoutTransportPreference.btnContinueTransport.setOnClickListener {
              // Prepare API Request
              val request = com.ecogo.api.UpdateProfileRequest(
                  preferences = com.ecogo.api.TransportPreferencesWrapper(
+=======
+<<<<<<< Updated upstream
+        binding.layoutTransportPreference.btnContinueTransport.isEnabled = false
+        binding.layoutTransportPreference.btnContinueTransport.alpha = 0.5f
+        binding.layoutTransportPreference.btnContinueTransport.setOnClickListener {
+            Log.d("DEBUG_SIGNUP", "Transport prefs selected: ${transportPrefs.joinToString(", ")}")
+            showCommonLocations()
+=======
+         binding.layoutTransportPreference.btnContinueTransport.setOnClickListener {
+             // Prepare API Request
+             val request = com.ecogo.api.UpdateProfileRequest(
+                 preferences = com.ecogo.api.UpdatePreferencesWrapper(
+>>>>>>> 6eedbfe (fix:fixUserRegister&UserPoints)
                      preferredTransport = transportPrefs.toList()
                  )
              )
@@ -398,6 +440,10 @@ class SignupWizardFragment : Fragment() {
                  binding.layoutTransportPreference.btnContinueTransport.text = "Continue" // Reset text (though we move)
                  showCommonLocations()
              }
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> 6eedbfe (fix:fixUserRegister&UserPoints)
         }
     }
     
@@ -439,11 +485,25 @@ class SignupWizardFragment : Fragment() {
             dormitory = binding.layoutCommonLocations.inputDorm.text.toString()
             teachingBuilding = binding.layoutCommonLocations.inputBuilding.text.toString()
             studySpot = binding.layoutCommonLocations.inputLibrary.text.toString()
+<<<<<<< HEAD
             
             val request = com.ecogo.api.UpdateProfileRequest(
                 dormitoryOrResidence = dormitory,
                 mainTeachingBuilding = teachingBuilding,
                 favoriteStudySpot = studySpot
+=======
+<<<<<<< Updated upstream
+            Log.d("DEBUG_SIGNUP", "Locations: dorm=$dormitory, building=$teachingBuilding, spot=$studySpot")
+            showInterestsGoals()
+=======
+            
+            val request = com.ecogo.api.UpdateProfileRequest(
+                preferences = com.ecogo.api.UpdatePreferencesWrapper(
+                    dormitoryOrResidence = dormitory,
+                    mainTeachingBuilding = teachingBuilding,
+                    favoriteStudySpot = studySpot
+                )
+>>>>>>> 6eedbfe (fix:fixUserRegister&UserPoints)
             )
             
             binding.layoutCommonLocations.btnContinueLocations.isEnabled = false
@@ -452,6 +512,10 @@ class SignupWizardFragment : Fragment() {
             updateProfileStep(request) {
                 showInterestsGoals()
             }
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> 6eedbfe (fix:fixUserRegister&UserPoints)
         }
     }
     
@@ -504,6 +568,7 @@ class SignupWizardFragment : Fragment() {
         
         // Finish按钮
         binding.layoutInterestsGoals.btnFinishSignup.setOnClickListener {
+<<<<<<< HEAD
             // Prepare request
             val request = com.ecogo.api.UpdateProfileRequest(
                 interests = interests.toList(),
@@ -511,6 +576,22 @@ class SignupWizardFragment : Fragment() {
                 newChallenges = notifyChallenges,
                 activityReminders = notifyReminders,
                 friendActivity = notifyFriends
+=======
+<<<<<<< Updated upstream
+            Log.d("DEBUG_SIGNUP", "Interests: ${interests.joinToString(", ")}, Goal: $weeklyGoal")
+            selectedFaculty?.let { faculty ->
+                showMascotReveal(faculty)
+=======
+            // Prepare request
+            val request = com.ecogo.api.UpdateProfileRequest(
+                preferences = com.ecogo.api.UpdatePreferencesWrapper(
+                    interests = interests.toList(),
+                    weeklyGoals = weeklyGoal,
+                    newChallenges = notifyChallenges,
+                    activityReminders = notifyReminders,
+                    friendActivity = notifyFriends
+                )
+>>>>>>> 6eedbfe (fix:fixUserRegister&UserPoints)
             )
             
             binding.layoutInterestsGoals.btnFinishSignup.isEnabled = false
@@ -520,6 +601,10 @@ class SignupWizardFragment : Fragment() {
                  selectedFaculty?.let { faculty ->
                     showMascotReveal(faculty)
                 }
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> 6eedbfe (fix:fixUserRegister&UserPoints)
             }
         }
     }

@@ -1002,37 +1002,37 @@ object MockData {
     // Faculty data for signup with outfit configurations
     val FACULTY_DATA by lazy { listOf(
         FacultyData(
-            id = "eng",
-            name = "Engineering",
+            id = "soc",
+            name = "School of Computing",
             color = "#3B82F6",
-            slogan = "Building the Future 🛠️",
+            slogan = "Building the Future 💻",
+            outfit = Outfit(head = "hat_grad", face = "glasses_nerd", body = "shirt_hoodie")
+        ),
+        FacultyData(
+            id = "eng",
+            name = "Faculty of Engineering",
+            color = "#EF4444",
+            slogan = "Innovating the World 🛠️",
             outfit = Outfit(head = "hat_helmet", face = "none", body = "body_plaid")
         ),
         FacultyData(
             id = "biz",
-            name = "Business School",
+            name = "School of Business",
             color = "#EAB308",
             slogan = "Leading the Way 💼",
             outfit = Outfit(head = "none", face = "none", body = "body_suit")
         ),
         FacultyData(
-            id = "arts",
-            name = "Arts & Social Sci",
+            id = "fass",
+            name = "Faculty of Arts & Social Sciences",
             color = "#F97316",
             slogan = "Create & Inspire 🎨",
             outfit = Outfit(head = "hat_beret", face = "none", body = "body_coat")
         ),
         FacultyData(
-            id = "med",
-            name = "Medicine",
-            color = "#10B981",
-            slogan = "Saving Lives 🩺",
-            outfit = Outfit(head = "none", face = "none", body = "body_coat")
-        ),
-        FacultyData(
             id = "sci",
-            name = "Science",
-            color = "#6366F1",
+            name = "Faculty of Science",
+            color = "#10B981",
             slogan = "Discovering Truth 🧪",
             outfit = Outfit(head = "none", face = "face_goggles", body = "body_coat")
         )

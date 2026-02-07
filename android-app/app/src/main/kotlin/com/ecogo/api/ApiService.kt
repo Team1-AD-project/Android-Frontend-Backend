@@ -551,19 +551,29 @@ interface ApiService {
     suspend fun login(@Body request: MobileLoginRequest): ApiResponse<MobileLoginResponse>
 
     /**
+     * 更新内部用户资料 (无需Token, 注册向导使用)
+     * PUT /internal/users/{userid}/profile
+     */
+    @PUT("api/v1/internal/users/{userid}/profile")
+    suspend fun updateInternalUserProfile(
+        @Path("userid") userId: String,
+        @Body request: UpdateProfileRequest
+    ): ApiResponse<Any>
+
+    /**
      * 获取用户信息 (包含VIP状态)
      * GET /api/v1/mobile/users/{id}
      */
     @GET("api/v1/mobile/users/{id}")
     suspend fun getUserProfile(@Path("id") userId: String): ApiResponse<UserInfo>
 
-
     /**
      * 获取移动端用户详细资料
-     * GET /api/v1/mobile/users/profile/{userId}
+     * GET /api/v1/mobile/users/profile
      */
-    @GET("api/v1/mobile/users/profile/{userId}")
-    suspend fun getMobileUserProfile(@Path("userId") userId: String): ApiResponse<MobileProfileResponse>
+    @GET("api/v1/mobile/users/profile")
+    suspend fun getMobileUserProfile(): ApiResponse<MobileProfileResponse>
+
 
     /**
      * 获取当前积分
@@ -578,6 +588,15 @@ interface ApiService {
      */
     @GET("api/v1/mobile/points/history")
     suspend fun getMobilePointsHistory(): ApiResponse<List<PointHistoryItem>>
+
+
+    /**
+     * 获取学院积分/SoC Score
+     * GET /api/v1/mobile/points/stats/faculty
+     */
+    @GET("api/v1/mobile/points/stats/faculty")
+    suspend fun getFacultyPointsStats(): ApiResponse<Int>
+
 
     @POST("api/v1/mobile/users/register")
     suspend fun register(@Body request: MobileRegisterRequest): ApiResponse<MobileRegisterData>
@@ -658,7 +677,16 @@ data class UserPreferences(
     val theme: String,
     val shareLocation: Boolean,
     val showOnLeaderboard: Boolean,
-    val shareAchievements: Boolean
+    val shareAchievements: Boolean,
+    val dormitoryOrResidence: String?,
+    val mainTeachingBuilding: String?,
+    val favoriteStudySpot: String?,
+    val interests: List<String>?,
+    val weeklyGoals: Int,
+    val newChallenges: Boolean,
+    val activityReminders: Boolean,
+    val friendActivity: Boolean
+
 )
 
 data class ActivityMetrics(
@@ -666,6 +694,7 @@ data class ActivityMetrics(
     val activeDays30d: Int,
     val lastTripDays: Int,
     val loginFrequency7d: Int
+
 )
 
 data class VipInfo(
@@ -700,11 +729,19 @@ data class MobileRegisterData(
 /**
  * 更新个人资料请求 (支持部分更新)
  */
+
 data class UpdateProfileRequest(
     val nickname: String? = null,
     val phone: String? = null,
     val faculty: String? = null,
-    val preferences: TransportPreferencesWrapper? = null,
+
+    val preferences: UpdatePreferencesWrapper? = null,
+    val mascotOutfit: MascotOutfitDto? = null,
+    val inventory: List<String>? = null
+)
+
+data class UpdatePreferencesWrapper(
+    val preferredTransport: List<String>? = null,
     val dormitoryOrResidence: String? = null,
     val mainTeachingBuilding: String? = null,
     val favoriteStudySpot: String? = null,
@@ -712,6 +749,7 @@ data class UpdateProfileRequest(
     val weeklyGoals: Int? = null,
     val newChallenges: Boolean? = null,
     val activityReminders: Boolean? = null,
+
     val friendActivity: Boolean? = null,
     val mascotOutfit: MascotOutfitDto? = null,
     val inventory: List<String>? = null
@@ -729,6 +767,7 @@ data class MascotOutfitDto(
     val face: String = "none",
     val body: String = "none",
     val badge: String = "none"
+
 )
 
 

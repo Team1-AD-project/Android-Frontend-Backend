@@ -475,6 +475,7 @@ class EcoGoRepository {
     // ==================== 新功能 API 方法 ====================
     
     /**
+
      * 获取用户资料 (Internal API)
      */
     suspend fun getUserProfile(userId: String): Result<UserInfo> =
@@ -491,10 +492,12 @@ class EcoGoRepository {
             }
         }
 
+
     /**
      * 更新用户资料
      * PUT /api/v1/internal/users/{userid}/profile
      */
+
     suspend fun updateUserProfile(userId: String, request: com.ecogo.api.UpdateProfileRequest): Result<Any> =
         withContext(Dispatchers.IO) {
             try {
@@ -510,12 +513,30 @@ class EcoGoRepository {
         }
 
     /**
-     * 获取移动端用户详细资料 (Authenticated)
+     * 更新用户资料
      */
-    suspend fun getMobileUserProfile(userId: String): Result<MobileProfileResponse> =
+    suspend fun updateInternalUserProfile(userId: String, request: com.ecogo.api.UpdateProfileRequest): Result<Any> =
         withContext(Dispatchers.IO) {
             try {
-                val response = api.getMobileUserProfile(userId)
+                val response = api.updateInternalUserProfile(userId, request)
+                if (response.success) {
+                    Result.success(response.data ?: Unit)
+                } else {
+                    Result.failure(Exception(response.message))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+
+    /**
+     * 获取移动端用户详细资料 (Authenticated)
+     */
+    // 统一参数：保留无参版本（匹配api.getMobileUserProfile()调用），避免参数不一致报错
+    suspend fun getMobileUserProfile(): Result<MobileProfileResponse> =
+        withContext(Dispatchers.IO) {
+            try {
+                val response = api.getMobileUserProfile()
                 if (response.success && response.data != null) {
                     Result.success(response.data)
                 } else {
@@ -530,6 +551,23 @@ class EcoGoRepository {
         withContext(Dispatchers.IO) {
             try {
                 val response = api.getMobilePointsHistory()
+                if (response.success && response.data != null) {
+                    Result.success(response.data)
+                } else {
+                    Result.failure(Exception(response.message))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+
+    /**
+     * 获取院系积分统计
+     */
+    suspend fun getFacultyPointsStats(): Result<Int> =
+        withContext(Dispatchers.IO) {
+            try {
+                val response = api.getFacultyPointsStats()
                 if (response.success && response.data != null) {
                     Result.success(response.data)
                 } else {
@@ -577,7 +615,7 @@ class EcoGoRepository {
                 Result.failure(e)
             }
         }
-    
+
     /**
      * 每日签到
      * POST /api/v1/checkin?userId={userId}
@@ -597,7 +635,7 @@ class EcoGoRepository {
                 Result.failure(e)
             }
         }
-    
+
     /**
      * 获取签到状态
      */
@@ -614,7 +652,7 @@ class EcoGoRepository {
                 Result.failure(e)
             }
         }
-    
+
     /**
      * 获取签到历史记录
      */
@@ -631,7 +669,7 @@ class EcoGoRepository {
                 Result.failure(e)
             }
         }
-    
+
     /**
      * 获取今日目标进度
      */
@@ -648,7 +686,7 @@ class EcoGoRepository {
                 Result.failure(e)
             }
         }
-    
+
     /**
      * 获取天气和空气质量
      */
@@ -665,7 +703,7 @@ class EcoGoRepository {
                 Result.failure(e)
             }
         }
-    
+
     /**
      * 获取通知列表
      */
@@ -682,7 +720,7 @@ class EcoGoRepository {
                 Result.failure(e)
             }
         }
-    
+
     /**
      * 标记通知为已读
      */
@@ -699,7 +737,7 @@ class EcoGoRepository {
                 Result.failure(e)
             }
         }
-    
+
     /**
      * 获取碳足迹数据
      */
@@ -716,7 +754,7 @@ class EcoGoRepository {
                 Result.failure(e)
             }
         }
-    
+
     /**
      * 获取好友列表
      */
@@ -733,7 +771,7 @@ class EcoGoRepository {
                 Result.failure(e)
             }
         }
-    
+
     /**
      * 获取好友动态
      */
@@ -750,9 +788,9 @@ class EcoGoRepository {
                 Result.failure(e)
             }
         }
-    
+
     // ==================== 商店相关 ====================
-    
+
     /**
      * 获取商店商品列表
      */
@@ -771,7 +809,7 @@ class EcoGoRepository {
             Result.failure(e)
         }
     }
-    
+
     /**
      * 获取商品详情
      */
@@ -787,7 +825,7 @@ class EcoGoRepository {
             Result.failure(e)
         }
     }
-    
+
     /**
      * 积分兑换商品
      */
@@ -808,7 +846,7 @@ class EcoGoRepository {
             Result.failure(e)
         }
     }
-    
+
     /**
      * 创建支付Intent
      */
@@ -828,7 +866,7 @@ class EcoGoRepository {
             Result.failure(e)
         }
     }
-    
+
     /**
      * 确认支付
      */
@@ -849,9 +887,9 @@ class EcoGoRepository {
             Result.failure(e)
         }
     }
-    
+
     // ==================== 社区动态相关 ====================
-    
+
     /**
      * 获取社区动态信息流
      */
@@ -865,7 +903,7 @@ class EcoGoRepository {
                 // } else {
                 //     Result.failure(Exception(response.message))
                 // }
-                
+
                 // 目前返回Mock数据
                 val now = System.currentTimeMillis()
                 val mockFeed = listOf(
@@ -929,7 +967,7 @@ class EcoGoRepository {
                 Result.failure(e)
             }
         }
-    
+
     /**
      * 发布动态
      */
@@ -943,13 +981,13 @@ class EcoGoRepository {
                 // } else {
                 //     Result.failure(Exception(response.message))
                 // }
-                
+
                 Result.success(Unit)
             } catch (e: Exception) {
                 Result.failure(e)
             }
         }
-    
+
     // ==================== 挑战系统相关 ====================
 
     /**
@@ -1036,9 +1074,9 @@ class EcoGoRepository {
                 Result.failure(e)
             }
         }
-    
+
     // ==================== 绿色点位相关 ====================
-    
+
     /**
      * 获取所有绿色点位
      */
@@ -1051,7 +1089,7 @@ class EcoGoRepository {
                 Result.failure(e)
             }
         }
-    
+
     /**
      * 收集绿色点位
      */

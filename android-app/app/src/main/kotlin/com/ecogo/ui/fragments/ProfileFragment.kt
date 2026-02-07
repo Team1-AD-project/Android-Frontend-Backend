@@ -33,11 +33,11 @@ import com.ecogo.ui.adapters.ShopItemAdapter
 import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
-    
+
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
     private val repository = EcoGoRepository()
-    
+
     // State management — loaded from API, persisted on changes
     private var currentPoints = 0
     private val inventory = mutableListOf<String>()
@@ -47,7 +47,7 @@ class ProfileFragment : Fragment() {
         "body" to "none",
         "badge" to "none"
     )
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,10 +56,10 @@ class ProfileFragment : Fragment() {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         setupUI()
         setupFacultyOutfitsRecyclerView()
         setupShopRecyclerView()
@@ -67,35 +67,35 @@ class ProfileFragment : Fragment() {
         setupHistoryRecyclerView()
         setupTabs()
         setupAnimations()
-        setupActions()
-        setupActions()
+        setupActions() // 移除重复的setupActions()调用
         loadHistory()
         loadUserProfile()
-        
+
         Log.d("ProfileFragment", "Profile screen initialized with ${inventory.size} owned items")
     }
-    
+
+
     private fun loadUserProfile() {
         // First restore from local cache immediately (fast UI)
         restoreFromLocalCache()
 
-        val userId = TokenManager.getUserId() ?: return
+        // val userId = TokenManager.getUserId() ?: return // userId not needed for API call
         viewLifecycleOwner.lifecycleScope.launch {
-            val result = repository.getMobileUserProfile(userId)
+            val result = repository.getMobileUserProfile()
             val profile = result.getOrNull()
             if (profile != null) {
                 val userInfo = profile.userInfo
-                
+
                 // Update points
                 currentPoints = userInfo.currentPoints
                 binding.textPoints.text = currentPoints.toString()
-                
+
                 // Update basic info
                 binding.textName.text = userInfo.nickname
-                
+
                 // Update faculty if available
                 userInfo.faculty?.let { faculty ->
-                     binding.textFaculty.text = "$faculty • Year 2"
+                    binding.textFaculty.text = "$faculty • Year 2"
                 }
 
                 // Restore mascot outfit from server
@@ -116,7 +116,7 @@ class ProfileFragment : Fragment() {
 
                 // Sync local cache
                 saveToLocalCache()
-                
+
                 Log.d("ProfileFragment", "Loaded user profile: ${userInfo.nickname}, points: $currentPoints, inventory: ${inventory.size} items")
             }
         }
@@ -193,16 +193,16 @@ class ProfileFragment : Fragment() {
             Log.e("ProfileFragment", "Failed to restore local cache: ${e.message}")
         }
     }
-    
+
     private fun setupUI() {
         binding.textPoints.text = currentPoints.toString()
         binding.textName.text = "Alex Tan"
         binding.textFaculty.text = "Computer Science • Year 2"
-        
+
         // 初始化 MascotLionView
         updateMascotOutfit()
     }
-    
+
     private fun setupFacultyOutfitsRecyclerView() {
         binding.recyclerFacultyOutfits.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -225,17 +225,17 @@ class ProfileFragment : Fragment() {
 
     private fun setupShopRecyclerView() {
         Log.d("ProfileFragment", "Setting up shop RecyclerView with ${MockData.SHOP_ITEMS.size} items")
-        
+
         val adapter = ShopItemAdapter(getShopItemsWithState()) { item ->
             handleItemClick(item)
         }
-        
+
         binding.recyclerShop.apply {
             layoutManager = GridLayoutManager(context, 2)
             this.adapter = adapter
         }
     }
-    
+
     /** 学院服装中用到的所有配件 ID（用于在全部服装中优先展示） */
     private fun getFacultyOutfitItemIds(): Set<String> {
         val ids = mutableSetOf<String>()
@@ -265,13 +265,13 @@ class ProfileFragment : Fragment() {
         val otherItems = allItems.filter { it.id !in facultyIds }
         return facultyItems + otherItems
     }
-    
+
     private fun handleItemClick(item: ShopItem) {
         Log.d("ProfileFragment", "Item clicked: ${item.id}, owned=${item.owned}, equipped=${item.equipped}")
-        
+
         val isOwned = inventory.contains(item.id)
         val isEquipped = currentOutfit[item.type] == item.id
-        
+
         when {
             // 已装备 → 卸下
             isEquipped -> {
@@ -300,11 +300,11 @@ class ProfileFragment : Fragment() {
                     updateMascotOutfit()
                     persistMascotState()
                     showSuccessDialog("Bought & Equipped ${item.name}!", "-${item.cost} pts")
-                    
+
                     // 动画反馈
                     val popIn = AnimationUtils.loadAnimation(requireContext(), R.anim.pop_in)
                     binding.cardMascot.startAnimation(popIn)
-                    
+
                     Log.d("ProfileFragment", "Purchased ${item.name} for ${item.cost} pts")
                 } else {
                     android.widget.Toast.makeText(
@@ -317,7 +317,7 @@ class ProfileFragment : Fragment() {
             }
         }
     }
-    
+
     private fun updateMascotOutfit() {
         // 更新小狮子外观
         binding.mascotLion.outfit = Outfit(
@@ -327,33 +327,33 @@ class ProfileFragment : Fragment() {
             badge = currentOutfit["badge"] ?: "none"
         )
     }
-    
+
     private fun refreshShopAdapter() {
         (binding.recyclerShop.adapter as? ShopItemAdapter)?.updateItems(getShopItemsWithState())
     }
-    
+
     private fun showSuccessDialog(message: String, points: String? = null) {
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_success)
         dialog.window?.setBackgroundDrawableResource(android.R.drawable.screen_background_light_transparent)
-        
+
         val textMessage = dialog.findViewById<TextView>(R.id.text_message)
         val textPoints = dialog.findViewById<TextView>(R.id.text_points)
         val buttonOk = dialog.findViewById<com.google.android.material.button.MaterialButton>(R.id.button_ok)
-        
+
         textMessage.text = message
         if (points != null) {
             textPoints.text = points
             textPoints.visibility = View.VISIBLE
         }
-        
+
         buttonOk.setOnClickListener {
             dialog.dismiss()
         }
-        
+
         dialog.show()
-        
+
         // 对话框弹入动画
         dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
     }
@@ -366,7 +366,7 @@ class ProfileFragment : Fragment() {
             }
         }
     }
-    
+
     private fun handleBadgeClick(badgeId: String) {
         // 只有解锁的徽章可以装备
         val achievement = MockData.ACHIEVEMENTS.find { it.id == badgeId }
@@ -377,9 +377,9 @@ class ProfileFragment : Fragment() {
                 Log.d("ProfileFragment", "Achievement locked: $badgeId")
                 return
             }
-            
+
             val isEquipped = currentOutfit["badge"] == badgeId
-            
+
             if (isEquipped) {
                 // 卸下徽章
                 currentOutfit["badge"] = "none"
@@ -387,13 +387,13 @@ class ProfileFragment : Fragment() {
                 // 装备徽章
                 currentOutfit["badge"] = badgeId
             }
-            
+
             updateMascotOutfit()
             persistMascotState()
             Log.d("ProfileFragment", "Badge toggled: $badgeId")
         }
     }
-    
+
     /**
      * 显示成就解锁弹窗（示例方法）
      * 实际应用中应该在满足成就条件时调用
@@ -458,7 +458,7 @@ class ProfileFragment : Fragment() {
             binding.tabClosetIndicator.setBackgroundColor(if (tab == "closet") primary else transparent)
             binding.tabBadgesIndicator.setBackgroundColor(if (tab == "badges") primary else transparent)
             binding.tabHistoryIndicator.setBackgroundColor(if (tab == "history") primary else transparent)
-            
+
             Log.d("ProfileFragment", "Tab switched to: $tab")
         }
 
@@ -471,7 +471,7 @@ class ProfileFragment : Fragment() {
     private fun setupAnimations() {
         // MascotLionView 自带呼吸和眨眼动画
         // 点击触发跳跃动画在 View 内部处理
-        
+
         // 卡片弹入动画
         val popIn = AnimationUtils.loadAnimation(requireContext(), R.anim.pop_in)
         binding.cardMascot.startAnimation(popIn)
@@ -485,14 +485,14 @@ class ProfileFragment : Fragment() {
         binding.buttonRedeem.setOnClickListener {
             findNavController().navigate(R.id.action_profile_to_voucher)
         }
-        
+
         // 添加商店入口：点击Closet tab可以进入完整商店
         binding.tabCloset.setOnLongClickListener {
             findNavController().navigate(R.id.action_profile_to_shop)
             true
         }
     }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

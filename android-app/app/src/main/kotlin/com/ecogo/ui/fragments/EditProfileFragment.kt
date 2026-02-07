@@ -12,7 +12,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.ecogo.R
 import com.ecogo.api.MobileProfileResponse
+
 import com.ecogo.api.TransportPreferencesWrapper
+
 import com.ecogo.api.UpdateProfileRequest
 import com.ecogo.auth.TokenManager
 import com.ecogo.databinding.FragmentEditProfileBinding
@@ -94,7 +96,9 @@ class EditProfileFragment : Fragment() {
         val userId = com.ecogo.auth.TokenManager.getUserId() ?: return
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                val result = repository.getMobileUserProfile(userId)
+
+                val result = repository.getMobileUserProfile()
+
                 val profile = result.getOrNull()
 
                 if (profile != null) {
@@ -124,25 +128,36 @@ class EditProfileFragment : Fragment() {
         // Note: The API stores these as part of the profile, we load them if available
         // For now we populate from SharedPreferences as a fallback
         loadLocalPreferences()
+        // Populate fields from API preferences (fallback to local if null?)
+        // The API now returns these fields in `preferences` object
+        binding.editDormitory.setText(prefs?.dormitoryOrResidence ?: "")
+        binding.editTeachingBuilding.setText(prefs?.mainTeachingBuilding ?: "")
+        binding.editStudySpot.setText(prefs?.favoriteStudySpot ?: "")
+        
+        // Weekly goal from API or default
+        val goal = prefs?.weeklyGoals ?: 10000
+        binding.editWeeklyGoals.setText(goal.toString())
+
 
         // Transport preferences
         prefs?.preferredTransport?.let { transports ->
             binding.chipBus.isChecked = transports.contains("bus")
             binding.chipMrt.isChecked = transports.contains("mrt")
             binding.chipBicycle.isChecked = transports.contains("bicycle")
-            binding.chipWalk.isChecked = transports.contains("walk")
+            binding.chipWalk.isChecked = transports.contains("walking") // API returns 'walking', chip might need mapping
         }
 
         // Notification preferences
-        binding.switchNewChallenges.isChecked = getLocalPref("newChallenges", true)
-        binding.switchActivityReminders.isChecked = getLocalPref("activityReminders", true)
-        binding.switchFriendActivity.isChecked = getLocalPref("friendActivity", false)
+        binding.switchNewChallenges.isChecked = prefs?.newChallenges ?: true
+        binding.switchActivityReminders.isChecked = prefs?.activityReminders ?: true
+        binding.switchFriendActivity.isChecked = prefs?.friendActivity ?: false
 
-        // Weekly goals
-        val weeklyGoals = getLocalPrefInt("weeklyGoals", 10000)
+        // Weekly goals (保留本地兜底逻辑，API无数据时用本地值)
+        val weeklyGoals = prefs?.weeklyGoals ?: getLocalPrefInt("weeklyGoals", 10000)
         binding.editWeeklyGoals.setText(weeklyGoals.toString())
     }
 
+    // 保留本地偏好加载方法（API无数据时兜底，不直接删除）
     private fun loadLocalPreferences() {
         val prefs = requireContext().getSharedPreferences("ecogo_profile", android.content.Context.MODE_PRIVATE)
         binding.editDormitory.setText(prefs.getString("dormitoryOrResidence", "") ?: "")
@@ -150,11 +165,13 @@ class EditProfileFragment : Fragment() {
         binding.editStudySpot.setText(prefs.getString("favoriteStudySpot", "") ?: "")
     }
 
+    // 保留本地偏好获取方法（兜底用）
     private fun getLocalPref(key: String, default: Boolean): Boolean {
         val prefs = requireContext().getSharedPreferences("ecogo_profile", android.content.Context.MODE_PRIVATE)
         return prefs.getBoolean(key, default)
     }
 
+    // 保留本地int偏好获取方法（weeklyGoals兜底用）
     private fun getLocalPrefInt(key: String, default: Int): Int {
         val prefs = requireContext().getSharedPreferences("ecogo_profile", android.content.Context.MODE_PRIVATE)
         return prefs.getInt(key, default)
@@ -189,23 +206,29 @@ class EditProfileFragment : Fragment() {
         if (binding.chipBus.isChecked) transports.add("bus")
         if (binding.chipMrt.isChecked) transports.add("mrt")
         if (binding.chipBicycle.isChecked) transports.add("bicycle")
-        if (binding.chipWalk.isChecked) transports.add("walk")
+
+        if (binding.chipWalk.isChecked) transports.add("walking") // Use "walking" to match API
+
 
         val newChallenges = binding.switchNewChallenges.isChecked
         val activityReminders = binding.switchActivityReminders.isChecked
         val friendActivity = binding.switchFriendActivity.isChecked
 
-        // Build request
+        // Build request using new wrapper
         val request = UpdateProfileRequest(
+            nickname = nickname,
             faculty = faculty?.ifEmpty { null },
-            preferences = if (transports.isNotEmpty()) TransportPreferencesWrapper(transports) else null,
-            dormitoryOrResidence = dormitory?.ifEmpty { null },
-            mainTeachingBuilding = teachingBuilding?.ifEmpty { null },
-            favoriteStudySpot = studySpot?.ifEmpty { null },
-            weeklyGoals = weeklyGoals,
-            newChallenges = newChallenges,
-            activityReminders = activityReminders,
-            friendActivity = friendActivity
+            preferences = com.ecogo.api.UpdatePreferencesWrapper(
+                preferredTransport = if (transports.isNotEmpty()) transports else null,
+                dormitoryOrResidence = dormitory?.ifEmpty { null },
+                mainTeachingBuilding = teachingBuilding?.ifEmpty { null },
+                favoriteStudySpot = studySpot?.ifEmpty { null },
+                weeklyGoals = weeklyGoals,
+                newChallenges = newChallenges,
+                activityReminders = activityReminders,
+                friendActivity = friendActivity
+            )
+
         )
 
         // Disable save buttons during request

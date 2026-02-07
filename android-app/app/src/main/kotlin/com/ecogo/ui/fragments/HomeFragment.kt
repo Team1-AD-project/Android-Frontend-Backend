@@ -24,14 +24,14 @@ import com.ecogo.repository.EcoGoRepository
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
-    
+
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private val repository = EcoGoRepository()
-    
+
     // 用户当前装备（实际应用中从用户数据获取）
     private val currentOutfit = Outfit(head = "none", face = "none", body = "shirt_nus", badge = "a1")
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,13 +50,13 @@ class HomeFragment : Fragment() {
             throw e
         }
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         try {
             Log.d("DEBUG_HOME", "HomeFragment onViewCreated - starting setup")
-            
+
             try {
                 setupUI()
                 Log.d("DEBUG_HOME", "setupUI completed")
@@ -64,41 +64,41 @@ class HomeFragment : Fragment() {
                 Log.e("DEBUG_HOME", "setupUI FAILED: ${e.message}", e)
                 Toast.makeText(requireContext(), "setupUI 失败: ${e.message}", Toast.LENGTH_SHORT).show()
             }
-            
+
             try {
                 setupRecyclerView()
                 Log.d("DEBUG_HOME", "setupRecyclerView completed")
             } catch (e: Exception) {
                 Log.e("DEBUG_HOME", "setupRecyclerView FAILED: ${e.message}", e)
             }
-            
+
             try {
                 setupAnimations()
                 Log.d("DEBUG_HOME", "setupAnimations completed")
             } catch (e: Exception) {
                 Log.e("DEBUG_HOME", "setupAnimations FAILED: ${e.message}", e)
             }
-            
+
             try {
                 setupActions()
                 Log.d("DEBUG_HOME", "setupActions completed")
             } catch (e: Exception) {
                 Log.e("DEBUG_HOME", "setupActions FAILED: ${e.message}", e)
             }
-            
+
             try {
                 loadData()
             } catch (e: Exception) {
                 Log.e("DEBUG_HOME", "loadData FAILED: ${e.message}", e)
             }
-            
+
             Log.d("DEBUG_HOME", "HomeFragment onViewCreated completed")
         } catch (e: Exception) {
             Log.e("DEBUG_HOME", "HomeFragment onViewCreated FAILED: ${e.message}", e)
             Toast.makeText(requireContext(), "HomeFragment 初始化失败: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
-    
+
     private fun setupUI() {
         try {
             binding.textBusNumber.text = "D1"
@@ -109,9 +109,9 @@ class HomeFragment : Fragment() {
             binding.textSocScore.text = "5,530"
             binding.textSocRank.text = "Rank #1"
             binding.textLocation.text = getString(com.ecogo.R.string.home_location)
-            
+
             Log.d("DEBUG_HOME", "Basic UI setup completed, setting up mascot")
-            
+
             // 设置小狮子头像
             try {
                 binding.mascotAvatar.apply {
@@ -132,7 +132,7 @@ class HomeFragment : Fragment() {
             throw e
         }
     }
-    
+
     private fun setupRecyclerView() {
         // Monthly Highlights显示统计数据
         binding.recyclerHighlights.apply {
@@ -163,13 +163,13 @@ class HomeFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             // 第一优先级：立即加载关键数据（巴士信息）
             loadBusInfo()
-            
+
             // 第二优先级：并发加载次要数据
             launch { loadMonthlyHighlightsStats() }
             launch { loadHomeActivities() }
             launch { loadUserProfile() }
             launch { loadMonthlyPoints() }
-            
+
             // 第三优先级：延迟加载非关键数据（200ms后）
             kotlinx.coroutines.delay(200)
             launch { loadCheckInStatus() }
@@ -179,38 +179,44 @@ class HomeFragment : Fragment() {
             launch { loadWeather() }
         }
     }
-    
+
     private suspend fun loadUserProfile() {
-        val userId = com.ecogo.auth.TokenManager.getUserId() ?: return
-        val result = repository.getMobileUserProfile(userId)
+        // val userId = com.ecogo.auth.TokenManager.getUserId() ?: return // userId not needed for this call
+        val result = repository.getMobileUserProfile()
         val profile = result.getOrNull()
         if (profile != null) {
             val userInfo = profile.userInfo
             // Update UI with real data on Main thread
-            
+
             // Dynamic Greeting
             binding.textWelcome.text = "Hello, ${userInfo.nickname}"
 
-            // binding.textMonthlyPoints.text = userInfo.currentPoints.toString() // Moved to loadMonthlyPoints logic
-            binding.textSocScore.text = userInfo.totalPoints.toString() // Using total points as SocScore
-            
-             // Update Rank
+            // Update Rank
             profile.stats?.let { stats ->
                 binding.textSocRank.text = "Rank #${stats.monthlyRank}"
             }
+
+            // Load SoC Score independently
+            loadSocScore()
         }
     }
-    
+
+    private suspend fun loadSocScore() {
+        val scoreResult = repository.getFacultyPointsStats()
+        val score = scoreResult.getOrNull() ?: 0
+        binding.textSocScore.text = score.toString()
+    }
+
     private suspend fun loadMonthlyPoints() {
         val historyResult = repository.getMobilePointsHistory().getOrElse { emptyList() }
         val now = java.time.LocalDate.now()
         val currentMonth = now.month
         val currentYear = now.year
-        
+
         val monthlyPoints = historyResult.filter { item ->
             // Filter by source "trip"
             if (item.source != "trip") return@filter false
-            
+
             try {
                 // Format: "2026-01-30T06:16:29.699"
                 val date = java.time.LocalDateTime.parse(item.createdAt)
@@ -219,7 +225,7 @@ class HomeFragment : Fragment() {
                 false
             }
         }.sumOf { it.points }
-        
+
         binding.textMonthlyPoints.text = monthlyPoints.toString()
     }
 
@@ -232,14 +238,14 @@ class HomeFragment : Fragment() {
             binding.textBusRoute.text = if (firstRoute.to.isNotEmpty()) "to ${firstRoute.to}" else "to ${firstRoute.name}"
         }
     }
-    
+
     private suspend fun loadMonthlyHighlightsStats() {
         val userId = com.ecogo.auth.TokenManager.getUserId() ?: "user123"
         val stats = mutableListOf<HomeStat>()
 
         // 1. 获取积分数据
         val pointsResult = repository.getCurrentPoints().getOrNull()
-        val userProfile = repository.getMobileUserProfile(userId).getOrNull()
+        val userProfile = repository.getMobileUserProfile().getOrNull()
         val currentPoints = pointsResult?.currentPoints
             ?: userProfile?.userInfo?.currentPoints?.toLong()
             ?: 0L
@@ -273,8 +279,16 @@ class HomeFragment : Fragment() {
         ))
 
         (binding.recyclerHighlights.adapter as? HomeStatAdapter)?.updateData(stats)
+
+        // 加载活动列表（合并重复的loadHomeActivities逻辑）
+        val activitiesResult = repository.getAllActivities().getOrElse { MockData.ACTIVITIES }
+        binding.recyclerHighlights.adapter = HighlightAdapter(activitiesResult.take(3)) { activity ->
+            // 跳转到活动详情页，传递活动ID
+            val action = HomeFragmentDirections.actionHomeToActivityDetail(activity.id ?: "")
+            findNavController().navigate(action)
+        }
     }
-    
+
     private suspend fun loadHomeActivities() {
         val activitiesResult = repository.getAllActivities().getOrElse { MockData.ACTIVITIES }
         // 显示最多5个活动在首页，使用横向滑动小卡片样式
@@ -310,7 +324,7 @@ class HomeFragment : Fragment() {
             // 跳转到活动列表页面
             findNavController().navigate(R.id.action_home_to_activities)
         }
-        
+
         // 点击小狮子跳转到 Profile
         binding.mascotAvatar.setOnClickListener {
             findNavController().navigate(com.ecogo.R.id.profileFragment)
@@ -325,63 +339,63 @@ class HomeFragment : Fragment() {
         binding.buttonPlanMic?.setOnClickListener {
             // 语音输入占位：可后续接入语音识别
         }
-        
+
         // 月度积分卡片 -> 个人资料页
         binding.cardMonthlyPoints.setOnClickListener {
             findNavController().navigate(com.ecogo.R.id.profileFragment)
         }
-        
+
         // 社区分数卡片 -> 社区页
         binding.cardCommunityScore.setOnClickListener {
             findNavController().navigate(com.ecogo.R.id.communityFragment)
         }
-        
+
         // 下一班巴士卡片 -> 路线页
         binding.cardNextBus.setOnClickListener {
             findNavController().navigate(com.ecogo.R.id.routesFragment)
         }
-        
+
         // 地图预览卡片 -> 地图页（整个卡片可点击）
         binding.cardMap.setOnClickListener {
             // 地图功能临时禁用
             // findNavController().navigate(com.ecogo.R.id.mapFragment)
             android.widget.Toast.makeText(requireContext(), "地图功能正在开发中", android.widget.Toast.LENGTH_SHORT).show()
         }
-        
+
         // === 新功能点击事件 ===
-        
+
         // 每日签到按钮 - 跳转到完整日历界面
         binding.buttonCheckin.setOnClickListener {
             findNavController().navigate(R.id.action_home_to_checkInCalendar)
         }
-        
+
         // 通知横幅关闭按钮
         binding.buttonCloseNotification.setOnClickListener {
             binding.cardNotification.visibility = View.GONE
         }
-        
+
         // 碳足迹卡片点击
         binding.cardCarbonFootprint.setOnClickListener {
             findNavController().navigate(com.ecogo.R.id.profileFragment)
         }
-        
+
         // 天气卡片点击
         binding.cardWeather.setOnClickListener {
             // 可以跳转到天气详情或地图页
         }
-        
+
         // 今日目标卡片点击
         binding.cardDailyGoal.setOnClickListener {
             findNavController().navigate(com.ecogo.R.id.profileFragment)
         }
-        
+
         // === 快捷入口点击事件 ===
-        
+
         // Voucher快捷入口
         binding.cardVoucherShortcut.setOnClickListener {
             findNavController().navigate(com.ecogo.R.id.action_home_to_voucher)
         }
-        
+
         // Challenges快捷入口
         binding.cardChallengesShortcut.setOnClickListener {
             findNavController().navigate(com.ecogo.R.id.action_home_to_challenges)
@@ -397,16 +411,16 @@ class HomeFragment : Fragment() {
                 binding.layoutRecommendationResult.startAnimation(slideUp)
                 binding.textRecommendationTag.text = response.tag
                 binding.textRecommendationResult.text = response.text
-                
+
                 binding.textAskAnother.setOnClickListener {
                     binding.layoutRecommendationResult.visibility = View.GONE
                 }
             }
         }
     }
-    
+
     // === 新功能辅助方法 ===
-    
+
     private fun loadCheckInStatus() {
         viewLifecycleOwner.lifecycleScope.launch {
             val status = repository.getCheckInStatus("user123").getOrNull()
@@ -417,7 +431,7 @@ class HomeFragment : Fragment() {
             }
         }
     }
-    
+
     private fun performCheckIn() {
         viewLifecycleOwner.lifecycleScope.launch {
             val response = repository.checkIn("user123").getOrNull()
@@ -430,7 +444,7 @@ class HomeFragment : Fragment() {
             }
         }
     }
-    
+
     private fun loadNotifications() {
         viewLifecycleOwner.lifecycleScope.launch {
             val notifications = repository.getNotifications("user123").getOrNull()
@@ -442,7 +456,7 @@ class HomeFragment : Fragment() {
             }
         }
     }
-    
+
     private fun loadDailyGoal() {
         viewLifecycleOwner.lifecycleScope.launch {
             val goal = repository.getDailyGoal("user123").getOrNull()
@@ -460,7 +474,7 @@ class HomeFragment : Fragment() {
             }
         }
     }
-    
+
     private fun loadCarbonFootprint() {
         viewLifecycleOwner.lifecycleScope.launch {
             val carbon = repository.getCarbonFootprint("user123", "monthly").getOrNull()
@@ -504,6 +518,7 @@ class HomeFragment : Fragment() {
             }
         }
     }
+
     // 根据描述返回对应的图标 ID
     private fun getWeatherIcon(description: String): Int {
         val desc = description.lowercase() // 转小写，方便匹配
@@ -537,6 +552,7 @@ class HomeFragment : Fragment() {
             else -> R.drawable.ic_weather_cloudy
         }
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

@@ -157,13 +157,17 @@ class MonthlyHighlightsFragment : Fragment() {
         val userId = com.ecogo.auth.TokenManager.getUserId() ?: "user123"
         val stats = mutableListOf<MonthStat>()
 
+
+
         // 1. 获取真实积分数据
         val pointsResult = repository.getCurrentPoints().getOrNull()
-        val userProfile = repository.getMobileUserProfile(userId).getOrNull()
+        val userProfile = repository.getMobileUserProfile().getOrNull()
+
 
         val currentPoints = pointsResult?.currentPoints
             ?: userProfile?.userInfo?.currentPoints?.toLong()
             ?: 0L
+
 
         stats.add(MonthStat(
             icon = "⭐",
