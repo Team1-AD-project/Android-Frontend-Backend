@@ -216,6 +216,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
      * 设置 UI 事件监听
      */
     private fun setupUI() {
+        // 初始化底部区域：显示广告占位，隐藏开始按钮
+        binding.cardAdPlaceholder.visibility = View.VISIBLE
+        binding.cardBottomPanel.visibility = View.GONE
+
         // 起点输入框点击
         binding.etOrigin.setOnClickListener {
             isSearchingOrigin = true
@@ -994,6 +998,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                             }
                         }
 
+                        // 更新开始按钮可见性
+                        updateStartButtonVisibility()
+
                         // 移动相机到选择的位置
                         googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
 
@@ -1053,6 +1060,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             binding.chipDriving.isChecked = true
             viewModel.fetchRouteByMode(TransportMode.DRIVING)
         }
+
+        // 更新开始按钮可见性
+        updateStartButtonVisibility()
     }
 
     /**
@@ -1069,6 +1079,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 originMarker?.remove()
                 originMarker = null
                 viewModel.setOrigin(latLng)  // 重置起点为当前位置
+                updateStartButtonVisibility()  // 更新开始按钮可见性
             }
         }
     }
@@ -1086,6 +1097,25 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             boundsBuilder.include(destination)
             val bounds = boundsBuilder.build()
             googleMap?.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 150))
+        }
+    }
+
+    /**
+     * 更新开始行程按钮的可见性
+     * 只有当起点和终点都设置后才显示按钮，同时隐藏广告占位
+     */
+    private fun updateStartButtonVisibility() {
+        val hasOrigin = originLatLng != null || viewModel.currentLocation.value != null
+        val hasDestination = destinationLatLng != null
+
+        if (hasOrigin && hasDestination) {
+            // 选择了起点和终点：隐藏广告，显示按钮
+            binding.cardAdPlaceholder.visibility = View.GONE
+            binding.cardBottomPanel.visibility = View.VISIBLE
+        } else {
+            // 未选择完：显示广告，隐藏按钮
+            binding.cardAdPlaceholder.visibility = View.VISIBLE
+            binding.cardBottomPanel.visibility = View.GONE
         }
     }
 
@@ -1207,6 +1237,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                             viewModel.fetchRouteByMode(TransportMode.DRIVING)
                         }
 
+                        // 更新开始按钮可见性
+                        updateStartButtonVisibility()
+
                         fitBoundsIfReady()
                         dialog.dismiss()
                     }
@@ -1248,6 +1281,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         routePolyline = null
         binding.cardRouteInfo.visibility = View.GONE
         binding.cardTransportModes.visibility = View.GONE
+        // 隐藏按钮，显示广告占位
+        binding.cardBottomPanel.visibility = View.GONE
+        binding.cardAdPlaceholder.visibility = View.VISIBLE
         viewModel.clearDestination()
     }
 
@@ -1287,6 +1323,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 originLatLng = latLng
                 viewModel.updateCurrentLocation(latLng)
                 moveToCurrentLocation()
+                updateStartButtonVisibility()  // 更新开始按钮可见性
             }
         }
     }
