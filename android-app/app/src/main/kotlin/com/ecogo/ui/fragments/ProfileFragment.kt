@@ -9,54 +9,79 @@ import android.view.ViewGroup
 import android.view.Window
 import android.view.animation.AnimationUtils
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.ecogo.R
+import com.ecogo.api.RetrofitClient
 import com.ecogo.data.Achievement
 import com.ecogo.data.FacultyData
 import com.ecogo.data.MockData
 import com.ecogo.data.Outfit
 import com.ecogo.data.ShopItem
+import com.ecogo.data.dto.BadgeDto
+import com.ecogo.data.dto.UserBadgeDto
 import com.ecogo.databinding.FragmentProfileBinding
+import com.ecogo.repository.BadgeClothRepository
 import com.ecogo.repository.EcoGoRepository
 import com.ecogo.ui.adapters.AchievementAdapter
 import com.ecogo.ui.adapters.FacultyOutfitGridAdapter
 import com.ecogo.ui.adapters.ShopItemAdapter
 import com.ecogo.ui.adapters.ShopListItem
+import com.ecogo.utils.DataMapper
+import com.ecogo.utils.DataMapper.toOutfit
+import com.ecogo.utils.LoadingDialog
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
-    
+
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
     private val repository = EcoGoRepository()
-    
+
+    // ⭐ 新增：Badge & Cloth API Repository
+    private lateinit var badgeClothRepository: BadgeClothRepository
+    private lateinit var loadingDialog: LoadingDialog
+    private var currentUserId: String = ""
+
+    // ⭐ 新增：缓存服务器数据
+    private var shopItems = mutableListOf<BadgeDto>()
+    private var userItems = mutableListOf<UserBadgeDto>()
+
     // 状态管理
     private var currentPoints = 1250
-    private val inventory = mutableListOf("hat_grad", "shirt_nus")  // 已拥有的物品
+    private val inventory = mutableListOf("hat_grad", "shirt_nus")
     private val currentOutfit = mutableMapOf(
         "head" to "none",
         "face" to "none",
-        "body" to "shirt_nus",  // 初始装备
-        "badge" to "none"  // 新增徽章槽位
+        "body" to "shirt_nus",
+        "badge" to "none"
     )
-    
-    // 用户所属学院 ID（注册时确定，对应 FACULTY_DATA 中的 id）
-    private val userFacultyId = "soc"  // 模拟：School of Computing
-    // 已拥有（解锁）的学院服饰 ID 集合，注册时自己学院免费赠送
+
+    private val userFacultyId = "soc"
     private val ownedFaculties = mutableSetOf("soc")
-    
-    // Closet Dialog 状态
+
     private var closetDialog: Dialog? = null
     private var closetAdapter: ShopItemAdapter? = null
     private var closetFacultyAdapter: FacultyOutfitGridAdapter? = null
     private var closetMascot: com.ecogo.ui.views.MascotLionView? = null
     private var closetOutfitDetail: TextView? = null
-    private var closetCurrentTab = "all"  // "all" 或 "faculty"
-    
+    private var closetCurrentTab = "all"
+    private var equippedFacultyId: String? = null
+
+    // ⭐ 新增：onCreate 初始化 Repository
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        badgeClothRepository = BadgeClothRepository(
+            RetrofitClient.badgeApiService
+        )
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -65,10 +90,13 @@ class ProfileFragment : Fragment() {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
+        // ⭐ 新增：初始化 LoadingDialog
+        loadingDialog = LoadingDialog(requireContext())
+
         setupUI()
         grantUserFacultyOutfitIfNeeded()
         setupClosetEntry()
@@ -78,47 +106,129 @@ class ProfileFragment : Fragment() {
         setupAnimations()
         setupActions()
         loadUserProfile()
-        
+
         Log.d("ProfileFragment", "Profile screen initialized with ${inventory.size} owned items")
     }
-    
+
+    // ⭐ 修改：loadUserProfile 保存 userId 并加载数据
     private fun loadUserProfile() {
         viewLifecycleOwner.lifecycleScope.launch {
-            val result = repository.getMobileUserProfile()
-            val profile = result.getOrNull()
-            if (profile != null) {
-                val userInfo = profile.userInfo
-                
-                // Update points
-                currentPoints = userInfo.currentPoints
-                binding.textPoints.text = currentPoints.toString()
-                
-                // Update basic info
-                binding.textName.text = userInfo.nickname
-                
-                // Update faculty if available
-                userInfo.faculty?.let { faculty ->
-                     binding.textFaculty.text = "$faculty • Year 2"
+            try {
+                val result = repository.getMobileUserProfile()
+                val profile = result.getOrNull()
+
+                if (profile != null) {
+                    val userInfo = profile.userInfo
+
+                    // ⭐ 保存用户 ID（重要！）
+                    currentUserId = userInfo.userid
+
+                    currentPoints = userInfo.currentPoints
+                    binding.textPoints.text = currentPoints.toString()
+                    binding.textName.text = userInfo.nickname
+
+                    userInfo.faculty?.let { faculty ->
+                        binding.textFaculty.text = "$faculty • Year 2"
+                    }
+
+                    Log.d("ProfileFragment", "Loaded profile: ${userInfo.nickname}, ID: $currentUserId, pts: $currentPoints")
+
+                    // ⭐ 加载 badges 和 cloths
+                    loadBadgesAndCloths()
+                    loadUserOutfit()
                 }
-                
-                Log.d("ProfileFragment", "Loaded user profile: ${userInfo.nickname}, points: $currentPoints")
+            } catch (e: Exception) {
+                Log.e("ProfileFragment", "Error loading profile", e)
+                Toast.makeText(requireContext(), "Failed to load profile", Toast.LENGTH_SHORT).show()
             }
         }
     }
-    
+
+    // ⭐ 新增：加载 badges 和 cloths 数据
+    private fun loadBadgesAndCloths() {
+        if (currentUserId.isEmpty()) {
+            Log.w("ProfileFragment", "User ID not available")
+            return
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                loadingDialog.show("Loading items...")
+
+                // 并行加载
+                val shopDeferred = async { badgeClothRepository.getShopList() }
+                val userDeferred = async { badgeClothRepository.getMyItems(currentUserId) }
+
+                val shopResult = shopDeferred.await()
+                val userResult = userDeferred.await()
+
+                shopResult.onSuccess { items ->
+                    shopItems.clear()
+                    shopItems.addAll(items)
+                    Log.d("ProfileFragment", "Loaded ${items.size} shop items")
+                }.onFailure { error ->
+                    Log.e("ProfileFragment", "Failed to load shop", error)
+                    shopItems.clear()
+                }
+
+                userResult.onSuccess { items ->
+                    userItems.clear()
+                    userItems.addAll(items)
+                    Log.d("ProfileFragment", "Loaded ${items.size} user items")
+                }.onFailure { error ->
+                    Log.e("ProfileFragment", "Failed to load user items", error)
+                }
+
+                inventory.clear()
+                inventory.addAll(userItems.map { it.badgeId })
+
+                updateBadgeEntry()
+                loadingDialog.dismiss()
+
+            } catch (e: Exception) {
+                loadingDialog.dismiss()
+                Log.e("ProfileFragment", "Error loading items", e)
+                Toast.makeText(requireContext(), "Failed to load items", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    // ⭐ 新增：加载用户当前装备
+    private fun loadUserOutfit() {
+        if (currentUserId.isEmpty()) return
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val result = badgeClothRepository.getUserOutfit(currentUserId)
+                result.onSuccess { outfitDto ->
+                    val outfit = outfitDto.toOutfit()
+
+                    currentOutfit["head"] = outfit.head
+                    currentOutfit["face"] = outfit.face
+                    currentOutfit["body"] = outfit.body
+                    currentOutfit["badge"] = outfit.badge
+
+                    updateMascotOutfit()
+                    updateClosetPreview()
+
+                    Log.d("ProfileFragment", "Loaded outfit: $outfit")
+                }.onFailure { error ->
+                    Log.e("ProfileFragment", "Failed to load outfit", error)
+                }
+            } catch (e: Exception) {
+                Log.e("ProfileFragment", "Error loading outfit", e)
+            }
+        }
+    }
+
     private fun setupUI() {
         binding.textPoints.text = currentPoints.toString()
         binding.textName.text = "Alex Tan"
         binding.textFaculty.text = "Computer Science • Year 2"
-
-        // 初始化 MascotLionView
         updateMascotOutfit()
-        
-        // 更新徽章入口卡片
         updateBadgeEntry()
     }
 
-    /** 注册赠送：默认解锁并拥有自己学院的套装配件（head/face/body） */
     private fun grantUserFacultyOutfitIfNeeded() {
         val faculty = MockData.FACULTY_DATA.find { it.id == userFacultyId } ?: return
         ownedFaculties.add(faculty.id)
@@ -126,20 +236,14 @@ class ProfileFragment : Fragment() {
         if (faculty.outfit.face != "none") inventory.add(faculty.outfit.face)
         if (faculty.outfit.body != "none") inventory.add(faculty.outfit.body)
     }
-    
-    // 当前装备的学院 ID（用于高亮）
-    private var equippedFacultyId: String? = null
 
-    /** 设置 Closet 入口卡片 */
     private fun setupClosetEntry() {
-        // 入口卡片显示当前装扮预览
         updateClosetPreview()
         binding.cardCloset.setOnClickListener {
             showClosetDialog()
         }
     }
 
-    /** 更新 Closet 入口卡片上的预览 */
     private fun updateClosetPreview() {
         binding.mascotClosetPreview.outfit = Outfit(
             head = currentOutfit["head"] ?: "none",
@@ -147,13 +251,15 @@ class ProfileFragment : Fragment() {
             body = currentOutfit["body"] ?: "none",
             badge = currentOutfit["badge"] ?: "none"
         )
-        val total = MockData.SHOP_ITEMS.size
-        binding.textClosetDesc.text = "Browse & equip $total outfits"
-    }
 
-    // ═══════════════════════════════════════════
-    //  Closet 全屏 Dialog（小狮子 + Tab 切换）
-    // ═══════════════════════════════════════════
+        // ⭐ 修改：动态显示数量
+        val totalCloths = if (shopItems.isNotEmpty()) {
+            shopItems.count { it.category == "cloth" }
+        } else {
+            MockData.SHOP_ITEMS.size
+        }
+        binding.textClosetDesc.text = "Browse & equip $totalCloths outfits"
+    }
 
     private fun showClosetDialog() {
         val dialog = Dialog(requireContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen)
@@ -165,7 +271,6 @@ class ProfileFragment : Fragment() {
             ViewGroup.LayoutParams.MATCH_PARENT
         )
 
-        // 获取视图引用
         val mascot = dialog.findViewById<com.ecogo.ui.views.MascotLionView>(R.id.mascot_closet)
         val outfitDetail = dialog.findViewById<TextView>(R.id.text_outfit_detail)
         val btnClose = dialog.findViewById<android.widget.ImageView>(R.id.btn_close)
@@ -173,28 +278,22 @@ class ProfileFragment : Fragment() {
         val tabFaculty = dialog.findViewById<com.google.android.material.button.MaterialButton>(R.id.tab_faculty_clothes)
         val recycler = dialog.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.recycler_closet)
 
-        // 保持引用以便实时更新
         closetDialog = dialog
         closetMascot = mascot
         closetOutfitDetail = outfitDetail
 
-        // 初始化小狮子
         updateClosetMascot()
 
-        // 初始化 RecyclerView + GridLayoutManager
         val gridLayoutManager = GridLayoutManager(requireContext(), 2)
         recycler.layoutManager = gridLayoutManager
 
-        // 创建 All Clothes adapter
         val shopAdapter = ShopItemAdapter(getShopItemsGrouped()) { item ->
             handleItemClick(item)
-            // 刷新 Dialog 内列表状态 + 小狮子
             closetAdapter?.updateItems(getShopItemsGrouped())
             updateClosetMascot()
         }
         closetAdapter = shopAdapter
 
-        // 分组标题跨两列
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 val adapter = recycler.adapter
@@ -205,7 +304,6 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        // 创建 Faculty Clothes adapter（传入价格计算、拥有状态、用户学院）
         val facultyAdapter = FacultyOutfitGridAdapter(
             faculties = MockData.FACULTY_DATA,
             equippedFacultyId = equippedFacultyId,
@@ -221,11 +319,9 @@ class ProfileFragment : Fragment() {
         }
         closetFacultyAdapter = facultyAdapter
 
-        // 默认显示 All Clothes
         closetCurrentTab = "all"
         recycler.adapter = shopAdapter
 
-        // Tab 切换逻辑
         tabAll.setOnClickListener {
             if (closetCurrentTab != "all") {
                 closetCurrentTab = "all"
@@ -246,7 +342,6 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        // 初始 Tab 高亮
         updateClosetTabStyle(tabAll, tabFaculty)
 
         btnClose.setOnClickListener { dialog.dismiss() }
@@ -257,7 +352,6 @@ class ProfileFragment : Fragment() {
             closetFacultyAdapter = null
             closetMascot = null
             closetOutfitDetail = null
-            // 同步回主页面
             updateMascotOutfit()
             updateClosetPreview()
         }
@@ -266,7 +360,6 @@ class ProfileFragment : Fragment() {
         Log.d("ProfileFragment", "Opened Closet dialog")
     }
 
-    /** 更新 Dialog 内小狮子外观 */
     private fun updateClosetMascot() {
         closetMascot?.outfit = Outfit(
             head = currentOutfit["head"] ?: "none",
@@ -274,7 +367,6 @@ class ProfileFragment : Fragment() {
             body = currentOutfit["body"] ?: "none",
             badge = currentOutfit["badge"] ?: "none"
         )
-        // 更新描述文字
         val parts = mutableListOf<String>()
         val head = currentOutfit["head"] ?: "none"
         val face = currentOutfit["face"] ?: "none"
@@ -285,7 +377,6 @@ class ProfileFragment : Fragment() {
         closetOutfitDetail?.text = if (parts.isEmpty()) "No outfit equipped" else parts.joinToString(" + ")
     }
 
-    /** 更新 Tab 按钮样式：选中 vs 未选中 */
     private fun updateClosetTabStyle(
         active: com.google.android.material.button.MaterialButton,
         inactive: com.google.android.material.button.MaterialButton
@@ -304,7 +395,6 @@ class ProfileFragment : Fragment() {
         inactive.strokeColor = android.content.res.ColorStateList.valueOf(borderColor)
     }
 
-    /** 计算一套学院服饰的价格 = 各配件在 SHOP_ITEMS 中的价格之和 */
     private fun getFacultyOutfitCost(faculty: FacultyData): Int {
         val shopMap = MockData.SHOP_ITEMS.associateBy { it.id }
         var cost = 0
@@ -314,20 +404,17 @@ class ProfileFragment : Fragment() {
         return cost
     }
 
-    /** 处理学院服饰点击：已拥有→装备/卸下，未拥有→购买 */
     private fun handleFacultyClick(faculty: FacultyData) {
         if (ownedFaculties.contains(faculty.id)) {
             equipFacultyOutfit(faculty)
             return
         }
 
-        // 未解锁：点击先查看价格 → 确认购买
         val componentIds = listOf(faculty.outfit.head, faculty.outfit.face, faculty.outfit.body)
             .filter { it != "none" }
         val ownedComponents = componentIds.filter { inventory.contains(it) }
         val missingComponents = componentIds.filterNot { inventory.contains(it) }
 
-        // 如果已经把配件都买齐了，就视为解锁
         if (missingComponents.isEmpty()) {
             ownedFaculties.add(faculty.id)
             closetFacultyAdapter?.updateOwned(ownedFaculties)
@@ -363,10 +450,10 @@ class ProfileFragment : Fragment() {
             message = message,
             onConfirm = {
                 if (currentPoints < missingCost) {
-                    android.widget.Toast.makeText(
+                    Toast.makeText(
                         requireContext(),
                         "Not enough points! Need $missingCost pts",
-                        android.widget.Toast.LENGTH_SHORT
+                        Toast.LENGTH_SHORT
                     ).show()
                     return@showConfirmPurchaseDialog
                 }
@@ -374,7 +461,6 @@ class ProfileFragment : Fragment() {
                 currentPoints -= missingCost
                 binding.textPoints.text = currentPoints.toString()
 
-                // 只买缺失的配件（已有的配件不重复扣费）
                 missingComponents.forEach { id ->
                     if (!inventory.contains(id)) inventory.add(id)
                 }
@@ -384,7 +470,6 @@ class ProfileFragment : Fragment() {
 
                 equipFacultyOutfit(faculty)
 
-                // 立即刷新 Dialog 内 UI
                 closetAdapter?.updateItems(getShopItemsGrouped())
                 updateClosetMascot()
 
@@ -442,21 +527,28 @@ class ProfileFragment : Fragment() {
         "body_polo" -> "Polo"
         else -> id
     }
-    
-    /** 全部服饰列表：按 Head / Face / Body 分组，带分组标题 */
+
+    // ⭐ 修改：getShopItemsGrouped 使用服务器数据
     private fun getShopItemsGrouped(): List<ShopListItem> {
-        val allItems = MockData.SHOP_ITEMS.map { item ->
-            item.copy(
-                owned = inventory.contains(item.id),
-                equipped = currentOutfit[item.type] == item.id
+        val cloths = if (shopItems.isNotEmpty()) {
+            DataMapper.mergeClothData(
+                shopItems.filter { it.category == "cloth" },
+                userItems
             )
+        } else {
+            MockData.SHOP_ITEMS.map { item ->
+                item.copy(
+                    owned = inventory.contains(item.id),
+                    equipped = currentOutfit[item.type] == item.id
+                )
+            }
         }
 
         val result = mutableListOf<ShopListItem>()
 
-        val headItems = allItems.filter { it.type == "head" }
-        val faceItems = allItems.filter { it.type == "face" }
-        val bodyItems = allItems.filter { it.type == "body" }
+        val headItems = cloths.filter { it.type == "head" }
+        val faceItems = cloths.filter { it.type == "face" }
+        val bodyItems = cloths.filter { it.type == "body" }
 
         if (headItems.isNotEmpty()) {
             result.add(ShopListItem.Header("Head  (${headItems.size})"))
@@ -473,48 +565,160 @@ class ProfileFragment : Fragment() {
 
         return result
     }
-    
+
+    // ⭐ 修改：handleItemClick 调用 API
     private fun handleItemClick(item: ShopItem) {
-        Log.d("ProfileFragment", "Item clicked: ${item.id}, owned=${item.owned}, equipped=${item.equipped}")
-        
+        Log.d("ProfileFragment", "Item clicked: ${item.id}")
+
         val isOwned = inventory.contains(item.id)
         val isEquipped = currentOutfit[item.type] == item.id
-        
+
         when {
-            // 已装备 → 卸下
             isEquipped -> {
-                currentOutfit[item.type] = "none"
-                refreshShopAdapter()
-                updateMascotOutfit()
-                Log.d("ProfileFragment", "Unequipped ${item.name}")
+                unequipClothWithApi(item.id, item.type)
             }
-            // 已拥有 → 装备
             isOwned -> {
-                currentOutfit[item.type] = item.id
-                refreshShopAdapter()
-                updateMascotOutfit()
-                Log.d("ProfileFragment", "Equipped ${item.name}")
+                equipClothWithApi(item.id, item.type)
             }
-            // 未拥有 → 购买并装备
             else -> {
-                // 点击先查看价格 → 确认是否购买
-                val message = "Price: ${item.cost} pts\n\nPurchase and equip \"${item.name}\" immediately?"
-                showConfirmPurchaseDialog(
-                    icon = getItemEmoji(item.id),
-                    title = "Purchase Item",
-                    message = message,
-                    onConfirm = { purchaseAndEquipItem(item) }
-                )
+                showPurchaseConfirmDialog(item)
             }
         }
     }
 
+    // ⭐ 新增：显示购买确认对话框
+    private fun showPurchaseConfirmDialog(item: ShopItem) {
+        val message = "Price: ${item.cost} pts\n\nPurchase and equip \"${item.name}\"?"
+        showConfirmPurchaseDialog(
+            icon = getItemEmoji(item.id),
+            title = "Purchase Item",
+            message = message,
+            onConfirm = { purchaseClothWithApi(item) }
+        )
+    }
+
+    // ⭐ 新增：购买服饰 API
+    private fun purchaseClothWithApi(item: ShopItem) {
+        if (currentPoints < item.cost) {
+            Toast.makeText(requireContext(), "Not enough points!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                loadingDialog.show("Purchasing...")
+
+                val result = badgeClothRepository.purchaseItem(currentUserId, item.id)
+
+                result.onSuccess { userBadge ->
+                    currentPoints -= item.cost
+                    binding.textPoints.text = currentPoints.toString()
+
+                    if (!inventory.contains(item.id)) {
+                        inventory.add(item.id)
+                    }
+                    userItems.add(userBadge)
+
+                    loadingDialog.dismiss()
+
+                    equipClothWithApi(item.id, item.type)
+
+                    showSuccessDialog("Bought ${item.name}!", "-${item.cost} pts")
+
+                    val popIn = AnimationUtils.loadAnimation(requireContext(), R.anim.pop_in)
+                    binding.cardMascot.startAnimation(popIn)
+
+                    Log.d("ProfileFragment", "Purchased: ${item.id}")
+                }.onFailure { error ->
+                    loadingDialog.dismiss()
+                    Toast.makeText(requireContext(), "Purchase failed: ${error.message}", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                loadingDialog.dismiss()
+                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    // ⭐ 新增：装备服饰 API
+    private fun equipClothWithApi(clothId: String, type: String) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                loadingDialog.show("Equipping...")
+
+                val result = badgeClothRepository.equipItem(currentUserId, clothId)
+
+                result.onSuccess { updatedUserBadge ->
+                    currentOutfit[type] = clothId
+
+                    val index = userItems.indexOfFirst { it.badgeId == clothId }
+                    if (index >= 0) {
+                        userItems[index] = updatedUserBadge
+                    }
+
+                    refreshShopAdapter()
+                    updateMascotOutfit()
+                    updateClosetPreview()
+                    closetAdapter?.updateItems(getShopItemsGrouped())
+                    updateClosetMascot()
+
+                    loadingDialog.dismiss()
+
+                    Log.d("ProfileFragment", "Equipped: $clothId")
+                }.onFailure { error ->
+                    loadingDialog.dismiss()
+                    Toast.makeText(requireContext(), "Failed to equip: ${error.message}", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                loadingDialog.dismiss()
+                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    // ⭐ 新增：卸下服饰 API
+    private fun unequipClothWithApi(clothId: String, type: String) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                loadingDialog.show("Unequipping...")
+
+                val result = badgeClothRepository.unequipItem(currentUserId, clothId)
+
+                result.onSuccess {
+                    currentOutfit[type] = "none"
+
+                    val index = userItems.indexOfFirst { it.badgeId == clothId }
+                    if (index >= 0) {
+                        userItems[index] = userItems[index].copy(isDisplay = false)
+                    }
+
+                    refreshShopAdapter()
+                    updateMascotOutfit()
+                    updateClosetPreview()
+                    closetAdapter?.updateItems(getShopItemsGrouped())
+                    updateClosetMascot()
+
+                    loadingDialog.dismiss()
+
+                    Log.d("ProfileFragment", "Unequipped: $clothId")
+                }.onFailure { error ->
+                    loadingDialog.dismiss()
+                    Toast.makeText(requireContext(), "Failed to unequip: ${error.message}", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                loadingDialog.dismiss()
+                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    // 保留原有的本地购买方法（用于 Faculty）
     private fun purchaseAndEquipItem(item: ShopItem) {
         if (currentPoints < item.cost) {
-            android.widget.Toast.makeText(
+            Toast.makeText(
                 requireContext(),
                 "Not enough points! Need ${item.cost} pts",
-                android.widget.Toast.LENGTH_SHORT
+                Toast.LENGTH_SHORT
             ).show()
             Log.d("ProfileFragment", "Insufficient points for ${item.name}")
             return
@@ -525,7 +729,6 @@ class ProfileFragment : Fragment() {
         if (!inventory.contains(item.id)) inventory.add(item.id)
         currentOutfit[item.type] = item.id
 
-        // 刷新 UI（主页面 + Dialog）
         refreshShopAdapter()
         updateMascotOutfit()
         updateClosetPreview()
@@ -534,15 +737,13 @@ class ProfileFragment : Fragment() {
 
         showSuccessDialog("Bought & Equipped ${item.name}!", "-${item.cost} pts")
 
-        // 动画反馈
         val popIn = AnimationUtils.loadAnimation(requireContext(), R.anim.pop_in)
         binding.cardMascot.startAnimation(popIn)
 
         Log.d("ProfileFragment", "Purchased ${item.name} for ${item.cost} pts")
     }
-    
+
     private fun updateMascotOutfit() {
-        // 更新小狮子外观
         binding.mascotLion.outfit = Outfit(
             head = currentOutfit["head"] ?: "none",
             face = currentOutfit["face"] ?: "none",
@@ -550,44 +751,40 @@ class ProfileFragment : Fragment() {
             badge = currentOutfit["badge"] ?: "none"
         )
     }
-    
+
     private fun refreshShopAdapter() {
         closetAdapter?.updateItems(getShopItemsGrouped())
     }
-    
+
     private fun showSuccessDialog(message: String, points: String? = null) {
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_success)
         dialog.window?.setBackgroundDrawableResource(android.R.drawable.screen_background_light_transparent)
-        
+
         val textMessage = dialog.findViewById<TextView>(R.id.text_message)
         val textPoints = dialog.findViewById<TextView>(R.id.text_points)
         val buttonOk = dialog.findViewById<com.google.android.material.button.MaterialButton>(R.id.button_ok)
-        
+
         textMessage.text = message
         if (points != null) {
             textPoints.text = points
             textPoints.visibility = View.VISIBLE
         }
-        
+
         buttonOk.setOnClickListener {
             dialog.dismiss()
         }
-        
+
         dialog.show()
-        
-        // 对话框弹入动画
         dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
     }
 
-    /** 更新徽章入口卡片（预览 + 统计） */
     private fun updateBadgeEntry() {
         val unlockedCount = MockData.ACHIEVEMENTS.count { it.unlocked }
         val totalCount = MockData.ACHIEVEMENTS.size
         binding.textBadgeCount.text = "$unlockedCount / $totalCount unlocked"
-        
-        // 如果已装备徽章，显示该徽章 emoji，否则显示默认 🏆
+
         val equippedBadgeId = currentOutfit["badge"] ?: "none"
         val previewEmoji = if (equippedBadgeId != "none") {
             getBadgeEmoji(equippedBadgeId)
@@ -597,14 +794,12 @@ class ProfileFragment : Fragment() {
         binding.textBadgePreview.text = previewEmoji
     }
 
-    /** 设置徽章入口卡片点击 */
     private fun setupBadgeEntry() {
         binding.cardBadges.setOnClickListener {
             showBadgesDialog()
         }
     }
-    
-    /** 显示 Badges 全屏对话框 */
+
     private fun showBadgesDialog() {
         val dialog = Dialog(requireContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -623,14 +818,13 @@ class ProfileFragment : Fragment() {
 
         btnClose.setOnClickListener { dialog.dismiss() }
 
-        // 更新小狮子预览（显示当前装备）
         mascot.outfit = Outfit(
             head = currentOutfit["head"] ?: "none",
             face = currentOutfit["face"] ?: "none",
             body = currentOutfit["body"] ?: "none",
             badge = currentOutfit["badge"] ?: "none"
         )
-        
+
         val equippedBadge = currentOutfit["badge"] ?: "none"
         if (equippedBadge != "none") {
             val badge = MockData.ACHIEVEMENTS.find { it.id == equippedBadge }
@@ -639,7 +833,6 @@ class ProfileFragment : Fragment() {
             badgeLabel.text = "No Badge Equipped"
         }
 
-        // 徽章列表：已解锁排前面
         val sortedAchievements = MockData.ACHIEVEMENTS.sortedByDescending { it.unlocked }
 
         recycler.apply {
@@ -654,11 +847,10 @@ class ProfileFragment : Fragment() {
 
         dialog.show()
     }
-    
+
     private fun setupBadgeRecyclerView() {
-        // 保留此方法为空或移除，现在改用入口卡片 + 全屏对话框
     }
-    
+
     private fun handleBadgeClick(
         badgeId: String,
         parentDialog: Dialog? = null,
@@ -669,7 +861,6 @@ class ProfileFragment : Fragment() {
         showBadgeDetailDialog(achievement, parentDialog, mascot, badgeLabel)
     }
 
-    /** 显示徽章详情弹窗：图标、描述、解锁方式、佩戴按钮 */
     private fun showBadgeDetailDialog(
         achievement: Achievement,
         parentDialog: Dialog? = null,
@@ -693,7 +884,6 @@ class ProfileFragment : Fragment() {
         val howToView = dialog.findViewById<TextView>(R.id.text_how_to_unlock)
         val btnEquip = dialog.findViewById<com.google.android.material.button.MaterialButton>(R.id.button_equip)
 
-        // 设置内容
         iconView.text = getBadgeEmoji(achievement.id)
         nameView.text = achievement.name
         descView.text = achievement.description
@@ -701,7 +891,6 @@ class ProfileFragment : Fragment() {
 
         val isEquipped = currentOutfit["badge"] == achievement.id
 
-        // 状态标签
         when {
             isEquipped -> {
                 statusView.text = "✅ Equipped"
@@ -717,7 +906,6 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        // 按钮逻辑
         when {
             !achievement.unlocked -> {
                 btnEquip.isEnabled = false
@@ -731,8 +919,7 @@ class ProfileFragment : Fragment() {
                     currentOutfit["badge"] = "none"
                     updateMascotOutfit()
                     updateBadgeEntry()
-                    
-                    // 更新 Badges dialog 中的小狮子和标签
+
                     mascot?.outfit = Outfit(
                         head = currentOutfit["head"] ?: "none",
                         face = currentOutfit["face"] ?: "none",
@@ -740,8 +927,7 @@ class ProfileFragment : Fragment() {
                         badge = "none"
                     )
                     badgeLabel?.text = "No Badge Equipped"
-                    
-                    // 刷新徽章列表
+
                     parentDialog?.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.recycler_badges)?.adapter?.notifyDataSetChanged()
                     dialog.dismiss()
                     Log.d("ProfileFragment", "Unequipped badge: ${achievement.id}")
@@ -754,8 +940,7 @@ class ProfileFragment : Fragment() {
                     currentOutfit["badge"] = achievement.id
                     updateMascotOutfit()
                     updateBadgeEntry()
-                    
-                    // 更新 Badges dialog 中的小狮子和标签
+
                     mascot?.outfit = Outfit(
                         head = currentOutfit["head"] ?: "none",
                         face = currentOutfit["face"] ?: "none",
@@ -763,7 +948,7 @@ class ProfileFragment : Fragment() {
                         badge = achievement.id
                     )
                     badgeLabel?.text = achievement.name
-                    
+
                     parentDialog?.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.recycler_badges)?.adapter?.notifyDataSetChanged()
                     dialog.dismiss()
                     Log.d("ProfileFragment", "Equipped badge: ${achievement.id}")
@@ -785,23 +970,16 @@ class ProfileFragment : Fragment() {
         else -> "🏅"
     }
 
-    /** 刷新徽章列表以反映佩戴状态 */
     private fun refreshBadgeList() {
-        // 由于现在改为入口卡片 + 全屏对话框，此方法已弃用，但保留兼容
         updateBadgeEntry()
     }
 
     private fun setupTabs() {
-        // 移除 tab 切换逻辑，两个卡片始终可见
         binding.cardCloset.visibility = View.VISIBLE
         binding.cardBadges.visibility = View.VISIBLE
     }
 
     private fun setupAnimations() {
-        // MascotLionView 自带呼吸和眨眼动画
-        // 点击触发跳跃动画在 View 内部处理
-        
-        // 卡片弹入动画
         val popIn = AnimationUtils.loadAnimation(requireContext(), R.anim.pop_in)
         binding.cardMascot.startAnimation(popIn)
         binding.cardPoints.startAnimation(popIn)
@@ -815,11 +993,7 @@ class ProfileFragment : Fragment() {
             findNavController().navigate(R.id.action_profile_to_voucher)
         }
     }
-    
-    // ═══════════════════════════════════════════
-    //  自定义购买确认对话框
-    // ═══════════════════════════════════════════
-    
+
     private fun showConfirmPurchaseDialog(
         icon: String,
         title: String,
@@ -855,7 +1029,6 @@ class ProfileFragment : Fragment() {
     }
 
     private fun getItemEmoji(id: String): String = when (id) {
-        // Head (10)
         "hat_cap" -> "🧢"
         "hat_grad" -> "🎓"
         "hat_beanie" -> "🧶"
@@ -866,7 +1039,6 @@ class ProfileFragment : Fragment() {
         "hat_hardhat" -> "⛑️"
         "hat_chef" -> "👨‍🍳"
         "hat_wizard" -> "🧙"
-        // Face (9 - ISS glasses added)
         "face_glasses_square" -> "👓"
         "face_glasses_round" -> "👓"
         "face_sunglasses" -> "😎"
@@ -876,7 +1048,6 @@ class ProfileFragment : Fragment() {
         "face_vr" -> "🥽"
         "face_diving" -> "🤿"
         "face_scarf" -> "🧣"
-        // Body (15 - ISS white shirt added)
         "body_white_shirt" -> "👔"
         "shirt_nus" -> "👕"
         "shirt_fass" -> "📚"
@@ -894,9 +1065,14 @@ class ProfileFragment : Fragment() {
         "body_polo" -> "👕"
         else -> "👕"
     }
-    
+
+    // ⭐ 修改：onDestroyView 添加清理
     override fun onDestroyView() {
         super.onDestroyView()
+
+        loadingDialog.dismiss()
+        closetDialog?.dismiss()
+
         _binding = null
     }
 }

@@ -73,4 +73,8 @@ object RetrofitClient {
     val apiService: ApiService by lazy {
         retrofit.create(ApiService::class.java)
     }
+    // ⭐ 添加这个 BadgeApiService
+    val badgeApiService: BadgeApiService by lazy {
+        retrofit.create(BadgeApiService::class.java)
+    }
 }
