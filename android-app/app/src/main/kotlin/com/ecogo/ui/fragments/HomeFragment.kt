@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.ecogo.api.NextBusApiClient
 import com.ecogo.api.ShuttleServiceResponse
+import com.ecogo.utils.NotificationUtil
 
 
 class HomeFragment : Fragment() {
@@ -179,7 +180,6 @@ class HomeFragment : Fragment() {
 
             // 第三优先级：延迟加载非关键数据（200ms后）
             kotlinx.coroutines.delay(200)
-            launch { loadCheckInStatus() }
             launch { loadNotifications() }
             launch { loadDailyGoal() }
             launch { loadCarbonFootprint() }
@@ -210,18 +210,18 @@ class HomeFragment : Fragment() {
 
             // 登录后提示 churn toast
             // 只弹一次，避免每次刷新 home 都弹
-            if (shouldShowChurnToastToday()){
+            //if (shouldShowChurnToastToday()){
                 val userId = com.ecogo.auth.TokenManager.getUserId()
                 if (!userId.isNullOrBlank()) {
                     val level = repository.fetchMyChurnRisk(userId)
                     withContext(kotlinx.coroutines.Dispatchers.Main) {
                         kotlinx.coroutines.delay(800)
                         Log.d("CHURN", "TokenManager userId = ${com.ecogo.auth.TokenManager.getUserId()}")
-                        Toast.makeText(requireContext(), churnToastMessage(level), Toast.LENGTH_LONG).show()
+                        NotificationUtil.showChurnNotification(requireContext(), level)
                     }
                 }
 
-            }
+            //}
 
 
             // Update Carbon Footprint (Added)
@@ -470,11 +470,6 @@ class HomeFragment : Fragment() {
 
         // === 新功能点击事件 ===
 
-        // 每日签到按钮 - 跳转到完整日历界面
-        binding.buttonCheckin.setOnClickListener {
-            findNavController().navigate(R.id.action_home_to_checkInCalendar)
-        }
-
         // 通知横幅关闭按钮
         binding.buttonCloseNotification.setOnClickListener {
             binding.cardNotification.visibility = View.GONE
@@ -526,30 +521,6 @@ class HomeFragment : Fragment() {
     }
 
     // === 新功能辅助方法 ===
-
-    private fun loadCheckInStatus() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            val status = repository.getCheckInStatus("user123").getOrNull()
-            if (status != null && status.lastCheckInDate == java.time.LocalDate.now().toString()) {
-                // 已签到，显示状态
-                binding.layoutCheckinStatus.visibility = View.VISIBLE
-                binding.textCheckinStatus.text = "已签到 ${status.consecutiveDays} 天 · 今日获得 ${status.pointsEarned} 积分"
-            }
-        }
-    }
-
-    private fun performCheckIn() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            val response = repository.checkIn("user123").getOrNull()
-            if (response != null && response.success) {
-                // 签到成功动画
-                val popIn = AnimationUtils.loadAnimation(requireContext(), com.ecogo.R.anim.pop_in)
-                binding.layoutCheckinStatus.visibility = View.VISIBLE
-                binding.layoutCheckinStatus.startAnimation(popIn)
-                binding.textCheckinStatus.text = "已签到 ${response.consecutiveDays} 天 · 今日获得 ${response.pointsEarned} 积分"
-            }
-        }
-    }
 
     private fun loadNotifications() {
         viewLifecycleOwner.lifecycleScope.launch {

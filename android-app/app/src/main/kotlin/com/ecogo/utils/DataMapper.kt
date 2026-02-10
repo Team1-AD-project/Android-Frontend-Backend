@@ -30,21 +30,32 @@ object DataMapper {
 
     /**
      * 将 BadgeDto (badge) 转换为 Achievement
+     * ✅ 根据 carbonThreshold 生成动态解锁条件
      */
     fun BadgeDto.toAchievement(): Achievement? {
         if (category != "badge") return null
+
+        val howToUnlock = when (acquisitionMethod) {
+            "achievement" -> {
+                val threshold = carbonThreshold ?: 0.0
+                when {
+                    threshold == 0.0 -> "Start your eco journey"
+                    threshold < 10 -> "Save ${threshold.toInt()}kg of carbon"
+                    threshold < 100 -> "Save ${threshold.toInt()}kg of carbon by taking eco-friendly trips"
+                    threshold < 1000 -> "Save ${threshold.toInt()}kg of carbon - You're a green champion!"
+                    else -> "Save ${threshold.toInt()}kg of carbon - Ultimate eco warrior!"
+                }
+            }
+            "purchase" -> "Purchase for ${purchaseCost ?: 0} pts"
+            else -> "Complete special requirements"
+        }
 
         return Achievement(
             id = badgeId,
             name = name?.get("en") ?: "Unknown Badge",
             description = description?.get("en") ?: "",
             unlocked = false,
-
-            howToUnlock = when (acquisitionMethod) {
-                "achievement" -> "Reach ${carbonThreshold ?: 0}kg carbon savings"
-                "purchase" -> "Purchase for ${purchaseCost ?: 0} pts"
-                else -> ""
-            }
+            howToUnlock = howToUnlock
         )
     }
 
@@ -75,6 +86,7 @@ object DataMapper {
 
     /**
      * 合并徽章数据
+     * ✅ 支持动态解锁条件文字
      */
     fun mergeBadgeData(
         shopBadges: List<BadgeDto>,
@@ -87,17 +99,27 @@ object DataMapper {
             .mapNotNull { badge ->
                 val userBadge = userBadgesMap[badge.badgeId]
 
+                val howToUnlock = when (badge.acquisitionMethod) {
+                    "achievement" -> {
+                        val threshold = badge.carbonThreshold ?: 0.0
+                        when {
+                            threshold == 0.0 -> "Start your eco journey"
+                            threshold < 10 -> "Save ${threshold.toInt()}kg of carbon"
+                            threshold < 100 -> "Save ${threshold.toInt()}kg of carbon by taking eco-friendly trips"
+                            threshold < 1000 -> "Save ${threshold.toInt()}kg of carbon - You're a green champion!"
+                            else -> "Save ${threshold.toInt()}kg of carbon - Ultimate eco warrior!"
+                        }
+                    }
+                    "purchase" -> "Purchase for ${badge.purchaseCost ?: 0} pts"
+                    else -> "Complete special requirements"
+                }
+
                 Achievement(
                     id = badge.badgeId,
                     name = badge.name?.get("en") ?: "Unknown Badge",
                     description = badge.description?.get("en") ?: "",
                     unlocked = userBadge != null,
-
-                    howToUnlock = when (badge.acquisitionMethod) {
-                        "achievement" -> "Reach ${badge.carbonThreshold ?: 0}kg carbon savings"
-                        "purchase" -> "Purchase for ${badge.purchaseCost ?: 0} pts"
-                        else -> ""
-                    }
+                    howToUnlock = howToUnlock
                 )
             }
     }

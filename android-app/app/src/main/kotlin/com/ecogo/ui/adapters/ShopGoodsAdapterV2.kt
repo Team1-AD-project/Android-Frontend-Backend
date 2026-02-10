@@ -44,7 +44,10 @@ class ShopGoodsAdapterV2(
             binding.textDescription.text = item.description ?: ""
 
             // Shop 列表隐藏 Redeem
-            binding.buttonRedeem.visibility = View.GONE
+            binding.buttonRedeem.visibility = View.VISIBLE
+            binding.buttonRedeem.text = "Redeem"
+            binding.buttonRedeem.setOnClickListener { onItemClick(item) }
+
 
             // Shop 用 price
             val points = item.redemptionPoints ?: 0.0
@@ -53,7 +56,7 @@ class ShopGoodsAdapterV2(
             // VIP 标签（有就显示）
             if (item.vipLevelRequired > 0) {
                 binding.chipStatus.visibility = View.VISIBLE
-                binding.chipStatus.text = "VIP L${item.vipLevelRequired}"
+                binding.chipStatus.text = "VIP"
             } else {
                 binding.chipStatus.visibility = View.GONE
             }

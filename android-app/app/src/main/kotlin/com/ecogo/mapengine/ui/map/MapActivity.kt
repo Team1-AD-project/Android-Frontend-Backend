@@ -193,20 +193,68 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun setupAdCarousel() {
         // 获取广告数据
+        // 获取广告数据
         lifecycleScope.launch {
+            binding.layoutAdCarousel.visibility = View.GONE // Default to hidden
             try {
-                // 使用 Repository 获取广告
+                // 0. Init TokenManager just in case
+                com.ecogo.auth.TokenManager.init(this@MapActivity)
+
+                // 1. Check cached VIP status first (fastest) - Custom Prefs AND TokenManager
+                val prefs = getSharedPreferences("EcoGoPrefs", android.content.Context.MODE_PRIVATE)
+                val isVipPref = prefs.getBoolean("is_vip", false)
+
+                if (com.ecogo.auth.TokenManager.isVipActive() || isVipPref) {
+                    Log.d(TAG, "User is VIP (cached/pref), hiding advertisement carousel")
+                    return@launch
+                }
+
+                // 2. Double check with Repository (in case cache is stale)
                 val repository = com.ecogo.EcoGoApplication.repository
-                val result = repository.getAdvertisements()
+                val profileResult = repository.getMobileUserProfile()
                 
-                val ads = result.getOrNull()?.filter { 
-                    it.position == "banner" && it.status == "Active" 
+                val profile = profileResult.getOrNull()
+                // Fail-safe: If we cannot fetch profile to verify status, do not show ads to potential VIPs
+                // Or if user is VIP, hide ads.
+                if (profile == null) {
+                    Log.d(TAG, "Profile fetch failed, defaulting to hidden ads")
+                    return@launch
+                }
+
+                val isVip = (profile?.vipInfo?.active == true) ||
+                            (profile?.userInfo?.vip?.active == true) ||
+                            (profile?.vipInfo?.plan != null) ||
+                            (profile?.userInfo?.vip?.plan != null) ||
+                            (profile?.userInfo?.isAdmin == true)
+
+                if (isVip) {
+                    Log.d(TAG, "User is VIP/Admin (network), hiding advertisement carousel")
+                    // Update cache for next time
+                    com.ecogo.auth.TokenManager.init(this@MapActivity)
+                    if (profile != null) {
+                        com.ecogo.auth.TokenManager.saveToken(
+                            token = com.ecogo.auth.TokenManager.getToken() ?: "",
+                            userId = profile.userInfo.userid,
+                            username = profile.userInfo.nickname,
+                            vipActive = true
+                        )
+                    }
+                    binding.layoutAdCarousel.visibility = View.GONE // Ensure GONE
+                    return@launch
+                }
+
+                // If not VIP, proceed to fetch ads
+                val result = repository.getAdvertisements()
+
+                val ads = result.getOrNull()?.filter {
+                    it.position == "banner" && it.status == "Active"
                 } ?: emptyList()
 
-                if (ads.isNotEmpty()) {
+                if (ads.isNotEmpty() && !isVip) { // Double check !isVip
+                    binding.layoutAdCarousel.visibility = View.VISIBLE
                     setupAdViewPager(ads)
                 } else {
-                    // 没有广告时隐藏轮播区，或显示默认占位
+                    // 没有广告时隐藏轮播区
                     binding.layoutAdCarousel.visibility = View.GONE
                 }
             } catch (e: Exception) {
@@ -333,8 +381,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
      * 设置 UI 事件监听
      */
     private fun setupUI() {
-        // 初始化底部区域：显示广告占位(现改为轮播)，隐藏开始按钮
-        binding.layoutAdCarousel.visibility = View.VISIBLE
+        // 初始化底部区域：显示广告占位(现改为轮播)，默认隐藏防闪烁
+        // binding.layoutAdCarousel.visibility = View.GONE // Handled by XML
         binding.cardBottomPanel.visibility = View.GONE
 
         // 起点输入框点击

@@ -86,10 +86,6 @@ class ActivityDetailFragment : Fragment() {
             }
         }
         
-        binding.btnCheckIn.setOnClickListener {
-            checkInActivity()
-        }
-        
         binding.btnShare.setOnClickListener {
             // TODO: 分享功能（将在阶段三实现）
             android.widget.Toast.makeText(
@@ -191,17 +187,14 @@ class ActivityDetailFragment : Fragment() {
         when (activityStatus) {
             "ENDED" -> {
                 binding.btnJoin.isEnabled = false
-                binding.btnCheckIn.isEnabled = false
                 binding.btnStartRoute.isEnabled = false
             }
             "ONGOING" -> {
                 binding.btnJoin.isEnabled = true
-                binding.btnCheckIn.isEnabled = isJoined
                 binding.btnStartRoute.isEnabled = isJoined
             }
             else -> {
                 binding.btnJoin.isEnabled = true
-                binding.btnCheckIn.isEnabled = false
                 binding.btnStartRoute.isEnabled = isJoined
             }
         }
@@ -261,18 +254,6 @@ class ActivityDetailFragment : Fragment() {
                     .show()
             }
         }
-    }
-    
-    private fun checkInActivity() {
-        // TODO: 实现GPS位置检测，确认用户在活动地点附近
-        // 这里简化处理，直接签到
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("签到成功")
-            .setMessage("恭喜！你已成功签到\n获得额外奖励 +50 积分")
-            .setPositiveButton("太好了") { _, _ ->
-                // TODO: 调用签到API
-            }
-            .show()
     }
     
     private fun setupAnimations() {

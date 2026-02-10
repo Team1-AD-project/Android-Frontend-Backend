@@ -24,6 +24,9 @@ class RoutesFragment : Fragment() {
     private var _binding: FragmentRoutesBinding? = null
     private val binding get() = _binding!!
 
+    private var routeDescMap: Map<String, String> = emptyMap()
+
+
     // ====== 站点：全量写死（从你 /BusStops 返回抄来的） ======
     data class BusStopOption(val code: String, val label: String)
 
@@ -129,6 +132,8 @@ class RoutesFragment : Fragment() {
     private fun loadRoutes(stop: BusStopOption) {
         viewLifecycleOwner.lifecycleScope.launch {
             val routes = runCatching {
+                ensureRouteDescriptionsLoaded()
+
                 val resp = NextBusApiClient.api.getShuttleService(stop.code)
                 mapToBusRoutes(stop, resp)
             }.getOrElse {
@@ -142,6 +147,24 @@ class RoutesFragment : Fragment() {
         }
     }
 
+    private suspend fun ensureRouteDescriptionsLoaded() {
+        if (routeDescMap.isNotEmpty()) return
+
+        routeDescMap = runCatching {
+            val resp = NextBusApiClient.api.getServiceDescription()
+            val list = resp.ServiceDescriptionResult?.ServiceDescription.orEmpty()
+
+            list.mapNotNull { item ->
+                val route = item.Route?.trim()
+                val desc = item.RouteDescription?.trim()
+                if (route.isNullOrEmpty() || desc.isNullOrEmpty()) null else route to desc
+            }.toMap()
+        }.getOrElse {
+            emptyMap()
+        }
+    }
+
+
     /**
      * ✅ 关键：ShuttleService 动态路线 → BusRoute 列表
      * - route.name: shuttle.name (D1/K/R1/...)
@@ -150,21 +173,30 @@ class RoutesFragment : Fragment() {
      * - from/to: 默认值（from=站点名，to="-"）
      * - color: routeName hash 到固定颜色
      */
-    private fun mapToBusRoutes(stop: BusStopOption, resp: com.ecogo.api.ShuttleServiceResponse): List<BusRoute> {
+    private fun mapToBusRoutes(
+        stop: BusStopOption,
+        resp: com.ecogo.api.ShuttleServiceResponse
+    ): List<BusRoute> {
         val shuttles = resp.ShuttleServiceResult?.shuttles.orEmpty()
 
-        return shuttles.mapNotNull { shuttle ->
+        val list = shuttles.mapNotNull { shuttle ->
             val routeName = shuttle.name?.trim().orEmpty()
             if (routeName.isEmpty()) return@mapNotNull null
 
             val etaMinutes = shuttle._etas?.firstOrNull()?.eta
             val etaSafe = etaMinutes ?: -1
 
+            // ✅ 用 ServiceDescription 的 RouteDescription 拆 from/to
+            val routeDesc = routeDescMap[routeName]
+            val brief = formatBriefRoute(routeDesc, "${stop.label}")
+
+
+
             BusRoute(
                 id = null,
                 name = routeName,
-                from = stop.label,     // 最省事：用站点 label
-                to = "-",              // 最省事：不展示真实 path
+                from = brief,
+                to = "",
                 color = colorForRoute(routeName),
                 status = statusFromEta(etaSafe),
                 time = if (etaSafe >= 0) "$etaSafe min" else "-",
@@ -173,8 +205,33 @@ class RoutesFragment : Fragment() {
                 nextArrival = if (etaSafe >= 0) etaSafe else 0,
                 operational = true
             )
-        }.sortedBy { it.nextArrival }
+        }
+
+        // ✅ 没有 ETA 的排最后（避免 -1 排到最前）
+        return list.sortedBy { if (it.nextArrival <= 0) Int.MAX_VALUE else it.nextArrival }
     }
+
+    private fun formatBriefRoute(routeDesc: String?, fallback: String): String {
+        if (routeDesc.isNullOrBlank()) return fallback
+
+        val parts = routeDesc.split(">").map { it.trim() }.filter { it.isNotEmpty() }
+        if (parts.isEmpty()) return fallback
+
+        val maxNodes = 6
+        val nodes = if (parts.size <= maxNodes) {
+            parts
+        } else {
+            // 前4 + … + 最后1
+            parts.take(4) + listOf("…") + parts.takeLast(1)
+        }
+
+        // ✅ 关键：只用 join，不要额外 append 分隔符
+        return nodes.joinToString(" → ")
+    }
+
+
+
+
 
     private fun statusFromEta(eta: Int): String {
         if (eta < 0) return "On Time"

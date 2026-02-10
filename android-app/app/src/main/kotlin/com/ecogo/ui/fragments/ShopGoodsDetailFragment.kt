@@ -29,7 +29,7 @@ class ShopGoodsDetailFragment : Fragment() {
         get() = requireNotNull(TokenManager.getUserId()) { "User not logged in or userId missing" }
 
     private var goodsName: String = ""
-    private var goodsPrice: Double = 0.0
+    private var goodsPoints: Int = 0
     private var goodsStock: Int = 0
     private var goodsActive: Boolean = true
 
@@ -59,17 +59,19 @@ class ShopGoodsDetailFragment : Fragment() {
                 val g = repo.getGoodsById(args.goodsId).getOrThrow()
 
                 goodsName = g.name
-                goodsPrice = g.price ?: 0.0
+                goodsPoints = g.redemptionPoints
                 goodsStock = g.stock
                 goodsActive = g.isActive
 
                 binding.textName.text = g.name
                 binding.textDescription.text = g.description ?: ""
-                binding.textCost.text = "$" + String.format("%.2f", goodsPrice)
+
+                // ✅ 这里改为显示积分
+                binding.textCost.text = "$goodsPoints pts"
 
                 binding.textInstructions.text =
                     "Instructions:\n" +
-                            "1. Tap Redeem Now to create an order.\n" +
+                            "1. Tap Redeem Now to exchange points for this item.\n" +
                             "2. Stock will be reduced if successful.\n"
 
                 binding.btnRedeem.text = "Redeem Now"
@@ -97,7 +99,8 @@ class ShopGoodsDetailFragment : Fragment() {
 
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Confirm Redemption")
-            .setMessage("Redeem \"$goodsName\" for $" + String.format("%.2f", goodsPrice) + "?")
+            // ✅ 这里改为 points
+            .setMessage("Redeem \"$goodsName\" for $goodsPoints pts?")
             .setPositiveButton("Confirm") { _, _ -> performRedeem() }
             .setNegativeButton("Cancel", null)
             .show()
@@ -106,6 +109,7 @@ class ShopGoodsDetailFragment : Fragment() {
     private fun performRedeem() {
         binding.btnRedeem.isEnabled = false
 
+        // ✅ 你们是积分兑换单：price/subtotal 建议固定 0，避免前端/后端出现“现金购买”的误导
         val order = OrderCreateRequest(
             userId = currentUserId,
             items = listOf(
@@ -113,8 +117,8 @@ class ShopGoodsDetailFragment : Fragment() {
                     goodsId = args.goodsId,
                     goodsName = goodsName,
                     quantity = 1,
-                    price = goodsPrice,
-                    subtotal = goodsPrice
+                    price = 0.0,
+                    subtotal = 0.0
                 )
             )
         )

@@ -23,6 +23,17 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
+            <!-- 回退键 -->
+            <ImageButton
+                android:id="@+id/btn_back"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Back"
+                android:src="@drawable/ic_arrow_left"
+                app:tint="@color/text_primary" />
+
             <!-- 左侧：积分 -->
             <LinearLayout
                 android:id="@+id/card_points"

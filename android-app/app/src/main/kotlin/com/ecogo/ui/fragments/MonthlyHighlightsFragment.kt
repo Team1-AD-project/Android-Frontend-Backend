@@ -17,7 +17,6 @@ import com.ecogo.ui.adapters.MonthlyActivityAdapter
 import com.ecogo.ui.adapters.MonthlyChallengeAdapter
 import com.ecogo.ui.adapters.ChallengeWithProgress
 import com.ecogo.ui.adapters.MonthStatAdapter
-import com.ecogo.ui.adapters.PopularRouteAdapter
 import com.ecogo.ui.adapters.MilestoneAdapter
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -61,17 +60,6 @@ class MonthlyHighlightsFragment : Fragment() {
         // 设置当前月份
         val currentMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM yyyy"))
         binding.textCurrentMonth.text = currentMonth
-        
-        // 上个月/下个月按钮（可选功能）
-        binding.btnPreviousMonth.setOnClickListener {
-            // TODO: 加载上个月数据
-            android.widget.Toast.makeText(requireContext(), "查看上个月", android.widget.Toast.LENGTH_SHORT).show()
-        }
-        
-        binding.btnNextMonth.setOnClickListener {
-            // TODO: 加载下个月数据（如果有预告）
-            android.widget.Toast.makeText(requireContext(), "下个月即将推出", android.widget.Toast.LENGTH_SHORT).show()
-        }
         
         // 查看全部已加入的活动
         binding.btnViewAllActivities.setOnClickListener {
@@ -117,15 +105,6 @@ class MonthlyHighlightsFragment : Fragment() {
             }
         }
 
-        // 流行路线列表
-        binding.recyclerPopularRoutes.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = PopularRouteAdapter(emptyList()) { route ->
-                // 可以跳转到路线详情或路线规划
-                android.widget.Toast.makeText(requireContext(), "Route: ${route.name}", android.widget.Toast.LENGTH_SHORT).show()
-            }
-        }
-        
         // 里程碑时间线
         binding.recyclerMilestones.apply {
             layoutManager = LinearLayoutManager(context)
@@ -150,9 +129,6 @@ class MonthlyHighlightsFragment : Fragment() {
             // 加载排行榜前三
             loadLeaderboardTop3()
 
-            // 加载流行路线
-            loadPopularRoutes()
-            
             // 加载里程碑
             loadMilestones()
         }
@@ -329,14 +305,6 @@ class MonthlyHighlightsFragment : Fragment() {
         }
     }
 
-    private suspend fun loadPopularRoutes() {
-        val routes = repository.getBusRoutes().getOrElse { emptyList() }
-        
-        // 取前5条热门路线
-        val popularRoutes = routes.take(5)
-        (binding.recyclerPopularRoutes.adapter as? PopularRouteAdapter)?.updateData(popularRoutes)
-    }
-    
     private fun loadMilestones() {
         // TODO: 从后端加载实际里程碑数据
         // 这里使用模拟数据

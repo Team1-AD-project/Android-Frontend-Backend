@@ -45,6 +45,7 @@ class ActivitiesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.btnBack.setOnClickListener { findNavController().navigateUp() }
         userId = TokenManager.getUserId() ?: "user123"
         setupRecyclerView()
         setupTabs()

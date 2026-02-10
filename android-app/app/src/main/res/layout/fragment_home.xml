@@ -72,24 +72,6 @@
                 android:focusable="true"
                 android:contentDescription="@string/profile_avatar" />
             
-            <!-- Daily Check-in Button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/button_checkin"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="8dp"
-                android:insetLeft="0dp"
-                android:insetTop="0dp"
-                android:insetRight="0dp"
-                android:insetBottom="0dp"
-                android:padding="0dp"
-                app:backgroundTint="@color/primary"
-                app:cornerRadius="20dp"
-                app:icon="@drawable/ic_calendar_check"
-                app:iconGravity="textStart"
-                app:iconPadding="0dp"
-                app:iconSize="20dp"
-                app:iconTint="@color/text_white" />
         </LinearLayout>
 
         <!-- 主内容区 padding -->
@@ -98,34 +80,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
-
-        <!-- Daily Check-in Status (Initially Hidden) -->
-        <LinearLayout
-            android:id="@+id/layout_checkin_status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/bg_checkin_button"
-            android:orientation="horizontal"
-            android:padding="12dp"
-            android:visibility="gone">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_check"
-                app:tint="@color/primary" />
-
-            <TextView
-                android:id="@+id/text_checkin_status"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:text="Checked in 5 days · Earned 10 points today"
-                android:textColor="@color/text_primary"
-                android:textSize="12sp" />
-        </LinearLayout>
 
         <!-- Notification Banner -->
         <com.google.android.material.card.MaterialCardView

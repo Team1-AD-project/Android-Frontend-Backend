@@ -58,43 +58,17 @@
                         android:layout_height="40dp" />
                 </LinearLayout>
 
-                <!-- Month selector -->
-                <LinearLayout
+                <!-- Current month display -->
+                <TextView
+                    android:id="@+id/text_current_month"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageButton
-                        android:id="@+id/btn_previous_month"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="Previous Month"
-                        android:src="@drawable/ic_arrow_left"
-                        app:tint="@color/text_white" />
-
-                    <TextView
-                        android:id="@+id/text_current_month"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="February 2026"
-                        android:textColor="@color/text_white"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <ImageButton
-                        android:id="@+id/btn_next_month"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="Next Month"
-                        android:src="@drawable/ic_arrow_right"
-                        app:tint="@color/text_white" />
-                </LinearLayout>
+                    android:text="February 2026"
+                    android:textColor="@color/text_white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <!-- Month summary -->
                 <TextView
@@ -481,32 +455,6 @@
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
-            <!-- Popular Routes This Month -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="🗺️ Popular Routes"
-                android:textColor="@color/text_primary"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Most traveled routes this month"
-                android:textColor="@color/text_secondary"
-                android:textSize="13sp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_popular_routes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:nestedScrollingEnabled="false"
-                android:overScrollMode="never" />
 
             <!-- Eco Tips -->
             <TextView

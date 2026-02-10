@@ -1103,13 +1103,30 @@ class MascotLionView @JvmOverloads constructor(
 
     private fun getBadgeIcon(badgeId: String): String {
         return when (badgeId) {
+            // 支持数据库 ID
+            "badge_c1" -> "🌱"   // Eco Starter
+            "badge_c2" -> "🚶"   // Green Walker
+            "badge_c3" -> "♻️"   // Carbon Cutter
+            "badge_c4" -> "🌳"   // Nature Friend
+            "badge_c5" -> "🚌"   // Bus Rider
+            "badge_c6" -> "🌍"   // Planet Saver
+            "badge_c7" -> "⚡"   // Eco Warrior
+            "badge_c8" -> "🦸"   // Climate Hero
+            "badge_c9" -> "👑"   // Sustainability King
+            "badge_c10" -> "🏆"  // Legend of Earth
+
+            // 兼容旧 ID
             "a1", "1" -> "🌱"
-            "a2", "2" -> "🚌"
-            "a3", "3" -> "🥾"
-            "a4", "4" -> "♻️"
-            "a5", "5" -> "🌅"
-            "a6", "6" -> "🦉"
-            else -> ""
+            "a2", "2" -> "🚶"
+            "a3", "3" -> "♻️"
+            "a4", "4" -> "🌳"
+            "a5", "5" -> "🚌"
+            "a6", "6" -> "🌍"
+            "a7", "7" -> "⚡"
+            "a8", "8" -> "🦸"
+            "a9", "9" -> "👑"
+            "a10", "10" -> "🏆"
+            else -> "🏅"
         }
     }
 

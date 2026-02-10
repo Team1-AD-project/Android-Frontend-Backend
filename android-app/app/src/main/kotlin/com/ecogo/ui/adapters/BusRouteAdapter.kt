@@ -27,6 +27,8 @@ class BusRouteAdapter(
     override fun getItemCount() = routes.size
     
     class RouteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        private val arrow: TextView = itemView.findViewById(R.id.text_arrow)
         private val colorStripe: View = itemView.findViewById(R.id.view_color_stripe)
         private val number: TextView = itemView.findViewById(R.id.text_number)
         private val name: TextView = itemView.findViewById(R.id.text_name)
@@ -38,8 +40,21 @@ class BusRouteAdapter(
         
         fun bind(route: BusRoute, onRouteClick: ((BusRoute) -> Unit)? = null) {
             number.text = route.name
-            name.text = route.from.takeIf { it.isNotEmpty() } ?: "Start"
-            destination.text = route.to.takeIf { it.isNotEmpty() } ?: "End"
+
+            val hasBriefRoute = route.from.contains("→") // 你现在 from 已经是 "SOC → ... → SOC"
+
+            if (hasBriefRoute) {
+                name.text = route.from
+                destination.text = ""
+                arrow.visibility = View.GONE
+                destination.visibility = View.GONE
+            } else {
+                name.text = route.from.takeIf { it.isNotEmpty() } ?: "Start"
+                destination.text = route.to.takeIf { it.isNotEmpty() } ?: "End"
+                arrow.visibility = View.VISIBLE
+                destination.visibility = View.VISIBLE
+            }
+
             nextArrival.text = route.time ?: "${route.nextArrival} min"
             status.text = route.status ?: if (route.operational) "On Time" else "Inactive"
             

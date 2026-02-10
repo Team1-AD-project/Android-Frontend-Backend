@@ -1099,7 +1099,18 @@ object MockData {
             type = "earn"
         )
     ) }
-
+    val BADGE_ID_MAPPING = mapOf(
+        "a1" to "badge_c1",   // Eco Starter (0kg)
+        "a2" to "badge_c2",   // Green Walker (5kg)
+        "a3" to "badge_c3",   // Carbon Cutter (15kg)
+        "a4" to "badge_c4",   // Nature Friend (30kg)
+        "a5" to "badge_c5",   // Bus Rider (50kg)
+        "a6" to "badge_c6",   // Planet Saver (100kg)
+        "a7" to "badge_c7",   // Eco Warrior (200kg)
+        "a8" to "badge_c8",   // Climate Hero (500kg)
+        "a9" to "badge_c9",   // Sustainability King (1000kg)
+        "a10" to "badge_c10"  // Legend of Earth (2000kg)
+    )
     val FACULTIES by lazy { listOf(
         Faculty(
             id = "soc",

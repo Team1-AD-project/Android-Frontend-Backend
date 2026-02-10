@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.ecogo.auth.TokenManager
 import kotlinx.coroutines.launch
 
 class SplashActivity : AppCompatActivity() {
@@ -23,6 +24,8 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val notificationDest = intent?.getStringExtra("notification_destination")
 
         // Initialize TokenManager here as well if needed (safeguard)
         com.ecogo.auth.TokenManager.init(applicationContext)
@@ -38,7 +41,11 @@ class SplashActivity : AppCompatActivity() {
         if (isVip && isLoggedIn) {
             // VIP & Logged In -> Skip Ad & Login -> Go to Home
             Log.d(TAG, "User is VIP & Logged In. Skipping Ad.")
-            proceedToMain(true)
+            proceedToMain(
+                shouldGoToHome = true,
+                notificationDest = notificationDest
+            )
+
             return
         }
 
@@ -54,7 +61,10 @@ class SplashActivity : AppCompatActivity() {
         btnSkip.setOnClickListener {
             Log.d(TAG, "Skip button clicked")
             countdownTimer?.cancel()
-            proceedToMain(isLoggedIn)
+            proceedToMain(
+                shouldGoToHome = com.ecogo.auth.TokenManager.isLoggedIn(),
+                notificationDest = notificationDest
+            )
         }
 
         // Use BuildConfig base URL instead of hardcoded production URL
@@ -140,7 +150,11 @@ class SplashActivity : AppCompatActivity() {
                                 runOnUiThread {
                                     Log.d(TAG, "User effectively VIP after sync. Skipping ad now.")
                                     countdownTimer?.cancel()
-                                    proceedToMain(true)
+                                    proceedToMain(
+                                        shouldGoToHome = com.ecogo.auth.TokenManager.isLoggedIn(),
+                                        notificationDest = notificationDest
+                                    )
+
                                 }
                             }
                         }
@@ -162,12 +176,15 @@ class SplashActivity : AppCompatActivity() {
             override fun onFinish() {
                 Log.d(TAG, "Countdown finished")
                 tvSkipText.text = "跳过 0"
-                proceedToMain(isLoggedIn)
+                proceedToMain(
+                    shouldGoToHome = true,
+                    notificationDest = notificationDest
+                )
             }
         }.start()
     }
 
-    private fun proceedToMain(shouldGoToHome: Boolean) {
+    private fun proceedToMain(shouldGoToHome: Boolean, notificationDest: String?) {
         // Prevent multiple calls (race condition guard)
         if (hasNavigated) {
             Log.w(TAG, "proceedToMain: Already navigated, ignoring duplicate call")
@@ -175,20 +192,25 @@ class SplashActivity : AppCompatActivity() {
         }
         hasNavigated = true
 
-        Log.d(TAG, "proceedToMain: shouldGoToHome=$shouldGoToHome")
+        Log.d(TAG, "proceedToMain: shouldGoToHome=$shouldGoToHome, dest=$notificationDest")
         countdownTimer?.cancel()
         countdownTimer = null
 
         val intent = Intent(this, MainActivity::class.java)
-        // Clear the task stack so user cannot go back to SplashActivity
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        
+
         if (shouldGoToHome) {
             intent.putExtra("NAV_TO_HOME", true)
         }
+
+        if (!notificationDest.isNullOrBlank()) {
+            intent.putExtra("notification_destination", notificationDest)
+        }
+
         startActivity(intent)
         finish()
     }
+
 
     override fun onDestroy() {
         super.onDestroy()

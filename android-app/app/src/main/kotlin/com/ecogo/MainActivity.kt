@@ -10,6 +10,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.ecogo.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.content.Intent
+
 
 class MainActivity : AppCompatActivity() {
     
@@ -33,6 +35,7 @@ class MainActivity : AppCompatActivity() {
             setContentView(binding.root)
             
             setupNavigation()
+
 
             // Check for direct navigation from SplashActivity
             if (intent.getBooleanExtra("NAV_TO_HOME", false)) {
@@ -60,6 +63,8 @@ class MainActivity : AppCompatActivity() {
             Log.e("DEBUG_MAIN", "MainActivity onCreate FAILED: ${e.message}", e)
             Toast.makeText(this, "MainActivity 初始化失败: ${e.message}", Toast.LENGTH_LONG).show()
         }
+
+        handleNotificationIntent(intent)
     }
     
     private fun setupNavigation() {
@@ -162,4 +167,33 @@ class MainActivity : AppCompatActivity() {
         val useV2 = prefs.getBoolean("use_home_v2", false)
         return if (useV2) R.id.homeFragmentV2 else R.id.homeFragment
     }
+
+    private fun handleNotificationIntent(intent: Intent?) {
+        val destination = intent?.getStringExtra("notification_destination") ?: return
+
+        val navHost =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as? androidx.navigation.fragment.NavHostFragment
+                ?: return
+        val navController = navHost.navController
+
+        when (destination) {
+            "voucher" -> {
+                // 这里换成你们项目的 voucher destination id
+                navController.navigate(com.ecogo.R.id.voucherFragment)
+            }
+            "challenges" -> {
+                // 这里换成你们项目的 challenges destination id
+                navController.navigate(com.ecogo.R.id.challengesFragment)
+            }
+            else -> {
+                // home 可以不处理，因为默认就在 home
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        handleNotificationIntent(intent)
+    }
+
 }
