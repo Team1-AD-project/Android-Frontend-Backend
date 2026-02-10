@@ -33,6 +33,7 @@ import com.ecogo.data.Weather
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.ecogo.data.PointsCurrentData
+import com.ecogo.data.TripDto
 
 
 /**
@@ -150,6 +151,35 @@ class EcoGoRepository {
         }
     
     // ==================== 商品相关 ====================
+    suspend fun getUserTripHistoryWeb(userId: String): Result<List<TripDto>> = withContext(Dispatchers.IO) {
+        try {
+            val response = api.getUserTripsWeb(userId)
+
+            // ✅ 按你后端 web trips 返回的 code/message/data 结构处理
+            if (response.code == 200 && response.data != null) {
+                Result.success(response.data)
+            } else {
+                Result.failure(Exception(response.message ?: "Failed to load trips"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getMyTripHistory(): Result<List<TripDto>> = withContext(Dispatchers.IO) {
+        try {
+            val resp = api.getMyTripHistory()
+            if (resp.code == 200 && resp.data != null) {
+                Result.success(resp.data)
+            } else {
+                Result.failure(Exception(resp.message ?: "Failed to load trip history"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+
     suspend fun getCurrentPoints(): Result<PointsCurrentData> = withContext(Dispatchers.IO) {
         return@withContext try {
             val resp = api.getCurrentPoints()

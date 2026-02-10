@@ -82,6 +82,9 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.buttonTripHistory.setOnClickListener {
+            findNavController().navigate(R.id.action_profile_to_tripHistory)
+        }
 
         loadingDialog = LoadingDialog(requireContext())
 

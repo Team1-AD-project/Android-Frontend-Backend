@@ -36,6 +36,7 @@ import retrofit2.http.GET
 import com.ecogo.api.ApiResponse
 import com.ecogo.data.PointsCurrentData
 import com.ecogo.data.LeaderboardStatsData
+import com.ecogo.data.TripDto
 
 /**
  * API 服务接口
@@ -209,6 +210,20 @@ interface ApiService {
     ): ApiResponse<LeaderboardStatsData>
     
     // ==================== 商品相关 ====================
+    /**
+     * 获取用户 Trip History（Web trips 接口）
+     * GET /api/v1/web/trips/user/{userId}
+     */
+    @GET("api/v1/web/trips/user/{userId}")
+    suspend fun getUserTripsWeb(
+        @Path("userId") userId: String
+    ): ApiResponse<List<TripDto>>
+
+    @GET("api/v1/mobile/trips/history")
+    suspend fun getMyTripHistory(): ApiResponse<List<TripDto>>
+
+
+
     @GET("api/v1/support/churn/me")
     suspend fun getMyChurnRisk(
         @Query("userId") userId: String

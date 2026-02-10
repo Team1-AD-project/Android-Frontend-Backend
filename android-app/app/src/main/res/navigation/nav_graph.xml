@@ -159,7 +159,17 @@
         <action
             android:id="@+id/action_profile_to_shop"
             app:destination="@id/shopFragment" />
+        <action
+            android:id="@+id/action_profile_to_tripHistory"
+            app:destination="@id/tripHistoryFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/tripHistoryFragment"
+        android:name="com.ecogo.ui.fragments.TripHistoryFragment"
+        android:label="Trip History"
+        tools:layout="@layout/fragment_trip_history" />
+
 
     <fragment
         android:id="@+id/settingsFragment"

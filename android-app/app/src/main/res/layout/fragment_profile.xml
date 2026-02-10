@@ -96,6 +96,25 @@
             </FrameLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_trip_history"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="12dp"
+            android:text="Trip History"
+            android:textColor="#111827"
+            android:textSize="15sp"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            app:cornerRadius="16dp"
+            app:icon="@drawable/ic_route"
+            app:iconPadding="8dp"
+            app:iconTint="@color/primary"
+            app:backgroundTint="@android:color/white"
+            app:strokeColor="@color/border"
+            app:strokeWidth="1dp"/>
+
+
         <!-- Points Card -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_points"

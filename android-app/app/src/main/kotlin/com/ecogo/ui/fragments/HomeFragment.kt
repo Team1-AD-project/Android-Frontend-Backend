@@ -196,7 +196,14 @@ class HomeFragment : Fragment() {
             // Update UI with real data on Main thread
 
             // Dynamic Greeting
-            binding.textWelcome.text = "Hello, ${userInfo.nickname}"
+            val isVip = (profile.vipInfo?.active == true) || 
+                        (profile.userInfo.vip?.active == true) || 
+                        (profile.vipInfo?.plan != null) ||
+                        (profile.userInfo.vip?.plan != null) ||
+                        (profile.userInfo.isAdmin == true)
+            
+            val displayNickname = if (isVip) "${userInfo.nickname} (VIP)" else userInfo.nickname
+            binding.textWelcome.text = "Hello, $displayNickname"
 
             // Update Rank (Removed per user request)
             /*
