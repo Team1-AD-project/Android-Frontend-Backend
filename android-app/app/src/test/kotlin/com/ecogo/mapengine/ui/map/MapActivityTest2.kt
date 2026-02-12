@@ -29,6 +29,11 @@ class MapActivityTest2 {
 
     // ==================== Reflection Helpers ====================
 
+    companion object {
+        private const val TRIP_ID_1 = "trip-1"
+        private const val TRIP_ID_2 = "trip-2"
+    }
+
     private fun invokePrivate(obj: Any, methodName: String, vararg args: Any?): Any? {
         val method = obj::class.java.declaredMethods.find { it.name == methodName }
             ?: throw NoSuchMethodException(methodName)
@@ -687,24 +692,24 @@ class MapActivityTest2 {
 
     @Test
     fun `TripState Tracking data class`() {
-        val t1 = TripState.Tracking("trip-1")
-        val t2 = TripState.Tracking("trip-1")
+        val t1 = TripState.Tracking(TRIP_ID_1)
+        val t2 = TripState.Tracking(TRIP_ID_1)
         assertEquals(t1, t2)
         assertEquals(t1.hashCode(), t2.hashCode())
     }
 
     @Test
     fun `TripState Tracking different ids not equal`() {
-        val t1 = TripState.Tracking("trip-1")
-        val t2 = TripState.Tracking("trip-2")
+        val t1 = TripState.Tracking(TRIP_ID_1)
+        val t2 = TripState.Tracking(TRIP_ID_2)
         assertNotEquals(t1, t2)
     }
 
     @Test
     fun `TripState Tracking copy`() {
-        val t1 = TripState.Tracking("trip-1")
-        val t2 = t1.copy(tripId = "trip-2")
-        assertEquals("trip-2", t2.tripId)
+        val t1 = TripState.Tracking(TRIP_ID_1)
+        val t2 = t1.copy(tripId = TRIP_ID_2)
+        assertEquals(TRIP_ID_2, t2.tripId)
     }
 
     @Test

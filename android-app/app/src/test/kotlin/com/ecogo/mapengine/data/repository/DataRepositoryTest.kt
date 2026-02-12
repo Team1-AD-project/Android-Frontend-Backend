@@ -36,6 +36,27 @@ import java.lang.reflect.Field
 @Config(sdk = [33])
 class DataRepositoryTest {
 
+    companion object {
+        private const val STATION_A = "Station A"
+        private const val STATION_B = "Station B"
+        private const val TAKE_BUS = "Take bus"
+        private const val METRO_LINE_1 = "Metro Line 1"
+        private const val TIME_12_00 = "2025-01-01T12:00:00Z"
+        private const val END_PLACE = "End Place"
+        private const val API_ERROR = "API returned error"
+        private const val START_ADDR = "Start Addr"
+        private const val DATE_2025_01_01 = "2025-01-01"
+        private const val TEST_TOKEN = "Bearer test_token_123"
+        private const val MAIN_ST = "123 Main St"
+        private const val ZONE_A = "Zone A"
+        private const val TIME_00_00 = "2025-01-01T00:00:00Z"
+        private const val TIME_01_00 = "2025-01-01T01:00:00Z"
+        private const val EMPTY_RESPONSE = "响应数据为空"
+        private const val NETWORK_ERROR = "Network error"
+        private const val END_ADDR = "End Addr"
+        private const val ROUTE_FAILURE = "获取路线失败"
+    }
+
     private lateinit var mockMapRepo: MockMapRepository
     private lateinit var context: Context
     private val testDispatcher = StandardTestDispatcher()
@@ -674,8 +695,8 @@ class DataRepositoryTest {
                 transit_details = TransitDetails(
                     line_name = "Line 1",
                     line_short_name = "1",
-                    departure_stop = "Station A",
-                    arrival_stop = "Station B",
+                    departure_stop = STATION_A,
+                    arrival_stop = STATION_B,
                     num_stops = 5,
                     vehicle_type = "SUBWAY"
                 )
@@ -690,7 +711,7 @@ class DataRepositoryTest {
     fun `generateRouteSummary - transit step without short name uses line name`() {
         val steps = listOf(
             RouteStep(
-                instruction = "Take bus",
+                instruction = TAKE_BUS,
                 distance = 3000.0,
                 duration = 300,
                 travel_mode = "TRANSIT",
@@ -718,7 +739,7 @@ class DataRepositoryTest {
                 duration = 600,
                 travel_mode = "TRANSIT",
                 transit_details = TransitDetails(
-                    line_name = "Metro Line 1",
+                    line_name = METRO_LINE_1,
                     line_short_name = "1号线",
                     departure_stop = "A",
                     arrival_stop = "B",
@@ -733,7 +754,7 @@ class DataRepositoryTest {
                 travel_mode = "WALKING"
             ),
             RouteStep(
-                instruction = "Take bus",
+                instruction = TAKE_BUS,
                 distance = 2000.0,
                 duration = 300,
                 travel_mode = "TRANSIT",
@@ -830,7 +851,7 @@ class DataRepositoryTest {
     @Test
     fun `getCurrentTimeString - returns ISO 8601 format`() {
         val timeStr: String = invokePrivate(mockMapRepo, "getCurrentTimeString")
-        // Should match pattern like "2025-01-01T12:00:00Z"
+        // Should match pattern like TIME_12_00
         assertTrue("Time string should match ISO 8601 format: $timeStr",
             timeStr.matches(Regex("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z")))
     }
@@ -1006,7 +1027,7 @@ class DataRepositoryTest {
     @Test
     fun `saveTrip - returns success`() = runTest {
         val endPoint = GeoPoint(lng = 121.48, lat = 31.24)
-        val result = mockMapRepo.saveTrip("trip123", "user1", endPoint, null, 5.0, "2025-01-01T12:00:00Z")
+        val result = mockMapRepo.saveTrip("trip123", "user1", endPoint, null, 5.0, TIME_12_00)
         assertTrue(result.isSuccess)
         val data = result.getOrThrow()
         assertEquals("trip123", data.trip_id)
@@ -1020,7 +1041,7 @@ class DataRepositoryTest {
         val startPoint = GeoPoint(lng = 121.4737, lat = 31.2304)
         mockMapRepo.startTripTracking("user1", startPoint)
         val endPoint = GeoPoint(lng = 121.48, lat = 31.24)
-        mockMapRepo.saveTrip("trip123", "user1", endPoint, null, 5.0, "2025-01-01T12:00:00Z")
+        mockMapRepo.saveTrip("trip123", "user1", endPoint, null, 5.0, TIME_12_00)
         val savedStart: GeoPoint? = getPrivateField(mockMapRepo, "currentTripStartPoint")
         val savedTime: String? = getPrivateField(mockMapRepo, "currentTripStartTime")
         assertNull(savedStart)
@@ -1030,7 +1051,7 @@ class DataRepositoryTest {
     @Test
     fun `saveTrip - with end location info`() = runTest {
         val endPoint = GeoPoint(lng = 121.48, lat = 31.24)
-        val endLocation = LocationInfo(address = "End Address", place_name = "End Place")
+        val endLocation = LocationInfo(address = "End Address", place_name = END_PLACE)
         val result = mockMapRepo.saveTrip("trip123", "user1", endPoint, endLocation, 10.0, "2025-01-01T13:00:00Z")
         assertTrue(result.isSuccess)
     }
@@ -1038,14 +1059,14 @@ class DataRepositoryTest {
     @Test
     fun `saveTrip - message is set`() = runTest {
         val endPoint = GeoPoint(lng = 121.48, lat = 31.24)
-        val result = mockMapRepo.saveTrip("trip123", "user1", endPoint, null, 5.0, "2025-01-01T12:00:00Z")
+        val result = mockMapRepo.saveTrip("trip123", "user1", endPoint, null, 5.0, TIME_12_00)
         assertNotNull(result.getOrThrow().message)
     }
 
     @Test
     fun `saveTrip - preserves distance value`() = runTest {
         val endPoint = GeoPoint(lng = 121.48, lat = 31.24)
-        val result = mockMapRepo.saveTrip("trip123", "user1", endPoint, null, 42.5, "2025-01-01T12:00:00Z")
+        val result = mockMapRepo.saveTrip("trip123", "user1", endPoint, null, 42.5, TIME_12_00)
         assertEquals(42.5, result.getOrThrow().total_distance!!, 0.001)
     }
 
@@ -1590,7 +1611,7 @@ class DataRepositoryTest {
     fun `TripRepository - getAuthToken returns fallback when no token set`() {
         val repo = TripRepository.getInstance()
         val token = repo.getAuthToken()
-        assertEquals("Bearer test_token_123", token)
+        assertEquals(TEST_TOKEN, token)
     }
 
     @Test
@@ -1610,7 +1631,7 @@ class DataRepositoryTest {
         TokenManager.logout()
         val repo = TripRepository.getInstance()
         val token: String = invokePrivate(repo, "resolveAuthToken")
-        assertEquals("Bearer test_token_123", token)
+        assertEquals(TEST_TOKEN, token)
     }
 
     @Test
@@ -1729,10 +1750,10 @@ class DataRepositoryTest {
 
     @Test
     fun `LocationInfo - all fields present`() {
-        val info = LocationInfo(address = "123 Main St", place_name = "Library", campus_zone = "Zone A")
-        assertEquals("123 Main St", info.address)
+        val info = LocationInfo(address = MAIN_ST, place_name = "Library", campus_zone = ZONE_A)
+        assertEquals(MAIN_ST, info.address)
         assertEquals("Library", info.place_name)
-        assertEquals("Zone A", info.campus_zone)
+        assertEquals(ZONE_A, info.campus_zone)
     }
 
     @Test
@@ -1745,8 +1766,8 @@ class DataRepositoryTest {
 
     @Test
     fun `LocationInfo - partial fields`() {
-        val info = LocationInfo(address = "123 Main St")
-        assertEquals("123 Main St", info.address)
+        val info = LocationInfo(address = MAIN_ST)
+        assertEquals(MAIN_ST, info.address)
         assertNull(info.place_name)
         assertNull(info.campus_zone)
     }
@@ -1757,25 +1778,25 @@ class DataRepositoryTest {
 
     @Test
     fun `TripTrackData - default status is tracking`() {
-        val data = TripTrackData(trip_id = "t1", start_time = "2025-01-01T00:00:00Z")
+        val data = TripTrackData(trip_id = "t1", start_time = TIME_00_00)
         assertEquals("tracking", data.status)
     }
 
     @Test
     fun `TripTrackData - custom status`() {
-        val data = TripTrackData(trip_id = "t1", status = "paused", start_time = "2025-01-01T00:00:00Z")
+        val data = TripTrackData(trip_id = "t1", status = "paused", start_time = TIME_00_00)
         assertEquals("paused", data.status)
     }
 
     @Test
     fun `TripTrackData - null message`() {
-        val data = TripTrackData(trip_id = "t1", start_time = "2025-01-01T00:00:00Z")
+        val data = TripTrackData(trip_id = "t1", start_time = TIME_00_00)
         assertNull(data.message)
     }
 
     @Test
     fun `TripTrackData - with message`() {
-        val data = TripTrackData(trip_id = "t1", start_time = "2025-01-01T00:00:00Z", message = "Started")
+        val data = TripTrackData(trip_id = "t1", start_time = TIME_00_00, message = "Started")
         assertEquals("Started", data.message)
     }
 
@@ -1788,12 +1809,12 @@ class DataRepositoryTest {
         val data = TripCancelData(
             trip_id = "t1",
             status = "cancelled",
-            cancel_time = "2025-01-01T01:00:00Z",
+            cancel_time = TIME_01_00,
             message = "Cancelled"
         )
         assertEquals("t1", data.trip_id)
         assertEquals("cancelled", data.status)
-        assertEquals("2025-01-01T01:00:00Z", data.cancel_time)
+        assertEquals(TIME_01_00, data.cancel_time)
         assertEquals("Cancelled", data.message)
     }
 
@@ -2091,14 +2112,14 @@ class DataRepositoryTest {
             vehicle_type = "BUS"
         )
         val step = RouteStep(
-            instruction = "Take bus",
+            instruction = TAKE_BUS,
             distance = 2000.0,
             duration = 300,
             travel_mode = "TRANSIT",
             transit_details = transitDetails,
             polyline_points = listOf(GeoPoint(121.47, 31.23))
         )
-        assertEquals("Take bus", step.instruction)
+        assertEquals(TAKE_BUS, step.instruction)
         assertEquals(2000.0, step.distance, 0.001)
         assertNotNull(step.transit_details)
         assertEquals("46", step.transit_details!!.line_short_name)
@@ -2123,18 +2144,18 @@ class DataRepositoryTest {
     @Test
     fun `TransitDetails - all fields`() {
         val details = TransitDetails(
-            line_name = "Metro Line 1",
+            line_name = METRO_LINE_1,
             line_short_name = "1号线",
-            departure_stop = "Station A",
-            arrival_stop = "Station B",
+            departure_stop = STATION_A,
+            arrival_stop = STATION_B,
             num_stops = 5,
             vehicle_type = "SUBWAY",
             headsign = "Northbound"
         )
-        assertEquals("Metro Line 1", details.line_name)
+        assertEquals(METRO_LINE_1, details.line_name)
         assertEquals("1号线", details.line_short_name)
-        assertEquals("Station A", details.departure_stop)
-        assertEquals("Station B", details.arrival_stop)
+        assertEquals(STATION_A, details.departure_stop)
+        assertEquals(STATION_B, details.arrival_stop)
         assertEquals(5, details.num_stops)
         assertEquals("SUBWAY", details.vehicle_type)
         assertEquals("Northbound", details.headsign)
@@ -2289,7 +2310,7 @@ class DataRepositoryTest {
         assertTrue(carbonResult.isSuccess)
 
         // Save trip
-        val saveResult = mockMapRepo.saveTrip(tripId, "user1", endPoint, null, 5.0, "2025-01-01T12:00:00Z")
+        val saveResult = mockMapRepo.saveTrip(tripId, "user1", endPoint, null, 5.0, TIME_12_00)
         assertTrue(saveResult.isSuccess)
         assertEquals("completed", saveResult.getOrThrow().status)
     }
@@ -2480,7 +2501,7 @@ class DataRepositoryTest {
         TokenManager.logout()
         val repo = TripRepository.getInstance()
         val token = repo.getAuthToken()
-        assertEquals("Bearer test_token_123", token)
+        assertEquals(TEST_TOKEN, token)
     }
 
     @Test
@@ -2587,7 +2608,7 @@ class DataRepositoryTest {
     fun `MapRepository - startTripTracking success`() = runTest {
         val mockApi: com.ecogo.mapengine.data.remote.ApiService = org.mockito.kotlin.mock()
         val repo = MapRepository(mockApi)
-        val trackData = TripTrackData(trip_id = "trip_1", status = "tracking", start_time = "2025-01-01T00:00:00Z", message = "OK")
+        val trackData = TripTrackData(trip_id = "trip_1", status = "tracking", start_time = TIME_00_00, message = "OK")
         org.mockito.kotlin.whenever(mockApi.startTripTracking(org.mockito.kotlin.any())).thenReturn(mockSuccessResponse(trackData))
         val result = repo.startTripTracking("user1", GeoPoint(lng = 121.47, lat = 31.23))
         assertTrue(result.isSuccess)
@@ -2599,7 +2620,7 @@ class DataRepositoryTest {
     fun `MapRepository - startTripTracking with location info`() = runTest {
         val mockApi: com.ecogo.mapengine.data.remote.ApiService = org.mockito.kotlin.mock()
         val repo = MapRepository(mockApi)
-        val trackData = TripTrackData(trip_id = "trip_2", status = "tracking", start_time = "2025-01-01T00:00:00Z")
+        val trackData = TripTrackData(trip_id = "trip_2", status = "tracking", start_time = TIME_00_00)
         org.mockito.kotlin.whenever(mockApi.startTripTracking(org.mockito.kotlin.any())).thenReturn(mockSuccessResponse(trackData))
         val location = LocationInfo(address = "Addr", place_name = "Place")
         val result = repo.startTripTracking("user1", GeoPoint(lng = 121.47, lat = 31.23), location)
@@ -2624,17 +2645,17 @@ class DataRepositoryTest {
         org.mockito.kotlin.whenever(mockApi.startTripTracking(org.mockito.kotlin.any())).thenReturn(mockNullDataResponse())
         val result = repo.startTripTracking("user1", GeoPoint(lng = 121.47, lat = 31.23))
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull()!!.message!!.contains("响应数据为空"))
+        assertTrue(result.exceptionOrNull()!!.message!!.contains(EMPTY_RESPONSE))
     }
 
     @Test
     fun `MapRepository - startTripTracking exception returns failure`() = runTest {
         val mockApi: com.ecogo.mapengine.data.remote.ApiService = org.mockito.kotlin.mock()
         val repo = MapRepository(mockApi)
-        org.mockito.kotlin.whenever(mockApi.startTripTracking(org.mockito.kotlin.any())).thenThrow(RuntimeException("Network error"))
+        org.mockito.kotlin.whenever(mockApi.startTripTracking(org.mockito.kotlin.any())).thenThrow(RuntimeException(NETWORK_ERROR))
         val result = repo.startTripTracking("user1", GeoPoint(lng = 121.47, lat = 31.23))
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull()!!.message!!.contains("Network error"))
+        assertTrue(result.exceptionOrNull()!!.message!!.contains(NETWORK_ERROR))
     }
 
     @Test
@@ -2664,7 +2685,7 @@ class DataRepositoryTest {
     fun `MapRepository - cancelTripTracking success`() = runTest {
         val mockApi: com.ecogo.mapengine.data.remote.ApiService = org.mockito.kotlin.mock()
         val repo = MapRepository(mockApi)
-        val cancelData = TripCancelData(trip_id = "trip_1", status = "cancelled", cancel_time = "2025-01-01T01:00:00Z")
+        val cancelData = TripCancelData(trip_id = "trip_1", status = "cancelled", cancel_time = TIME_01_00)
         org.mockito.kotlin.whenever(mockApi.cancelTripTracking(org.mockito.kotlin.any(), org.mockito.kotlin.any())).thenReturn(mockSuccessResponse(cancelData))
         val result = repo.cancelTripTracking("trip_1", "user1", "reason")
         assertTrue(result.isSuccess)
@@ -2698,7 +2719,7 @@ class DataRepositoryTest {
         org.mockito.kotlin.whenever(mockApi.cancelTripTracking(org.mockito.kotlin.any(), org.mockito.kotlin.any())).thenReturn(mockNullDataResponse())
         val result = repo.cancelTripTracking("trip_1", "user1")
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull()!!.message!!.contains("响应数据为空"))
+        assertTrue(result.exceptionOrNull()!!.message!!.contains(EMPTY_RESPONSE))
     }
 
     @Test
@@ -2743,7 +2764,7 @@ class DataRepositoryTest {
         org.mockito.kotlin.whenever(mockApi.getTripMap(org.mockito.kotlin.any(), org.mockito.kotlin.any())).thenReturn(mockNullDataResponse())
         val result = repo.getTripMap("trip_1", "user1")
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull()!!.message!!.contains("响应数据为空"))
+        assertTrue(result.exceptionOrNull()!!.message!!.contains(EMPTY_RESPONSE))
     }
 
     @Test
@@ -2765,7 +2786,7 @@ class DataRepositoryTest {
         val repo = MapRepository(mockApi)
         val saveData = TripSaveData(trip_id = "trip_1", status = "completed", total_distance = 5.0, duration_minutes = 15, message = "Saved")
         org.mockito.kotlin.whenever(mockApi.saveTrip(org.mockito.kotlin.any())).thenReturn(mockSuccessResponse(saveData))
-        val result = repo.saveTrip("trip_1", "user1", GeoPoint(lng = 121.48, lat = 31.24), null, 5.0, "2025-01-01T12:00:00Z")
+        val result = repo.saveTrip("trip_1", "user1", GeoPoint(lng = 121.48, lat = 31.24), null, 5.0, TIME_12_00)
         assertTrue(result.isSuccess)
         assertEquals("completed", result.getOrThrow().status)
         assertEquals(5.0, result.getOrThrow().total_distance!!, 0.001)
@@ -2777,7 +2798,7 @@ class DataRepositoryTest {
         val repo = MapRepository(mockApi)
         val saveData = TripSaveData(trip_id = "trip_1", status = "completed")
         org.mockito.kotlin.whenever(mockApi.saveTrip(org.mockito.kotlin.any())).thenReturn(mockSuccessResponse(saveData))
-        val endLoc = LocationInfo(address = "End Addr", place_name = "End Place")
+        val endLoc = LocationInfo(address = END_ADDR, place_name = END_PLACE)
         val result = repo.saveTrip("trip_1", "user1", GeoPoint(lng = 121.48, lat = 31.24), endLoc, 10.0, "2025-01-01T13:00:00Z")
         assertTrue(result.isSuccess)
     }
@@ -2799,14 +2820,14 @@ class DataRepositoryTest {
         org.mockito.kotlin.whenever(mockApi.saveTrip(org.mockito.kotlin.any())).thenReturn(mockNullDataResponse())
         val result = repo.saveTrip("trip_1", "user1", GeoPoint(lng = 121.48, lat = 31.24), null, 5.0, "time")
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull()!!.message!!.contains("响应数据为空"))
+        assertTrue(result.exceptionOrNull()!!.message!!.contains(EMPTY_RESPONSE))
     }
 
     @Test
     fun `MapRepository - saveTrip exception`() = runTest {
         val mockApi: com.ecogo.mapengine.data.remote.ApiService = org.mockito.kotlin.mock()
         val repo = MapRepository(mockApi)
-        org.mockito.kotlin.whenever(mockApi.saveTrip(org.mockito.kotlin.any())).thenThrow(RuntimeException("Network error"))
+        org.mockito.kotlin.whenever(mockApi.saveTrip(org.mockito.kotlin.any())).thenThrow(RuntimeException(NETWORK_ERROR))
         val result = repo.saveTrip("trip_1", "user1", GeoPoint(lng = 121.48, lat = 31.24), null, 5.0, "time")
         assertTrue(result.isFailure)
     }
@@ -2844,7 +2865,7 @@ class DataRepositoryTest {
         org.mockito.kotlin.whenever(mockApi.calculateCarbon(org.mockito.kotlin.any())).thenReturn(mockNullDataResponse())
         val result = repo.calculateCarbon("trip_1", listOf("walk"))
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull()!!.message!!.contains("响应数据为空"))
+        assertTrue(result.exceptionOrNull()!!.message!!.contains(EMPTY_RESPONSE))
     }
 
     @Test
@@ -2876,10 +2897,10 @@ class DataRepositoryTest {
     fun `MapRepository - getLowestCarbonRoute API failure`() = runTest {
         val mockApi: com.ecogo.mapengine.data.remote.ApiService = org.mockito.kotlin.mock()
         val repo = MapRepository(mockApi)
-        org.mockito.kotlin.whenever(mockApi.getLowestCarbonRoute(org.mockito.kotlin.any())).thenReturn(mockFailureApiResponse("获取路线失败"))
+        org.mockito.kotlin.whenever(mockApi.getLowestCarbonRoute(org.mockito.kotlin.any())).thenReturn(mockFailureApiResponse(ROUTE_FAILURE))
         val result = repo.getLowestCarbonRoute("user1", GeoPoint(lng = 121.47, lat = 31.23), GeoPoint(lng = 121.48, lat = 31.24))
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull()!!.message!!.contains("获取路线失败"))
+        assertTrue(result.exceptionOrNull()!!.message!!.contains(ROUTE_FAILURE))
     }
 
     @Test
@@ -2889,7 +2910,7 @@ class DataRepositoryTest {
         org.mockito.kotlin.whenever(mockApi.getLowestCarbonRoute(org.mockito.kotlin.any())).thenReturn(mockNullDataResponse())
         val result = repo.getLowestCarbonRoute("user1", GeoPoint(lng = 121.47, lat = 31.23), GeoPoint(lng = 121.48, lat = 31.24))
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull()!!.message!!.contains("响应数据为空"))
+        assertTrue(result.exceptionOrNull()!!.message!!.contains(EMPTY_RESPONSE))
     }
 
     @Test
@@ -2921,7 +2942,7 @@ class DataRepositoryTest {
     fun `MapRepository - getBalancedRoute API failure`() = runTest {
         val mockApi: com.ecogo.mapengine.data.remote.ApiService = org.mockito.kotlin.mock()
         val repo = MapRepository(mockApi)
-        org.mockito.kotlin.whenever(mockApi.getBalancedRoute(org.mockito.kotlin.any())).thenReturn(mockFailureApiResponse("获取路线失败"))
+        org.mockito.kotlin.whenever(mockApi.getBalancedRoute(org.mockito.kotlin.any())).thenReturn(mockFailureApiResponse(ROUTE_FAILURE))
         val result = repo.getBalancedRoute("user1", GeoPoint(lng = 121.47, lat = 31.23), GeoPoint(lng = 121.48, lat = 31.24))
         assertTrue(result.isFailure)
     }
@@ -2933,7 +2954,7 @@ class DataRepositoryTest {
         org.mockito.kotlin.whenever(mockApi.getBalancedRoute(org.mockito.kotlin.any())).thenReturn(mockNullDataResponse())
         val result = repo.getBalancedRoute("user1", GeoPoint(lng = 121.47, lat = 31.23), GeoPoint(lng = 121.48, lat = 31.24))
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull()!!.message!!.contains("响应数据为空"))
+        assertTrue(result.exceptionOrNull()!!.message!!.contains(EMPTY_RESPONSE))
     }
 
     @Test
@@ -2955,7 +2976,7 @@ class DataRepositoryTest {
         val repo = MapRepository(mockApi)
 
         // Start trip
-        val trackData = TripTrackData(trip_id = "trip_lifecycle", status = "tracking", start_time = "2025-01-01T00:00:00Z")
+        val trackData = TripTrackData(trip_id = "trip_lifecycle", status = "tracking", start_time = TIME_00_00)
         org.mockito.kotlin.whenever(mockApi.startTripTracking(org.mockito.kotlin.any())).thenReturn(mockSuccessResponse(trackData))
         val startResult = repo.startTripTracking("user1", GeoPoint(lng = 121.47, lat = 31.23))
         assertTrue(startResult.isSuccess)
@@ -2986,12 +3007,12 @@ class DataRepositoryTest {
         val repo = MapRepository(mockApi)
 
         // Start
-        val trackData = TripTrackData(trip_id = "trip_cancel", status = "tracking", start_time = "2025-01-01T00:00:00Z")
+        val trackData = TripTrackData(trip_id = "trip_cancel", status = "tracking", start_time = TIME_00_00)
         org.mockito.kotlin.whenever(mockApi.startTripTracking(org.mockito.kotlin.any())).thenReturn(mockSuccessResponse(trackData))
         assertTrue(repo.startTripTracking("u1", GeoPoint(lng = 121.47, lat = 31.23)).isSuccess)
 
         // Cancel
-        val cancelData = TripCancelData(trip_id = "trip_cancel", status = "cancelled", cancel_time = "2025-01-01T01:00:00Z")
+        val cancelData = TripCancelData(trip_id = "trip_cancel", status = "cancelled", cancel_time = TIME_01_00)
         org.mockito.kotlin.whenever(mockApi.cancelTripTracking(org.mockito.kotlin.any(), org.mockito.kotlin.any())).thenReturn(mockSuccessResponse(cancelData))
         val cancelResult = repo.cancelTripTracking("trip_cancel", "u1", "Changed mind")
         assertTrue(cancelResult.isSuccess)
@@ -3494,7 +3515,7 @@ class DataRepositoryTest {
     @Test
     fun `TripRepository - startTrip success`() = runTest {
         val (repo, mockApi) = createTripRepoWithMockApi()
-        val tripDetail = TripDetail(tripId = "trip_start_1", status = "tracking", startTime = "2025-01-01T00:00:00Z")
+        val tripDetail = TripDetail(tripId = "trip_start_1", status = "tracking", startTime = TIME_00_00)
         val response = mockSuccessResponse(tripDetail)
         org.mockito.kotlin.whenever(mockApi.startTrip(org.mockito.kotlin.any(), org.mockito.kotlin.any())).thenReturn(response)
         val result = repo.startTrip(31.23, 121.47, "Place", "Address")
@@ -3506,9 +3527,9 @@ class DataRepositoryTest {
     @Test
     fun `TripRepository - startTrip with campus zone`() = runTest {
         val (repo, mockApi) = createTripRepoWithMockApi()
-        val tripDetail = TripDetail(tripId = "trip_campus", status = "tracking", startTime = "2025-01-01T00:00:00Z")
+        val tripDetail = TripDetail(tripId = "trip_campus", status = "tracking", startTime = TIME_00_00)
         org.mockito.kotlin.whenever(mockApi.startTrip(org.mockito.kotlin.any(), org.mockito.kotlin.any())).thenReturn(mockSuccessResponse(tripDetail))
-        val result = repo.startTrip(31.23, 121.47, "Place", "Address", "Zone A")
+        val result = repo.startTrip(31.23, 121.47, "Place", "Address", ZONE_A)
         assertTrue(result.isSuccess)
         assertEquals("trip_campus", result.getOrThrow())
     }
@@ -3520,7 +3541,7 @@ class DataRepositoryTest {
         org.mockito.kotlin.whenever(mockApi.startTrip(org.mockito.kotlin.any(), org.mockito.kotlin.any())).thenReturn(retrofit2.Response.success(apiResponse))
         val result = repo.startTrip(31.23, 121.47, "Place", "Address")
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull()!!.message!!.contains("API returned error"))
+        assertTrue(result.exceptionOrNull()!!.message!!.contains(API_ERROR))
     }
 
     @Test
@@ -3544,10 +3565,10 @@ class DataRepositoryTest {
     @Test
     fun `TripRepository - startTrip exception`() = runTest {
         val (repo, mockApi) = createTripRepoWithMockApi()
-        org.mockito.kotlin.whenever(mockApi.startTrip(org.mockito.kotlin.any(), org.mockito.kotlin.any())).thenThrow(RuntimeException("Network error"))
+        org.mockito.kotlin.whenever(mockApi.startTrip(org.mockito.kotlin.any(), org.mockito.kotlin.any())).thenThrow(RuntimeException(NETWORK_ERROR))
         val result = repo.startTrip(31.23, 121.47, "Place", "Address")
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull()!!.message!!.contains("Network error"))
+        assertTrue(result.exceptionOrNull()!!.message!!.contains(NETWORK_ERROR))
     }
 
     // ------------------------------------------------------------------
@@ -3559,13 +3580,13 @@ class DataRepositoryTest {
         val (repo, mockApi) = createTripRepoWithMockApi()
         // Set current trip ID
         setPrivateField(repo, "currentTripId", "trip_complete_1")
-        val tripDetail = TripDetail(tripId = "trip_complete_1", status = "completed", startTime = "2025-01-01T00:00:00Z")
+        val tripDetail = TripDetail(tripId = "trip_complete_1", status = "completed", startTime = TIME_00_00)
         org.mockito.kotlin.whenever(mockApi.completeTrip(org.mockito.kotlin.any(), org.mockito.kotlin.any(), org.mockito.kotlin.any())).thenReturn(mockSuccessResponse(tripDetail))
         val result = repo.completeTrip(
             tripId = "trip_complete_1",
             endLat = 31.24,
             endLng = 121.48,
-            endPlaceName = "End Place",
+            endPlaceName = END_PLACE,
             endAddress = "End Address",
             distance = 1500.0,
             trackPoints = listOf(LatLng(31.23, 121.47), LatLng(31.24, 121.48)),
@@ -3580,7 +3601,7 @@ class DataRepositoryTest {
     fun `TripRepository - completeTrip with all optional params`() = runTest {
         val (repo, mockApi) = createTripRepoWithMockApi()
         setPrivateField(repo, "currentTripId", "trip_full")
-        val tripDetail = TripDetail(tripId = "trip_full", status = "completed", startTime = "2025-01-01T00:00:00Z")
+        val tripDetail = TripDetail(tripId = "trip_full", status = "completed", startTime = TIME_00_00)
         org.mockito.kotlin.whenever(mockApi.completeTrip(org.mockito.kotlin.any(), org.mockito.kotlin.any(), org.mockito.kotlin.any())).thenReturn(mockSuccessResponse(tripDetail))
         val segments = listOf(
             TransportModeSegment(mode = "walk", subDistance = 0.5, subDuration = 300),
@@ -3607,7 +3628,7 @@ class DataRepositoryTest {
     @Test
     fun `TripRepository - completeTrip with empty track points`() = runTest {
         val (repo, mockApi) = createTripRepoWithMockApi()
-        val tripDetail = TripDetail(tripId = "trip_empty", status = "completed", startTime = "2025-01-01T00:00:00Z")
+        val tripDetail = TripDetail(tripId = "trip_empty", status = "completed", startTime = TIME_00_00)
         org.mockito.kotlin.whenever(mockApi.completeTrip(org.mockito.kotlin.any(), org.mockito.kotlin.any(), org.mockito.kotlin.any())).thenReturn(mockSuccessResponse(tripDetail))
         val result = repo.completeTrip(
             tripId = "trip_empty",
@@ -3626,7 +3647,7 @@ class DataRepositoryTest {
     fun `TripRepository - completeTrip does not clear different trip id`() = runTest {
         val (repo, mockApi) = createTripRepoWithMockApi()
         setPrivateField(repo, "currentTripId", "other_trip")
-        val tripDetail = TripDetail(tripId = "trip_x", status = "completed", startTime = "2025-01-01T00:00:00Z")
+        val tripDetail = TripDetail(tripId = "trip_x", status = "completed", startTime = TIME_00_00)
         org.mockito.kotlin.whenever(mockApi.completeTrip(org.mockito.kotlin.any(), org.mockito.kotlin.any(), org.mockito.kotlin.any())).thenReturn(mockSuccessResponse(tripDetail))
         val result = repo.completeTrip(
             tripId = "trip_x",
@@ -3659,7 +3680,7 @@ class DataRepositoryTest {
             transportMode = "walk"
         )
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull()!!.message!!.contains("API returned error"))
+        assertTrue(result.exceptionOrNull()!!.message!!.contains(API_ERROR))
     }
 
     @Test
@@ -3700,7 +3721,7 @@ class DataRepositoryTest {
     @Test
     fun `TripRepository - completeTrip with null transportModeSegments creates single segment`() = runTest {
         val (repo, mockApi) = createTripRepoWithMockApi()
-        val tripDetail = TripDetail(tripId = "trip_single", status = "completed", startTime = "2025-01-01T00:00:00Z")
+        val tripDetail = TripDetail(tripId = "trip_single", status = "completed", startTime = TIME_00_00)
         org.mockito.kotlin.whenever(mockApi.completeTrip(org.mockito.kotlin.any(), org.mockito.kotlin.any(), org.mockito.kotlin.any())).thenReturn(mockSuccessResponse(tripDetail))
         val result = repo.completeTrip(
             tripId = "trip_single",
@@ -3719,7 +3740,7 @@ class DataRepositoryTest {
     @Test
     fun `TripRepository - completeTrip with empty transportModeSegments creates single segment`() = runTest {
         val (repo, mockApi) = createTripRepoWithMockApi()
-        val tripDetail = TripDetail(tripId = "trip_empty_seg", status = "completed", startTime = "2025-01-01T00:00:00Z")
+        val tripDetail = TripDetail(tripId = "trip_empty_seg", status = "completed", startTime = TIME_00_00)
         org.mockito.kotlin.whenever(mockApi.completeTrip(org.mockito.kotlin.any(), org.mockito.kotlin.any(), org.mockito.kotlin.any())).thenReturn(mockSuccessResponse(tripDetail))
         val result = repo.completeTrip(
             tripId = "trip_empty_seg",
@@ -3769,7 +3790,7 @@ class DataRepositoryTest {
         org.mockito.kotlin.whenever(mockApi.cancelTrip(org.mockito.kotlin.any(), org.mockito.kotlin.any())).thenReturn(retrofit2.Response.success(apiResponse))
         val result = repo.cancelTrip("trip_1")
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull()!!.message!!.contains("API returned error"))
+        assertTrue(result.exceptionOrNull()!!.message!!.contains(API_ERROR))
     }
 
     @Test
@@ -3806,7 +3827,7 @@ class DataRepositoryTest {
     fun `TripRepository - getTripListFromCloud success`() = runTest {
         val (repo, mockApi) = createTripRepoWithMockApi()
         val trips = listOf(
-            TripDetail(tripId = "t1", status = "completed", startTime = "2025-01-01T00:00:00Z"),
+            TripDetail(tripId = "t1", status = "completed", startTime = TIME_00_00),
             TripDetail(tripId = "t2", status = "tracking", startTime = "2025-01-02T00:00:00Z")
         )
         org.mockito.kotlin.whenever(mockApi.getTripList(org.mockito.kotlin.any(), org.mockito.kotlin.anyOrNull(), org.mockito.kotlin.anyOrNull(), org.mockito.kotlin.anyOrNull())).thenReturn(mockSuccessResponse(trips))
@@ -3865,7 +3886,7 @@ class DataRepositoryTest {
     @Test
     fun `TripRepository - getTripDetail success`() = runTest {
         val (repo, mockApi) = createTripRepoWithMockApi()
-        val detail = TripDetail(tripId = "trip_detail_1", status = "completed", startTime = "2025-01-01T00:00:00Z",
+        val detail = TripDetail(tripId = "trip_detail_1", status = "completed", startTime = TIME_00_00,
             distance = 5.0, isGreenTrip = true, carbonSaved = 100L)
         org.mockito.kotlin.whenever(mockApi.getTripDetail(org.mockito.kotlin.any(), org.mockito.kotlin.any())).thenReturn(mockSuccessResponse(detail))
         val result = repo.getTripDetail("trip_detail_1")
@@ -3915,7 +3936,7 @@ class DataRepositoryTest {
     @Test
     fun `TripRepository - getCurrentTrip success with trip`() = runTest {
         val (repo, mockApi) = createTripRepoWithMockApi()
-        val detail = TripDetail(tripId = "current_1", status = "tracking", startTime = "2025-01-01T00:00:00Z")
+        val detail = TripDetail(tripId = "current_1", status = "tracking", startTime = TIME_00_00)
         org.mockito.kotlin.whenever(mockApi.getCurrentTrip(org.mockito.kotlin.any())).thenReturn(mockSuccessResponse(detail))
         val result = repo.getCurrentTrip()
         assertTrue(result.isSuccess)
@@ -4005,21 +4026,21 @@ class DataRepositoryTest {
         val (repo, mockApi) = createTripRepoWithMockApi()
 
         // Start
-        val startDetail = TripDetail(tripId = "lifecycle_1", status = "tracking", startTime = "2025-01-01T00:00:00Z")
+        val startDetail = TripDetail(tripId = "lifecycle_1", status = "tracking", startTime = TIME_00_00)
         org.mockito.kotlin.whenever(mockApi.startTrip(org.mockito.kotlin.any(), org.mockito.kotlin.any())).thenReturn(mockSuccessResponse(startDetail))
-        val startResult = repo.startTrip(31.23, 121.47, "Start", "Start Addr")
+        val startResult = repo.startTrip(31.23, 121.47, "Start", START_ADDR)
         assertTrue(startResult.isSuccess)
         assertEquals("lifecycle_1", repo.getCurrentTripId())
 
         // Complete
-        val completeDetail = TripDetail(tripId = "lifecycle_1", status = "completed", startTime = "2025-01-01T00:00:00Z")
+        val completeDetail = TripDetail(tripId = "lifecycle_1", status = "completed", startTime = TIME_00_00)
         org.mockito.kotlin.whenever(mockApi.completeTrip(org.mockito.kotlin.any(), org.mockito.kotlin.any(), org.mockito.kotlin.any())).thenReturn(mockSuccessResponse(completeDetail))
         val completeResult = repo.completeTrip(
             tripId = "lifecycle_1",
             endLat = 31.24,
             endLng = 121.48,
             endPlaceName = "End",
-            endAddress = "End Addr",
+            endAddress = END_ADDR,
             distance = 1500.0,
             trackPoints = listOf(LatLng(31.23, 121.47)),
             transportMode = "walk"
@@ -4033,7 +4054,7 @@ class DataRepositoryTest {
         val (repo, mockApi) = createTripRepoWithMockApi()
 
         // Start
-        val startDetail = TripDetail(tripId = "lifecycle_cancel", status = "tracking", startTime = "2025-01-01T00:00:00Z")
+        val startDetail = TripDetail(tripId = "lifecycle_cancel", status = "tracking", startTime = TIME_00_00)
         org.mockito.kotlin.whenever(mockApi.startTrip(org.mockito.kotlin.any(), org.mockito.kotlin.any())).thenReturn(mockSuccessResponse(startDetail))
         assertTrue(repo.startTrip(31.23, 121.47, "Start", "Addr").isSuccess)
         assertEquals("lifecycle_cancel", repo.getCurrentTripId())
@@ -4053,7 +4074,7 @@ class DataRepositoryTest {
     @Test
     fun `TripDetail - startLng and startLat from startPoint`() {
         val detail = TripDetail(
-            tripId = "t1", startTime = "2025-01-01",
+            tripId = "t1", startTime = DATE_2025_01_01,
             startPoint = GeoPointObj(lng = 121.47, lat = 31.23)
         )
         assertEquals(121.47, detail.startLng, 0.001)
@@ -4062,7 +4083,7 @@ class DataRepositoryTest {
 
     @Test
     fun `TripDetail - default start coordinates when null`() {
-        val detail = TripDetail(tripId = "t1", startTime = "2025-01-01")
+        val detail = TripDetail(tripId = "t1", startTime = DATE_2025_01_01)
         assertEquals(0.0, detail.startLng, 0.001)
         assertEquals(0.0, detail.startLat, 0.001)
     }
@@ -4070,7 +4091,7 @@ class DataRepositoryTest {
     @Test
     fun `TripDetail - endLng and endLat from endPoint`() {
         val detail = TripDetail(
-            tripId = "t1", startTime = "2025-01-01",
+            tripId = "t1", startTime = DATE_2025_01_01,
             endPoint = GeoPointObj(lng = 121.48, lat = 31.24)
         )
         assertEquals(121.48, detail.endLng!!, 0.001)
@@ -4079,7 +4100,7 @@ class DataRepositoryTest {
 
     @Test
     fun `TripDetail - null end coordinates when no endPoint`() {
-        val detail = TripDetail(tripId = "t1", startTime = "2025-01-01")
+        val detail = TripDetail(tripId = "t1", startTime = DATE_2025_01_01)
         assertNull(detail.endLng)
         assertNull(detail.endLat)
     }
@@ -4087,16 +4108,16 @@ class DataRepositoryTest {
     @Test
     fun `TripDetail - startAddress from startLocation`() {
         val detail = TripDetail(
-            tripId = "t1", startTime = "2025-01-01",
-            startLocation = LocationObj(address = "Start Addr", placeName = "Start Place")
+            tripId = "t1", startTime = DATE_2025_01_01,
+            startLocation = LocationObj(address = START_ADDR, placeName = "Start Place")
         )
-        assertEquals("Start Addr", detail.startAddress)
+        assertEquals(START_ADDR, detail.startAddress)
         assertEquals("Start Place", detail.startPlaceName)
     }
 
     @Test
     fun `TripDetail - default startAddress when null`() {
-        val detail = TripDetail(tripId = "t1", startTime = "2025-01-01")
+        val detail = TripDetail(tripId = "t1", startTime = DATE_2025_01_01)
         assertEquals("", detail.startAddress)
         assertEquals("", detail.startPlaceName)
     }
@@ -4104,16 +4125,16 @@ class DataRepositoryTest {
     @Test
     fun `TripDetail - endAddress from endLocation`() {
         val detail = TripDetail(
-            tripId = "t1", startTime = "2025-01-01",
-            endLocation = LocationObj(address = "End Addr", placeName = "End Place")
+            tripId = "t1", startTime = DATE_2025_01_01,
+            endLocation = LocationObj(address = END_ADDR, placeName = END_PLACE)
         )
-        assertEquals("End Addr", detail.endAddress)
-        assertEquals("End Place", detail.endPlaceName)
+        assertEquals(END_ADDR, detail.endAddress)
+        assertEquals(END_PLACE, detail.endPlaceName)
     }
 
     @Test
     fun `TripDetail - null endAddress when no endLocation`() {
-        val detail = TripDetail(tripId = "t1", startTime = "2025-01-01")
+        val detail = TripDetail(tripId = "t1", startTime = DATE_2025_01_01)
         assertNull(detail.endAddress)
         assertNull(detail.endPlaceName)
     }
@@ -4242,7 +4263,7 @@ class DataRepositoryTest {
 
     @Test
     fun `TripCancelResponse - all fields`() {
-        val resp = TripCancelResponse(tripId = "t1", status = "cancelled", cancelTime = "2025-01-01T00:00:00Z", message = "Done")
+        val resp = TripCancelResponse(tripId = "t1", status = "cancelled", cancelTime = TIME_00_00, message = "Done")
         assertEquals("t1", resp.tripId)
         assertEquals("cancelled", resp.status)
         assertEquals("Done", resp.message)
@@ -4250,7 +4271,7 @@ class DataRepositoryTest {
 
     @Test
     fun `TripListResponse - all fields`() {
-        val trips = listOf(TripDetail(tripId = "t1", startTime = "2025-01-01"))
+        val trips = listOf(TripDetail(tripId = "t1", startTime = DATE_2025_01_01))
         val resp = TripListResponse(trips = trips, total = 1, page = 1, pageSize = 10)
         assertEquals(1, resp.trips.size)
         assertEquals(1, resp.total)
@@ -4260,7 +4281,7 @@ class DataRepositoryTest {
 
     @Test
     fun `CurrentTripResponse - with trip`() {
-        val trip = TripDetail(tripId = "t1", startTime = "2025-01-01")
+        val trip = TripDetail(tripId = "t1", startTime = DATE_2025_01_01)
         val resp = CurrentTripResponse(hasCurrentTrip = true, trip = trip)
         assertTrue(resp.hasCurrentTrip)
         assertNotNull(resp.trip)

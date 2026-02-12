@@ -29,6 +29,10 @@ import org.robolectric.annotation.Config
 @Config(sdk = [33])
 class AdapterViewHolderTestBatch6 {
 
+    companion object {
+        private const val ICON_WALKING = "\uD83D\uDEB6"
+    }
+
     private lateinit var parent: RecyclerView
 
     @Before
@@ -310,7 +314,7 @@ class AdapterViewHolderTestBatch6 {
         val adapter = ShopItemAdapter(listOf(ShopListItem.Item(makeShopItem(id = "badge_walker")))) {}
         val holder = adapter.onCreateViewHolder(parent, 1)
         adapter.onBindViewHolder(holder, 0)
-        assertEquals("\uD83D\uDEB6", holder.itemView.findViewById<TextView>(R.id.text_icon).text.toString())
+        assertEquals(ICON_WALKING, holder.itemView.findViewById<TextView>(R.id.text_icon).text.toString())
     }
 
     @Test
@@ -488,7 +492,7 @@ class AdapterViewHolderTestBatch6 {
         val adapter = HighlightAdapter(listOf(makeHighlightActivity(title = "Green Friday"))) {}
         val holder = adapter.onCreateViewHolder(parent, 0)
         adapter.onBindViewHolder(holder, 0)
-        assertEquals("\uD83D\uDEB6", holder.itemView.findViewById<TextView>(R.id.text_highlight_icon).text.toString())
+        assertEquals(ICON_WALKING, holder.itemView.findViewById<TextView>(R.id.text_highlight_icon).text.toString())
     }
 
     @Test
@@ -841,7 +845,7 @@ class AdapterViewHolderTestBatch6 {
         val adapter = AchievementAdapter(listOf(makeAchievement(id = "a13")))
         val holder = adapter.onCreateViewHolder(parent, 0)
         adapter.onBindViewHolder(holder, 0)
-        assertEquals("\uD83D\uDEB6", holder.itemView.findViewById<TextView>(R.id.text_badge_icon).text.toString())
+        assertEquals(ICON_WALKING, holder.itemView.findViewById<TextView>(R.id.text_badge_icon).text.toString())
     }
 
     @Test

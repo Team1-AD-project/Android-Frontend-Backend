@@ -33,6 +33,10 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [33])
 class AdapterViewHolderTestBatch4 {
+
+    companion object {
+        private const val ACHIEVEMENT_NAME_FIRST_RIDE = "First Ride"
+    }
     private lateinit var parent: RecyclerView
 
     @Before
@@ -53,7 +57,7 @@ class AdapterViewHolderTestBatch4 {
 
     private fun makeAchievement(
         id: String = "a1",
-        name: String = "First Ride",
+        name: String = ACHIEVEMENT_NAME_FIRST_RIDE,
         description: String = "Take your first bus ride",
         unlocked: Boolean = true,
         howToUnlock: String = ""
@@ -69,10 +73,10 @@ class AdapterViewHolderTestBatch4 {
 
     @Test
     fun `AchievementAdapter bind sets name`() {
-        val adapter = AchievementAdapter(listOf(makeAchievement(name = "First Ride")))
+        val adapter = AchievementAdapter(listOf(makeAchievement(name = ACHIEVEMENT_NAME_FIRST_RIDE)))
         val holder = adapter.onCreateViewHolder(parent, 0)
         adapter.onBindViewHolder(holder, 0)
-        assertEquals("First Ride", holder.itemView.findViewById<TextView>(R.id.text_badge_name).text.toString())
+        assertEquals(ACHIEVEMENT_NAME_FIRST_RIDE, holder.itemView.findViewById<TextView>(R.id.text_badge_name).text.toString())
     }
 
     @Test

@@ -26,6 +26,10 @@ import org.robolectric.annotation.Config
 @Config(sdk = [33])
 class AdapterViewHolderTestBatch3 {
 
+    companion object {
+        private const val WIZARD_HAT_NAME = "Wizard Hat"
+    }
+
     private lateinit var parent: RecyclerView
 
     @Before
@@ -536,10 +540,10 @@ class AdapterViewHolderTestBatch3 {
 
     @Test
     fun `ShopItemAdapter item bind sets name`() {
-        val adapter = ShopItemAdapter(listOf(ShopListItem.Item(makeShopItem(name = "Wizard Hat")))) {}
+        val adapter = ShopItemAdapter(listOf(ShopListItem.Item(makeShopItem(name = WIZARD_HAT_NAME)))) {}
         val holder = adapter.onCreateViewHolder(parent, 1)
         adapter.onBindViewHolder(holder, 0)
-        assertEquals("Wizard Hat", holder.itemView.findViewById<TextView>(R.id.text_name).text.toString())
+        assertEquals(WIZARD_HAT_NAME, holder.itemView.findViewById<TextView>(R.id.text_name).text.toString())
     }
 
     @Test
@@ -858,7 +862,7 @@ class AdapterViewHolderTestBatch3 {
     @Test
     fun `GoodsAdapter desc head Wizard`() {
         val adapter = GoodsAdapter()
-        adapter.updateGoods(listOf(makeGoodsItem(name = "Wizard Hat", type = "head")))
+        adapter.updateGoods(listOf(makeGoodsItem(name = WIZARD_HAT_NAME, type = "head")))
         val holder = adapter.onCreateViewHolder(parent, 0)
         adapter.onBindViewHolder(holder, 0)
         assertEquals("Magical hat with mystical powers", holder.itemView.findViewById<TextView>(R.id.text_goods_description).text.toString())

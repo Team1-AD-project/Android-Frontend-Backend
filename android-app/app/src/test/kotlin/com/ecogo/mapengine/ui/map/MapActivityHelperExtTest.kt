@@ -16,6 +16,12 @@ import org.robolectric.annotation.Config
 @Config(sdk = [33])
 class MapActivityHelperExtTest {
 
+    companion object {
+        private const val INSTRUCTION_TAKE_BUS = "Take bus"
+        private const val STOP_A_NAME = "Stop A"
+        private const val STOP_B_NAME = "Stop B"
+    }
+
     // ==================== isRunningOnEmulator ====================
 
     @Test
@@ -163,11 +169,11 @@ class MapActivityHelperExtTest {
     fun `analyzeRouteSteps with transit step and polyline`() {
         val steps = listOf(
             RouteStep(
-                instruction = "Take bus",
+                instruction = INSTRUCTION_TAKE_BUS,
                 distance = 1000.0,
                 duration = 600,
                 travel_mode = "TRANSIT",
-                transit_details = TransitDetails("Bus 1", null, "Stop A", "Stop B", 5, "BUS"),
+                transit_details = TransitDetails("Bus 1", null, STOP_A_NAME, STOP_B_NAME, 5, "BUS"),
                 polyline_points = listOf(GeoPoint(0.0, 0.0), GeoPoint(1.0, 1.0))
             )
         )
@@ -180,11 +186,11 @@ class MapActivityHelperExtTest {
     fun `analyzeRouteSteps with transit step no polyline`() {
         val steps = listOf(
             RouteStep(
-                instruction = "Take bus",
+                instruction = INSTRUCTION_TAKE_BUS,
                 distance = 1000.0,
                 duration = 600,
                 travel_mode = "TRANSIT",
-                transit_details = TransitDetails("Bus 1", null, "Stop A", "Stop B", 5, "BUS"),
+                transit_details = TransitDetails("Bus 1", null, STOP_A_NAME, STOP_B_NAME, 5, "BUS"),
                 polyline_points = null
             )
         )
@@ -197,11 +203,11 @@ class MapActivityHelperExtTest {
     fun `analyzeRouteSteps with transit step empty polyline`() {
         val steps = listOf(
             RouteStep(
-                instruction = "Take bus",
+                instruction = INSTRUCTION_TAKE_BUS,
                 distance = 1000.0,
                 duration = 600,
                 travel_mode = "TRANSIT",
-                transit_details = TransitDetails("Bus 1", null, "Stop A", "Stop B", 5, "BUS"),
+                transit_details = TransitDetails("Bus 1", null, STOP_A_NAME, STOP_B_NAME, 5, "BUS"),
                 polyline_points = emptyList()
             )
         )

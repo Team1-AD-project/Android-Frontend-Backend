@@ -43,6 +43,16 @@ import org.robolectric.annotation.Config
 @Config(sdk = [33])
 class MapActivityTest {
 
+    companion object {
+        private const val CUSTOM_ORIGIN = "Custom Origin"
+        private const val DEST_MARINA_BAY = "Marina Bay Sands"
+        private const val TEST_DEST = "Test Dest"
+        private const val SOME_LATLNG = "some-latlng"
+        private const val TRIP_1 = "trip-1"
+        private const val VM_456 = "vm-456"
+        private const val RESTORED_TRIP_ID = "restored-trip"
+    }
+
     private lateinit var parent: RecyclerView
 
     @Before
@@ -294,7 +304,7 @@ class MapActivityTest {
             val intent = Intent(ApplicationProvider.getApplicationContext(), MapActivity::class.java).apply {
                 putExtra(MapActivity.EXTRA_DEST_LAT, 1.3521)
                 putExtra(MapActivity.EXTRA_DEST_LNG, 103.8198)
-                putExtra(MapActivity.EXTRA_DEST_NAME, "Marina Bay Sands")
+                putExtra(MapActivity.EXTRA_DEST_NAME, DEST_MARINA_BAY)
             }
             val controller = Robolectric.buildActivity(MapActivity::class.java, intent)
             val activity = controller.create().get()
@@ -1371,22 +1381,22 @@ class MapActivityTest {
     @Test
     fun `swap logic exchanges origin and destination names`() {
         var originName = "我的位置"
-        var destinationName = "Marina Bay Sands"
+        var destinationName = DEST_MARINA_BAY
         val tempName = originName
         originName = destinationName
         destinationName = tempName
-        assertEquals("Marina Bay Sands", originName)
+        assertEquals(DEST_MARINA_BAY, originName)
         assertEquals("我的位置", destinationName)
     }
 
     @Test
     fun `swap logic with null origin`() {
         var originName: String? = null
-        var destinationName: String? = "Test Dest"
+        var destinationName: String? = TEST_DEST
         val temp = originName
         originName = destinationName
         destinationName = temp
-        assertEquals("Test Dest", originName)
+        assertEquals(TEST_DEST, originName)
         assertNull(destinationName)
     }
 
@@ -1401,9 +1411,9 @@ class MapActivityTest {
     @Test
     fun `swap logic origin display text when originLatLng is not null`() {
         val originLatLng: Any? = "some-value" // simulating non-null
-        val originName = "Custom Origin"
+        val originName = CUSTOM_ORIGIN
         val displayText = if (originLatLng != null) originName else "我的位置"
-        assertEquals("Custom Origin", displayText)
+        assertEquals(CUSTOM_ORIGIN, displayText)
     }
 
     // ==================== 21. clearDestination Logic Tests ====================
@@ -1411,8 +1421,8 @@ class MapActivityTest {
     @Test
     fun `clearDestination resets all destination state`() {
         // Simulates clearDestination logic
-        var destinationLatLng: Any? = "some-latlng"
-        var destinationName = "Test Dest"
+        var destinationLatLng: Any? = SOME_LATLNG
+        var destinationName = TEST_DEST
         destinationLatLng = null
         destinationName = ""
         assertNull(destinationLatLng)
@@ -1536,9 +1546,9 @@ class MapActivityTest {
 
     @Test
     fun `updateTrackingUI for Tracking state with navigation mode`() {
-        val state = TripState.Tracking("trip-1")
+        val state = TripState.Tracking(TRIP_1)
         assertTrue(state is TripState.Tracking)
-        assertEquals("trip-1", state.tripId)
+        assertEquals(TRIP_1, state.tripId)
     }
 
     @Test
@@ -1616,8 +1626,8 @@ class MapActivityTest {
 
     @Test
     fun `completeTripOnBackend skips for restored-trip tripId`() {
-        val tripId = "restored-trip"
-        assertTrue(tripId == "restored-trip")
+        val tripId = RESTORED_TRIP_ID
+        assertTrue(tripId == RESTORED_TRIP_ID)
     }
 
     @Test
@@ -1636,7 +1646,7 @@ class MapActivityTest {
     fun `completeTripOnBackend valid tripId proceeds`() {
         val tripId = "abc-123"
         assertFalse(tripId.startsWith("MOCK_"))
-        assertFalse(tripId == "restored-trip")
+        assertFalse(tripId == RESTORED_TRIP_ID)
     }
 
     // ==================== 27. startTripOnBackend Logic Tests ====================
@@ -1917,7 +1927,7 @@ class MapActivityTest {
 
     @Test
     fun `tracking button click in Tracking state stops tracking`() {
-        val state: TripState = TripState.Tracking("trip-1")
+        val state: TripState = TripState.Tracking(TRIP_1)
         val shouldStop = state is TripState.Tracking
         assertTrue(shouldStop)
     }
@@ -2839,21 +2849,21 @@ class MapActivityTest {
 
     @Test
     fun `restoreRoutesOnMap redraws destination marker`() {
-        val destinationLatLng: Any? = "some-latlng"
+        val destinationLatLng: Any? = SOME_LATLNG
         assertNotNull(destinationLatLng)
     }
 
     @Test
     fun `restoreRoutesOnMap redraws origin marker when not my location`() {
-        val originLatLng: Any? = "some-latlng"
-        val originName = "Custom Origin"
+        val originLatLng: Any? = SOME_LATLNG
+        val originName = CUSTOM_ORIGIN
         assertNotNull(originLatLng)
         assertNotEquals("我的位置", originName)
     }
 
     @Test
     fun `restoreRoutesOnMap skips origin marker redraw for my location`() {
-        val originLatLng: Any? = "some-latlng"
+        val originLatLng: Any? = SOME_LATLNG
         val originName = "我的位置"
         assertEquals("我的位置", originName)
     }
@@ -2871,7 +2881,7 @@ class MapActivityTest {
 
     @Test
     fun `onMapReady map click ignored during tracking`() {
-        val state = TripState.Tracking("trip-1")
+        val state = TripState.Tracking(TRIP_1)
         val shouldSetDestination = state !is TripState.Tracking
         assertFalse(shouldSetDestination)
     }
@@ -2885,7 +2895,7 @@ class MapActivityTest {
 
     @Test
     fun `onMapReady long press ignored during tracking`() {
-        val state = TripState.Tracking("trip-1")
+        val state = TripState.Tracking(TRIP_1)
         val shouldClear = state !is TripState.Tracking
         assertFalse(shouldClear)
     }
@@ -2979,7 +2989,7 @@ class MapActivityTest {
     @Test
     fun `completeTripOnBackend prefers backendTripId over viewModel tripId`() {
         val backendTripId: String? = "backend-123"
-        val viewModelTripId: String? = "vm-456"
+        val viewModelTripId: String? = VM_456
         val tripId = backendTripId ?: viewModelTripId
         assertEquals("backend-123", tripId)
     }
@@ -2987,9 +2997,9 @@ class MapActivityTest {
     @Test
     fun `completeTripOnBackend falls back to viewModel tripId when backend is null`() {
         val backendTripId: String? = null
-        val viewModelTripId: String? = "vm-456"
+        val viewModelTripId: String? = VM_456
         val tripId = backendTripId ?: viewModelTripId
-        assertEquals("vm-456", tripId)
+        assertEquals(VM_456, tripId)
     }
 
     @Test
@@ -3011,9 +3021,9 @@ class MapActivityTest {
 
     @Test
     fun `originName ifEmpty returns name for non-empty string`() {
-        val originName = "Custom Origin"
+        val originName = CUSTOM_ORIGIN
         val result = originName.ifEmpty { "起点" }
-        assertEquals("Custom Origin", result)
+        assertEquals(CUSTOM_ORIGIN, result)
     }
 
     @Test

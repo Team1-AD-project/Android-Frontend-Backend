@@ -31,6 +31,16 @@ import kotlin.math.sqrt
 @Config(sdk = [33])
 class MlTrainingTest {
 
+    companion object {
+        private const val JSON_ACCEL_1 = """[{"x":1.0,"y":2.0,"z":9.8}]"""
+        private const val JSON_GYRO_1 = """[{"x":0.1,"y":0.2,"z":0.3}]"""
+        private const val ROAD_MOTORWAY_TRUNK = "motorway|trunk"
+        private const val ROAD_TRUNK_PRIMARY = "trunk|primary"
+        private const val TEST_API_KEY = "test-key"
+        private const val JSON_GYRO_SMALL = """[{"x":0.01,"y":0.02,"z":0.03}]"""
+        private const val REPORT_BALANCED = "分布相对均衡"
+    }
+
     // ========================================================================
     // Shared helpers
     // ========================================================================
@@ -99,7 +109,7 @@ class MlTrainingTest {
 
     @Test
     fun `parseSensorData - single data point`() {
-        val json = """[{"x":1.0,"y":2.0,"z":9.8}]"""
+        val json = JSON_ACCEL_1
         val result = invokeParseSensorData(json)
         assertEquals(1, result.size)
         assertEquals(1.0f, result[0].first, 0.001f)
@@ -589,7 +599,7 @@ class MlTrainingTest {
             startTime = 0L,
             endTime = 3000L,
             accelerometerData = "invalid json data",
-            gyroscopeData = """[{"x":0.1,"y":0.2,"z":0.3}]"""
+            gyroscopeData = JSON_GYRO_1
         )
         val features = featureExtractor.extractFeatures(journey)
         // Invalid accel data falls back to empty -> all zeros
@@ -1088,7 +1098,7 @@ class MlTrainingTest {
     fun `inferTransportMode - DRIVING when avgSpeed gt 15 and motorway trunk road`() {
         // avgSpeed > 15, roadTypes contains "motorway|trunk"
         val speeds = listOf(20.0, 25.0, 18.0)
-        val result = invokeInferTransportModeWithConfidence(speeds, "motorway|trunk", 60000L)
+        val result = invokeInferTransportModeWithConfidence(speeds, ROAD_MOTORWAY_TRUNK, 60000L)
         assertEquals("DRIVING", result.first)
         assertEquals(0.95f, result.second, 0.001f)
     }
@@ -1097,7 +1107,7 @@ class MlTrainingTest {
     fun `inferTransportMode - DRIVING needs avgSpeed strictly greater than 15`() {
         // avgSpeed = 15 exactly should NOT match rule 1 (> 15)
         val speeds = listOf(15.0, 15.0)
-        val result = invokeInferTransportModeWithConfidence(speeds, "motorway|trunk", 60000L)
+        val result = invokeInferTransportModeWithConfidence(speeds, ROAD_MOTORWAY_TRUNK, 60000L)
         // avgSpeed = 15 -> not > 15, check rule 2: avgSpeed in 8..15 + "trunk|primary"
         // "motorway|trunk" does not contain literal "trunk|primary"
         // Check other rules... speedStd = 0, no cycleway
@@ -1111,7 +1121,7 @@ class MlTrainingTest {
     @Test
     fun `inferTransportMode - BUS when avgSpeed 8 to 15 and trunk primary road`() {
         val speeds = listOf(10.0, 12.0, 11.0)
-        val result = invokeInferTransportModeWithConfidence(speeds, "trunk|primary", 60000L)
+        val result = invokeInferTransportModeWithConfidence(speeds, ROAD_TRUNK_PRIMARY, 60000L)
         assertEquals("BUS", result.first)
         assertEquals(0.85f, result.second, 0.001f)
     }
@@ -1119,7 +1129,7 @@ class MlTrainingTest {
     @Test
     fun `inferTransportMode - BUS at exact boundary avgSpeed 8`() {
         val speeds = listOf(8.0, 8.0)
-        val result = invokeInferTransportModeWithConfidence(speeds, "trunk|primary", 60000L)
+        val result = invokeInferTransportModeWithConfidence(speeds, ROAD_TRUNK_PRIMARY, 60000L)
         assertEquals("BUS", result.first)
         assertEquals(0.85f, result.second, 0.001f)
     }
@@ -1127,7 +1137,7 @@ class MlTrainingTest {
     @Test
     fun `inferTransportMode - BUS at exact boundary avgSpeed 15`() {
         val speeds = listOf(15.0, 15.0)
-        val result = invokeInferTransportModeWithConfidence(speeds, "trunk|primary", 60000L)
+        val result = invokeInferTransportModeWithConfidence(speeds, ROAD_TRUNK_PRIMARY, 60000L)
         assertEquals("BUS", result.first)
         assertEquals(0.85f, result.second, 0.001f)
     }
@@ -1899,7 +1909,7 @@ class MlTrainingTest {
     @Test
     fun `inferTransportMode - exactly avgSpeed 15_1 with motorway trunk`() {
         val speeds = listOf(15.1, 15.1)
-        val result = invokeInferTransportModeWithConfidence(speeds, "motorway|trunk", 60000L)
+        val result = invokeInferTransportModeWithConfidence(speeds, ROAD_MOTORWAY_TRUNK, 60000L)
         assertEquals("DRIVING", result.first)
         assertEquals(0.95f, result.second, 0.001f)
     }
@@ -1908,7 +1918,7 @@ class MlTrainingTest {
     fun `inferTransportMode - avgSpeed 7_9 not BUS range`() {
         // avgSpeed 7.9 < 8 -> not in 8..15
         val speeds = listOf(7.9, 7.9)
-        val result = invokeInferTransportModeWithConfidence(speeds, "trunk|primary", 60000L)
+        val result = invokeInferTransportModeWithConfidence(speeds, ROAD_TRUNK_PRIMARY, 60000L)
         // Not BUS. speedStd=0, no cycleway. avg 7.9 >= 3 not walking. stdSpeed not > 3 not subway.
         assertEquals("UNKNOWN", result.first)
     }
@@ -2065,7 +2075,7 @@ class MlTrainingTest {
             accelerometerData = "[]",
             gyroscopeData = "[]",
             barometerData = "[]",
-            apiKey = "test-key"
+            apiKey = TEST_API_KEY
         )
         assertNull(result)
     }
@@ -2083,7 +2093,7 @@ class MlTrainingTest {
             accelerometerData = "[]",
             gyroscopeData = "[]",
             barometerData = "[]",
-            apiKey = "test-key"
+            apiKey = TEST_API_KEY
         )
         assertNull(result)
     }
@@ -2110,7 +2120,7 @@ class MlTrainingTest {
             accelerometerData = "[]",
             gyroscopeData = "[]",
             barometerData = "[]",
-            apiKey = "test-key"
+            apiKey = TEST_API_KEY
         )
         assertNull(result)
     }
@@ -2149,7 +2159,7 @@ class MlTrainingTest {
             accelerometerData = "[]",
             gyroscopeData = "[]",
             barometerData = "[]",
-            apiKey = "test-key"
+            apiKey = TEST_API_KEY
         )
         // Will reach snap detector, which will throw -> return null
         assertNull(result)
@@ -2167,7 +2177,7 @@ class MlTrainingTest {
             accelerometerData = "[]",
             gyroscopeData = "[]",
             barometerData = "[]",
-            apiKey = "test-key"
+            apiKey = TEST_API_KEY
         )
         assertNull(result)
     }
@@ -2183,7 +2193,7 @@ class MlTrainingTest {
             accelerometerData = "[]",
             gyroscopeData = "[]",
             barometerData = "[]",
-            apiKey = "test-key"
+            apiKey = TEST_API_KEY
         )
         assertNull(result)
     }
@@ -2294,7 +2304,7 @@ class MlTrainingTest {
             transportMode = "WALKING",
             labelSource = "VERIFIED",
             accelerometerData = """[{"x":0.1,"y":0.2,"z":9.8}]""",
-            gyroscopeData = """[{"x":0.01,"y":0.02,"z":0.03}]""",
+            gyroscopeData = JSON_GYRO_SMALL,
             isVerified = true
         )
         whenever(dao.getVerifiedJourneysForExport(10000)).thenReturn(listOf(journey))
@@ -2364,8 +2374,8 @@ class MlTrainingTest {
 
         val goodJourney = createLabeledJourney(
             id = 1L,
-            accelerometerData = """[{"x":1.0,"y":2.0,"z":9.8}]""",
-            gyroscopeData = """[{"x":0.1,"y":0.2,"z":0.3}]""",
+            accelerometerData = JSON_ACCEL_1,
+            gyroscopeData = JSON_GYRO_1,
             isVerified = true
         )
         // Second journey has valid data too
@@ -2395,8 +2405,8 @@ class MlTrainingTest {
         val journeys = (1..101).map { i ->
             createLabeledJourney(
                 id = i.toLong(),
-                accelerometerData = """[{"x":1.0,"y":2.0,"z":9.8}]""",
-                gyroscopeData = """[{"x":0.1,"y":0.2,"z":0.3}]""",
+                accelerometerData = JSON_ACCEL_1,
+                gyroscopeData = JSON_GYRO_1,
                 isVerified = true
             )
         }
@@ -2436,7 +2446,7 @@ class MlTrainingTest {
             transportMode = "BUS",
             labelSource = "AUTO_SNAP",
             accelerometerData = """[{"x":0.5,"y":0.3,"z":9.8}]""",
-            gyroscopeData = """[{"x":0.01,"y":0.02,"z":0.03}]""",
+            gyroscopeData = JSON_GYRO_SMALL,
             isVerified = false
         )
         whenever(dao.getJourneysForExport(10000)).thenReturn(listOf(journey))
@@ -2462,8 +2472,8 @@ class MlTrainingTest {
         val exporter = DataExporter(dao, featureExtractor)
 
         val journeys = listOf(
-            createLabeledJourney(id = 1L, isVerified = true, accelerometerData = """[{"x":1.0,"y":2.0,"z":9.8}]""", gyroscopeData = """[{"x":0.1,"y":0.2,"z":0.3}]"""),
-            createLabeledJourney(id = 2L, isVerified = false, accelerometerData = """[{"x":1.0,"y":2.0,"z":9.8}]""", gyroscopeData = """[{"x":0.1,"y":0.2,"z":0.3}]""")
+            createLabeledJourney(id = 1L, isVerified = true, accelerometerData = JSON_ACCEL_1, gyroscopeData = JSON_GYRO_1),
+            createLabeledJourney(id = 2L, isVerified = false, accelerometerData = JSON_ACCEL_1, gyroscopeData = JSON_GYRO_1)
         )
         whenever(dao.getJourneysForExport(10000)).thenReturn(journeys)
 
@@ -2493,7 +2503,7 @@ class MlTrainingTest {
         val exporter = DataExporter(dao, featureExtractor)
 
         val journeys = listOf(
-            createLabeledJourney(id = 1L, accelerometerData = """[{"x":1.0,"y":2.0,"z":9.8}]""", gyroscopeData = """[{"x":0.1,"y":0.2,"z":0.3}]"""),
+            createLabeledJourney(id = 1L, accelerometerData = JSON_ACCEL_1, gyroscopeData = JSON_GYRO_1),
             createLabeledJourney(id = 2L, accelerometerData = """[{"x":2.0,"y":3.0,"z":9.7}]""", gyroscopeData = """[{"x":0.2,"y":0.3,"z":0.4}]""")
         )
         whenever(dao.getJourneysForExport(10000)).thenReturn(journeys)
@@ -2596,7 +2606,7 @@ class MlTrainingTest {
         val report = exporter.generateDataReport()
         assertTrue(report.contains("数据量充足"))
         assertTrue(report.contains("验证率高"))
-        assertTrue(report.contains("分布相对均衡"))
+        assertTrue(report.contains(REPORT_BALANCED))
     }
 
     @Test
@@ -2675,7 +2685,7 @@ class MlTrainingTest {
         ))
 
         val report = exporter.generateDataReport()
-        assertTrue(report.contains("分布相对均衡"))
+        assertTrue(report.contains(REPORT_BALANCED))
     }
 
     @Test
@@ -2750,7 +2760,7 @@ class MlTrainingTest {
         val report = exporter.generateDataReport()
         // minCount = 0, so ratio = if (minCount > 0) maxCount/minCount else 0
         // ratio = 0, which is NOT > 5, so "balanced"
-        assertTrue(report.contains("分布相对均衡"))
+        assertTrue(report.contains(REPORT_BALANCED))
     }
 
     @Test
@@ -2766,7 +2776,7 @@ class MlTrainingTest {
         val report = exporter.generateDataReport()
         // counts.isEmpty() -> the balance check block is skipped (no output about balance)
         assertFalse(report.contains("分布不均衡"))
-        assertFalse(report.contains("分布相对均衡"))
+        assertFalse(report.contains(REPORT_BALANCED))
     }
 
     @Test
@@ -2846,7 +2856,7 @@ class MlTrainingTest {
 
         val report = exporter.generateDataReport()
         // ratio = 5, condition is ratio > 5 -> false -> "balanced"
-        assertTrue(report.contains("分布相对均衡"))
+        assertTrue(report.contains(REPORT_BALANCED))
     }
 
     @Test
@@ -2884,7 +2894,7 @@ class MlTrainingTest {
 
         val report = exporter.generateDataReport()
         // min=600, max=600, ratio=1 -> balanced
-        assertTrue(report.contains("分布相对均衡"))
+        assertTrue(report.contains(REPORT_BALANCED))
     }
 
     // ========================================================================
@@ -2944,7 +2954,7 @@ class MlTrainingTest {
     @Test
     fun `inferTransportMode - DRIVING with avgSpeed exactly 15_001`() {
         val speeds = listOf(15.001, 15.001)
-        val result = invokeInferTransportModeWithConfidence(speeds, "motorway|trunk", 60000L)
+        val result = invokeInferTransportModeWithConfidence(speeds, ROAD_MOTORWAY_TRUNK, 60000L)
         assertEquals("DRIVING", result.first)
     }
 
@@ -2959,8 +2969,8 @@ class MlTrainingTest {
 
         val journey = createLabeledJourney(
             id = 1L,
-            accelerometerData = """[{"x":1.0,"y":2.0,"z":9.8}]""",
-            gyroscopeData = """[{"x":0.1,"y":0.2,"z":0.3}]""",
+            accelerometerData = JSON_ACCEL_1,
+            gyroscopeData = JSON_GYRO_1,
             isVerified = true
         )
         whenever(dao.getVerifiedJourneysForExport(10000)).thenReturn(listOf(journey))
@@ -2987,8 +2997,8 @@ class MlTrainingTest {
             endTime = 15000L,
             transportMode = "SUBWAY",
             labelSource = "MANUAL",
-            accelerometerData = """[{"x":1.0,"y":2.0,"z":9.8}]""",
-            gyroscopeData = """[{"x":0.1,"y":0.2,"z":0.3}]""",
+            accelerometerData = JSON_ACCEL_1,
+            gyroscopeData = JSON_GYRO_1,
             isVerified = false
         )
         whenever(dao.getJourneysForExport(10000)).thenReturn(listOf(journey))
@@ -3114,7 +3124,7 @@ class MlTrainingTest {
             accelerometerData = "[]",
             gyroscopeData = "[]",
             barometerData = "[]",
-            apiKey = "test-key"
+            apiKey = TEST_API_KEY
         )
         assertNull(result)
     }
@@ -3131,7 +3141,7 @@ class MlTrainingTest {
             accelerometerData = "[]",
             gyroscopeData = "[]",
             barometerData = "[]",
-            apiKey = "test-key"
+            apiKey = TEST_API_KEY
         )
         assertNull(result)
     }
@@ -3153,7 +3163,7 @@ class MlTrainingTest {
             accelerometerData = "[]",
             gyroscopeData = "[]",
             barometerData = "[]",
-            apiKey = "test-key"
+            apiKey = TEST_API_KEY
         )
         assertNull(result)
     }
@@ -3174,7 +3184,7 @@ class MlTrainingTest {
         val result = service.autoLabelTrajectory(
             gpsTrajectory = trajectory,
             accelerometerData = """[{"x":0.1,"y":0.2,"z":9.8}]""",
-            gyroscopeData = """[{"x":0.01,"y":0.02,"z":0.03}]""",
+            gyroscopeData = JSON_GYRO_SMALL,
             barometerData = "[]",
             apiKey = "test-api-key"
         )
@@ -3190,7 +3200,7 @@ class MlTrainingTest {
 
         val trajectory = generateGpsTrajectory(25, timeIntervalMs = 4000L, latIncrement = 0.000020)
         val accelData = """[{"x":0.5,"y":0.3,"z":9.8},{"x":0.6,"y":0.4,"z":9.7}]"""
-        val gyroData = """[{"x":0.01,"y":0.02,"z":0.03}]"""
+        val gyroData = JSON_GYRO_SMALL
         val baroData = """[{"pressure":1013.25}]"""
 
         val result = service.autoLabelTrajectory(
@@ -3198,7 +3208,7 @@ class MlTrainingTest {
             accelerometerData = accelData,
             gyroscopeData = gyroData,
             barometerData = baroData,
-            apiKey = "test-key"
+            apiKey = TEST_API_KEY
         )
         assertNull(result) // Snap detector fails in test
     }
@@ -3214,8 +3224,8 @@ class MlTrainingTest {
 
         val journey = createLabeledJourney(
             id = 1L,
-            accelerometerData = """[{"x":1.0,"y":2.0,"z":9.8}]""",
-            gyroscopeData = """[{"x":0.1,"y":0.2,"z":0.3}]""",
+            accelerometerData = JSON_ACCEL_1,
+            gyroscopeData = JSON_GYRO_1,
             isVerified = true
         )
         whenever(dao.getVerifiedJourneysForExport(10000)).thenReturn(listOf(journey))
@@ -3237,8 +3247,8 @@ class MlTrainingTest {
 
         val journey = createLabeledJourney(
             id = 1L,
-            accelerometerData = """[{"x":1.0,"y":2.0,"z":9.8}]""",
-            gyroscopeData = """[{"x":0.1,"y":0.2,"z":0.3}]""",
+            accelerometerData = JSON_ACCEL_1,
+            gyroscopeData = JSON_GYRO_1,
             isVerified = false
         )
         whenever(dao.getJourneysForExport(10000)).thenReturn(listOf(journey))
